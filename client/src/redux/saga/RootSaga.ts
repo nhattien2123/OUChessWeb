@@ -1,6 +1,7 @@
 import { all, fork } from "redux-saga/effects";
 // import * as commonSaga from "src/redux/saga/common/CommonSaga";
-import * as sampleSag from "./sample/SampleSaga";
+import * as authSaga from "./auth/authSaga";
+
 
 
 /**
@@ -9,7 +10,6 @@ import * as sampleSag from "./sample/SampleSaga";
  */
 export default function* rootSaga() {
     yield all([
-        fork(sampleSag.watchGetDataSample),
-        fork(sampleSag.watchGetLogin),
+        fork(authSaga.watchGetDataLogin),
     ]);
 }
