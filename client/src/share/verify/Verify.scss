@@ -1,5 +1,25 @@
 .verify-container {
     display: flex;
     align-items: center;
-    margin: 0 5px;
+    width: 50%;
+    margin: 0 auto;
+    background-color: #ffffff1a;
+    display: flex;
+    flex-direction: column;
+}
+
+.verify-title {
+    color: #fff;
+    font-size: 30px;
+    text-align: center;
+    padding: 10px;
+}
+
+.verify-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.verify-input {
+    display:flex;
 }

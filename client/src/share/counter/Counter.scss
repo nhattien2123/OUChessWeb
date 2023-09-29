@@ -3,13 +3,14 @@
     border: 1px solid rgb(107, 107, 107);
     font-size: 18px;
     padding: 10px;
+    box-sizing: border-box;
 }
 
-.btn {
+.btn-counter {
     color: white;
 }
 
-.btn:hover {
+.btn-counter:hover {
     color: rgb(236, 218, 57);
 }
 

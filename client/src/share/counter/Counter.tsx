@@ -22,7 +22,7 @@ const Counter: React.FC<CounterProps> = ({ timer: timer }) => {
         <>
            
                 {time === 0 ? (
-                    <button className="counter btn" onClick={(evt) => setTime(timer)}>
+                    <button className="counter btn-counter" onClick={(evt) => setTime(timer)}>
                         Gửi
                     </button>
                 ) : (
