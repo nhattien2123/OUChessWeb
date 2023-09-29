@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import * as Type from '../register/Types';
+import { stat } from 'fs';
 
 const initialState: Type.registerState = {
     isLoading: false,
@@ -12,6 +13,9 @@ const registerSlice = createSlice({
     name: 'register',
     initialState,
     reducers: {
+        reqCheckDataRegister: (state, action) => {
+
+        },
         reqSendDataVerify: (state, action: Type.ActionReqSendDataVerify): void => {
             state.isLoading = true;
         },
@@ -28,6 +32,14 @@ const registerSlice = createSlice({
             state.isLoading = false;
             state.isSuccess = true;
         },
+        reqChangePassword: (state, action: Type.ActionReqChangePassword): void => {
+            state.isLoading = true;
+            state.isSuccess = false;
+        },
+        resChangePasswrod: (state, action:Type.ActionResChangePassword): void => {
+            state.isLoading = false;
+            state.isSuccess = true;
+        }
     },
 });
 

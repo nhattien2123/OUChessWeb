@@ -5,6 +5,14 @@ export type ResFetchSendDataVerify = Response<{
     verifyToken: registerState["verifyToken"];
 }>
 
+export type ResFetchCheckDataRegister = Response<{
+    msg: registerState["msg"];
+}>
+
 export type ResFetchSendDataRegister = Response<{
     msg: registerState["msg"];
+}>
+
+export type ResFetchChangePassword = Response<{
+    mssg: registerState["msg"];
 }>
