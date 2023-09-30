@@ -1,11 +1,11 @@
 const nodemailer = require('nodemailer');
 
 const nodeMailerHandler = {
-    sendMail: () => {
+    sendMail: (to, subject, htmlContent) => {
         const transporter = nodemailer.createTransport({
             host: process.env.NODEMAILER_HOST,
-            port: process.env.NODEMAILER_PORT,
-            secure: process.env.NODEMAILER_SECURE,
+            port: Number(process.env.NODEMAILER_PORT),
+            secure: false,
             auth: {
                 user: process.env.NODEMAILER_AUTH_USERNAME,
                 pass: process.env.NODEMAILER_AUTH_PASSWROD,

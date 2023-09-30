@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import '../login/Login.scss';
-
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { RootState } from '../../app/store';
 import { registerActions } from '../../redux/reducer/register/register';
 import { useNavigate } from 'react-router-dom';
 import Verify from '../../share/verify/verify';
 
+import '../register/Register.scss';
+
 interface RegisterProps {}
 
 const Register: React.FC<RegisterProps> = () => {
-    const [timer, setTimer] = useState(0);
     const [step, setStep] = useState(1);
     const [info, setInfo] = useState({
         username: '',
@@ -37,20 +36,39 @@ const Register: React.FC<RegisterProps> = () => {
         });
     };
 
-    const verifyFormHandle = (e: { preventDefault: () => void }): void => {
-        e.preventDefault();
-        dispatch(registerActions.reqSendDataVerify(info));
+    const verifyFormHandle = (): void => {
+        console.log(info.email);
+        // dispatch(registerActions.reqSendDataVerify({ emailVerify: info.email }));
     };
 
-    if (isLoadding) return <Verify email={info.email} verifyToken={verifyToken} />;
+    const submitHandler = (e: { preventDefault: () => void }): void => {
+        dispatch(
+            registerActions.reqSendDataRegister({
+                info,
+            }),
+        );
+    };
+
+    useEffect(() => {
+        if (isLoadding) {
+            setStep(step + 1);
+        }
+        console.log(step);
+    }, [isLoadding]);
+
+    // const verfify =
+    //     step === 3 ? (
+    //         <Verify handler={submitHandler} email={info.email} verifyToken={verifyToken} information={info} />
+    //     ) : null;
 
     return (
         <>
+            {/* {verfify} */}
             <div className="container">
                 <div className="main">
-                    <div className="login-title">ĐĂNG KÝ</div>
+                    <div className="login-title">Đăng ký</div>
                     <div className="login-container">
-                        <form className="login-input" onSubmit={verifyFormHandle}>
+                        <form className="login-input" onSubmit={(evt) => evt.preventDefault()}>
                             <div className="input-container">
                                 <input
                                     className="input-style"
@@ -58,6 +76,15 @@ const Register: React.FC<RegisterProps> = () => {
                                     placeholder="Email"
                                     value={info.email}
                                     onChange={(evt) => changeHandler(evt, 'email')}
+                                />
+                            </div>
+                            <div className="input-container">
+                                <input
+                                    className="input-style"
+                                    type="text"
+                                    placeholder="Phone"
+                                    value={info.phone}
+                                    onChange={(evt) => changeHandler(evt, 'phone')}
                                 />
                             </div>
 
@@ -88,63 +115,8 @@ const Register: React.FC<RegisterProps> = () => {
                                     onChange={(evt) => changeHandler(evt, 'confirmPassword')}
                                 />
                             </div>
-                            {/* <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="text"
-                                    placeholder="Họ và tên đệm"
-                                    value={info.firstName}
-                                    onChange={(evt) => changeHandler(evt, 'firstName')}
-                                />
-                            </div> */}
-                            {/* <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="text"
-                                    placeholder="Tên"
-                                    value={info.lastName}
-                                    onChange={(evt) => changeHandler(evt, 'lastName')}
-                                />
-                            </div>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="date"
-                                    placeholder="Ngày sinh"
-                                    value={info.dOb}
-                                    onChange={(evt) => changeHandler(evt, 'dOb')}
-                                />
-                            </div>
-
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="text"
-                                    placeholder="Phone"
-                                    value={info.phone}
-                                    onChange={(evt) => changeHandler(evt, 'phone')}
-                                />
-                            </div>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="text"
-                                    placeholder="Nation"
-                                    value={info.nation}
-                                    onChange={(evt) => changeHandler(evt, 'nation')}
-                                />
-                            </div>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="file"
-                                    placeholder="Avatar"
-                                    onChange={(evt) => changeHandler(evt, 'avatar')}
-                                />
-                            </div> */}
-
                             <div className="btn-container">
-                                <button type="submit" className="btn-style">
+                                <button className="btn-style" onClick={(evt) => verifyFormHandle()}>
                                     Đăng ký
                                 </button>
                             </div>
