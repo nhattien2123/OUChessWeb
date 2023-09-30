@@ -15,4 +15,5 @@ export default function* rootSaga() {
         fork(registerSaga.watchRegister),
         fork(userSaga.watchUserFunction)
     ]);
+    // yield all([fork(historySaga.watchFetchHistory)]);
 }
