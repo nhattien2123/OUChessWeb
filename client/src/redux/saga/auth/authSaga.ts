@@ -18,7 +18,7 @@ interface Payload {
 // eslint-disable-next-line require-jsdoc
 function* getLogin(action: TypesAction.ActionReqGetDataLogin) {
     try {
-        const {username, password} = action.payload as Payload;
+        const { username, password } = action.payload as Payload;
         const response: TypesFetch.ResFetchGetDataLogin = yield call(LoginService.fetchLogin, username, password);
         const statusCode = response.code;
         switch (statusCode) {
