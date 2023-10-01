@@ -50,6 +50,7 @@ function* sendVerify(action: TypesAction.ActionReqSendDataVerify) {
 function* setDataRegister(action: TypesAction.ActionReqSetDataRegister) {
     try {
         const { information } = action.payload as PayLoad;
+        // console.log(info)
         const response: TypesFetch.ResFetchSendDataRegister = yield call(registerService.sendDataRegister, {
             information: information,
         });

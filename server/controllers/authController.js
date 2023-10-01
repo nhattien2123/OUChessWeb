@@ -20,6 +20,7 @@ const authController = {
     signIn: async (req, res) => {
         try {
             const curUser = await userService.getUser(req.body.username);
+            console.log(req.body.username);
             if (req.body.username === '' || req.body.password === '')
                 httpHandler.Fail(res, {}, 'Vui lòng nhập đủ thông tin');
             else if (!curUser) {

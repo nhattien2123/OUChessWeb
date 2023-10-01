@@ -5,6 +5,7 @@ import commonReducer from "../redux/reducer/common/CommonReducer";
 import authReducer from "../redux/reducer/auth/authReducer";
 import registerReducer from "../redux/reducer/register/register";
 import userReducer  from "../redux/reducer/user/userReducer";
+import messageReducer from "../redux/reducer/messages/messages"
 
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
@@ -12,7 +13,8 @@ export const store = configureStore({
         commonReducer,
         authReducer,
         registerReducer,
-        userReducer
+        userReducer,
+        messageReducer,
     },
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware)
     middleware: [sagaMiddleware],

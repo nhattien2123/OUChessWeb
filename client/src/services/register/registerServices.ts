@@ -4,7 +4,6 @@ import * as Type from "./Types";
 
 export const sendVerify = async (emailVerify: string): Promise<Type.ResFetchSendDataVerify> => {
     const url = ROOT_URL + COMMON.API_SEND_VERIFY.URL;
-    console.log(emailVerify);
     const res = await fetch(url, {
         method: COMMON.API_SEND_VERIFY.METHOD,
         body: JSON.stringify({emailVerify}),

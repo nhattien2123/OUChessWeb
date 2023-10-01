@@ -2,13 +2,27 @@ const user = require('../models/user');
 const bcrypt = require('bcrypt');
 
 const userReposity = {
-    getUser: async (params) => {
+    getUserByID: async (_id) => {
         try {
             const User = await user.findOne({
-                $or: [{ username: params }, { email: params }],
+                _id: _id,
             });
             return User;
         } catch (error) {
+            console.log(error);
+            return null;
+        }
+    },
+    getUser: async (params) => {
+        try {
+            const User = await user
+                .findOne({
+                    $or: [{ username: params }, { email: params }],
+                })
+                .populate('friends');
+            return User;
+        } catch (error) {
+            console.log(error);
             return null;
         }
     },
@@ -20,11 +34,11 @@ const userReposity = {
                 searchParams.email = email;
             }
             const username = params.username || null;
-            if(username !== null && username !== ''){
+            if (username !== null && username !== '') {
                 searchParams.username = username;
             }
             const phone = params.phone || null;
-            if(phone !== null && phone !== ''){
+            if (phone !== null && phone !== '') {
                 searchParams.phone = phone;
             }
 
@@ -37,7 +51,6 @@ const userReposity = {
     addUser: async (User) => {
         try {
             const newUser = await User.save();
-
             return newUser;
         } catch (error) {
             console.log(error.message);
