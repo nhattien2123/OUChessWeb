@@ -29,7 +29,6 @@ const Register: React.FC<RegisterProps> = () => {
     const nav = useNavigate();
 
     const changeHandler = (e: any, field: string) => {
-        console.log(info);
         setInfo((current) => {
             if (field === 'avatar') return { ...current, [field]: e.target.files[0] };
             else return { ...current, [field]: e.target.value };
@@ -37,33 +36,27 @@ const Register: React.FC<RegisterProps> = () => {
     };
 
     const verifyFormHandle = (): void => {
-        console.log(info.email);
-        // dispatch(registerActions.reqSendDataVerify({ emailVerify: info.email }));
+        dispatch(registerActions.reqSendDataVerify({ emailVerify: info.email }));
+        setStep(step + 1);
     };
 
     const submitHandler = (e: { preventDefault: () => void }): void => {
+        console.log(info);
         dispatch(
             registerActions.reqSendDataRegister({
-                info,
+                information: info
             }),
         );
     };
 
-    useEffect(() => {
-        if (isLoadding) {
-            setStep(step + 1);
-        }
-        console.log(step);
-    }, [isLoadding]);
-
-    // const verfify =
-    //     step === 3 ? (
-    //         <Verify handler={submitHandler} email={info.email} verifyToken={verifyToken} information={info} />
-    //     ) : null;
+    const verfify =
+        step === 2 ? (
+            <Verify handler={submitHandler} email={info.email} verifyToken={verifyToken} information={info} />
+        ) : null;
 
     return (
         <>
-            {/* {verfify} */}
+            {verfify}
             <div className="container">
                 <div className="main">
                     <div className="login-title">Đăng ký</div>

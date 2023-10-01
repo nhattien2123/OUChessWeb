@@ -8,16 +8,19 @@ import {
   getDoc,
   orderBy,
   onSnapshot,
+  limit,
 } from "firebase/firestore";
 
 type Props = {
   _collection: string;
   _condition: { [key: string]: any };
+  _limit: number;
+  _orderBy: string;
 };
 
 const useDocuments = (props: Props) => {
   const [documents, setDocuments] = useState<any>([]);
-  const { _collection, _condition } = props;
+  const { _collection, _condition, _limit, _orderBy } = props;
 
   React.useEffect(() => {
     const collecctionRef = collection(db, _collection);
@@ -25,9 +28,12 @@ const useDocuments = (props: Props) => {
       if (!_condition.value || !_condition.value.length) {
         return;
       }
+      console.log(_condition.value);
       const q = query(
         collecctionRef,
-        where(_condition.fieldName, _condition.operator, _condition.value)
+        where(_condition.fieldName, _condition.operator, _condition.value),
+        orderBy(_orderBy),
+        limit(_limit)
       );
 
       const unsubcribe = onSnapshot(q, (snapshot: any) => {
@@ -40,7 +46,7 @@ const useDocuments = (props: Props) => {
 
       return unsubcribe;
     }
-  }, [_collection, _condition]);
+  }, [_collection, _condition, _orderBy, _limit]);
 
   return documents;
 };

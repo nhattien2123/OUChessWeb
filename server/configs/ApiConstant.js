@@ -4,7 +4,7 @@ const apiConstant = {
     API_SEND_VERIFY: "/authapi-sendverify",
     API_UPDATE_USER: "/authapi-update",
     API_GET_CURRENT_USER: "/userapi-getcurrent",
-    // API_GET_USER: "/:username",
+    API_GET_USER_BY_ID: "/:id",
     API_LOAD_COMMENT_USER: "/:username/commentInfos",
     API_LOAD_MATCH_USER: "/:username/matchs",
     API_UPDATE_USER_PROFILE: "/:username/userapi-updateuser",

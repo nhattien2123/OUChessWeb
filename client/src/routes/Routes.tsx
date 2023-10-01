@@ -18,7 +18,7 @@ const Router: React.FC<RouterProps> = () => {
             <Routes>
                 <Route path="/" element={<PrivateRouter component={Home} />} />
                 <Route path='/profile/:username/edit' element={<PrivateRouter component={Editor} />} />
-                <Route path='/messages' element={<Messenger />} />
+                <Route path='/messages' element={<PrivateRouter component={Messenger} />} />
                 <Route path="/profile/:username" element={<Profile/>}/>
                 <Route path="/login" element={<Login />}></Route>
 

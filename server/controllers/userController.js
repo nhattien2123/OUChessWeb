@@ -15,6 +15,21 @@ const userController = {
             httpHandler.Servererror(res, error.message, 'Đã xảy ra lỗi !!!');
         }
     },
+    getUserByID: async (req, res) => {
+        try {
+        
+            const user = await userService.getUserByID(req.params.id);
+            console.log({user, id: req.params.id})
+
+            if (!user) httpHandler.Fail(res, {}, 'Không tìm thấy người dùng');
+            else{
+                const {password, ...userInfo} = user._doc;
+                httpHandler.Success(res, { userInfo }, 'Tìm thấy thông tin người dùng');
+            }
+        } catch (error) {
+            httpHandler.Servererror(res, error.message, 'Đã xảy ra lỗi !!!');
+        }
+    },
     updateUser: async (req, res) => {
         try {
             const unChangedUser = await userService.getUser(req.params["username"]);
@@ -86,6 +101,9 @@ const userController = {
             // return
         } catch (error) {}
     },
+    loadListUser: async (req, res) => {
+        
+    }
 };
 
 module.exports = userController;

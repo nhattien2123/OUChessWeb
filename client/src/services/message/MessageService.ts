@@ -6,11 +6,10 @@ export const MessageService = {
     add: async (_collection: string, _data: any) => {
         try {
             const ref = doc(collection(db, 'messages'));
-            const res = await setDoc(ref, {
+            await setDoc(ref, {
                 ..._data,
                 createdAt: serverTimestamp(),
             });
-            console.log('Sended');
         } catch (error) {
             console.log(error);
         }

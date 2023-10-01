@@ -4,8 +4,11 @@ const user = require('../models/user');
 const cloudinaryConfig = require("../configs/CloundinaryConfig");
 
 const userService = {
-    getUser: async (username) => {
-        return authRepository.getUser(username);
+    getUser: async (param) => {
+        return authRepository.getUser(param);
+    },
+    getUserByID: async (id) => {
+        return authRepository.getUserByID(id);
     },
     addUser: async (User) => {
         try {

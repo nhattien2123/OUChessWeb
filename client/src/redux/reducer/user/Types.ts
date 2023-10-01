@@ -12,6 +12,7 @@ export type userState = {
         elo: number;
         nation: string;
         avatar: string;
+        friends: [{[key: string]: any}]
     };
     password: string;
     isLoading?: boolean;

@@ -13,7 +13,7 @@ const Home = (props: Props) => {
         if (currentUser) {
             Cookies.set('user', JSON.stringify(currentUser));
         }
-        console.log(currentUser._id);
+        console.log(currentUser);
     }, [currentUser]);
 
     return (
