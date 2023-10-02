@@ -5,7 +5,7 @@ import '../../components/Messenger/Messenger.scss';
 import useDocument from '../firestore/DocumentHook';
 import { ROOT_URL } from '../../config/ApiConstants';
 import { messageAction } from '../../redux/reducer/messages/messages';
-import { messageState } from '@/redux/reducer/messages/Types';
+import { messageState } from 'src/redux/reducer/messages/Types';
 
 type Props = {
     chat: { [key: string]: any };

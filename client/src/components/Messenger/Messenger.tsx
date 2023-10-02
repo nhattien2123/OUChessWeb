@@ -6,13 +6,14 @@ import { useAppSelector } from '../../app/hooks';
 import { RootState } from '../../app/store';
 import uploadImage from '../../config/ImageUpload';
 import useDocument from '../../share/firestore/DocumentHook';
-import ChatList from '../../share/message/ChatList';
-import MessageService from '../../services/message/MessageService';
+import ChatList from 'src/share/message/ChatList';
+import MessageService from 'src/services/message/MessageService';
 
 import { collection, doc, getDoc, onSnapshot, orderBy, serverTimestamp, updateDoc } from 'firebase/firestore';
 // import useDocuments from '@share/firestore/DocumentsHook';
-import useDocuments from "../../share/firestore/DocumentsHook";
-import "../Messenger/Messenger.scss"
+import useDocuments from '../../share/firestore/DocumentsHook';
+import '../Messenger/Messenger.scss';
+import moment from 'moment';
 
 interface Props {}
 
@@ -20,45 +21,53 @@ const Messenger = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const selectedChat = useAppSelector((state: RootState) => state.messageReducer.selectedChat);
     const selectedUser = useAppSelector((state: RootState) => state.messageReducer.selectedUser);
-    const [message, setMessage] = useState('')
-    const [showEmoji, setShowEmoji] = useState(false)
-    const ref = useRef(null);
+    const [message, setMessage] = useState('');
+    const [showEmoji, setShowEmoji] = useState(false);
+    const [limit, setLimit] = useState<number>(8);
+    const ref = useRef<any>(null);
 
     const _condition = useMemo(() => {
         return {
-            fieldName: "chatID",
-            operator: "==",
-            value: selectedChat
-        }
-    },[selectedChat])
+            fieldName: 'chatID',
+            operator: '==',
+            value: selectedChat,
+        };
+    }, [selectedChat]);
 
-   const list = useDocuments({
-    _collection: "messages",
-    _condition: _condition,
-    _limit: 100,
-    _orderBy: "createdAt"
-   })
+    const list = useDocuments({
+        _collection: 'messages',
+        _condition: _condition,
+        _limit: limit,
+        _orderBy: {
+            by: 'createdAt',
+            asc: 'asc',
+        },
+    });
 
-   console.log({list});
+    console.log({ list });
 
     const emojiHandler = (emoji: any) => {
         setMessage((current) => current + emoji['native']);
     };
 
     const imageHandler = async (e: any) => {
+        if (selectedChat === '') return;
         const imageUrl = await uploadImage(e.target.files[0], currentUser._id);
-        const messID = uuidv4();
+        // const messID = uuidv4();
         const newMessage = {
+            chatID: selectedChat,
             sendID: currentUser._id,
             type: 'image',
             content: imageUrl,
-            createAt: serverTimestamp(),
         };
 
-        MessageService.update('messages', selectedChat, { [messID]: newMessage });
+        MessageService.add('messages', newMessage);
+        // MessageService.update('messages', selectedChat, { [messID]: newMessage });
         MessageService.update('chat', selectedChat, { lastMessage: 'Đã gửi một ảnh' });
     };
     const sendMessage = async () => {
+        if (selectedChat === '') return;
+
         if (message === '') {
             return;
         }
@@ -67,172 +76,167 @@ const Messenger = (props: Props) => {
             chatID: selectedChat,
             sendID: currentUser._id,
             type: 'text',
-            content: message,     
+            content: message,
         };
 
-        MessageService.add("messages", newMessage);
+        MessageService.add('messages', newMessage);
         // MessageService.update('messages', selectedChat, { [messID]: newMessage });
         MessageService.update('chat', selectedChat, { lastMessage: message });
 
         // SetMessages((prevMessages) => [...prevMessages, message]);
+        if (ref && ref.current) {
+            ref.current.scrollIntoView({ behavior: 'smooth' });
+        }
         setMessage('');
     };
 
-    useEffect(() => {
-        if (ref && ref.current) {
-            // ref.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [list]);
+    useEffect(() => {}, [list]);
 
     return (
         <>
             <div className="chat-container">
                 <ChatList />
-                <div className="chat-field">
-                    <div className="chat-header">
-                        <div className="header-container">
-                            {selectedUser?.avatar !== "" && <img
-                                className="header-image"
-                                src={selectedUser?.avatar}
-                                alt="avatar"
-                            ></img>}
-                            <div className="active">
-                                <p>{selectedUser?.username}</p>
+                {list.length > 0 && (
+                    <div className="chat-field">
+                        <div className="chat-header">
+                            <div className="header-container">
+                                {selectedUser?.avatar !== '' && (
+                                    <img className="header-image" src={selectedUser?.avatar} alt="avatar"></img>
+                                )}
+                                <div className="active">
+                                    <p>{selectedUser?.username}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="chat-page">
-                        <div className="chat-inbox">
-                            <div className="chat-msg">
+                        <div className="chat-page">
+                            <div className="chat-inbox">
+                                <div className="chat-msg">
                                 <div className="chat-msg-box">
-                                    {list.map((m: any, index: number) => {
-                                        return (
-                                            <>
-                                                {m.sendID !== currentUser._id ? (
-                                                    <div className="received-box">
-                                                        <div className="received-box-img">
-                                                            <img
-                                                                src={selectedUser.avatar}
-                                                                alt="avatar"
-                                                            />
-                                                        </div>
-                                                        <div className="received-box-msg">
-                                                            <div className="received-msg">
-                                                                {m.type === 'text' && (
-                                                                    <div className="received-text">
-                                                                        {m.content}
-                                                                    </div>
-                                                                )}
-                                                                {m.type === 'image' && (
-                                                                    <img
-                                                                        className="received-image"
-                                                                        alt="anh"
-                                                                        src={m.content}
-                                                                    />
-                                                                )}
+                                        {list.length === limit && (
+                                            <button className="button-load" onClick={(evt) => setLimit(limit + 6)}>
+                                                - - - load more - - -
+                                            </button>
+                                        )}
+                                        {list.map((m: any, index: number) => {
+                                            return (
+                                                <>
+                                                    {m.sendID !== currentUser._id ? (
+                                                        <div className="received-box">
+                                                            <div className="received-box-img">
+                                                                <img src={selectedUser.avatar} alt="avatar" />
+                                                            </div>
+                                                            <div className="received-box-msg">
+                                                                <div className="received-msg">
+                                                                    {m.type === 'text' && (
+                                                                        <>
+                                                                            <div className="received-text">
+                                                                                {m.content}
+                                                                            </div>
+                                                                        </>
+                                                                    )}
+                                                                    {m.type === 'image' && (
+                                                                        <img
+                                                                            className="received-image"
+                                                                            alt="anh"
+                                                                            src={m.content}
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                                <div className="received-time">
+                                                                    {m.createdAt &&
+                                                                        moment
+                                                                            .utc(m.createdAt.seconds * 1000)
+                                                                            .format('DD-MM-YYYY HH:mm')}
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                ) : (
-                                                    <div ref={ref} className="sended-box">
-                                                        <div className="sended-box-img">
-                                                            <img src={currentUser.avatar} alt="avatar" />
-                                                        </div>
-                                                        <div className="sended-box-msg">
-                                                            <div className="sended-msg">
-                                                                {m.type === 'text' && (
-                                                                    <div className="sended-text">{m.content}</div>
-                                                                )}
-                                                                {m.type === 'image' && (
-                                                                    <img
-                                                                        className="sended-image"
-                                                                        alt="anh"
-                                                                        src={m.content}
-                                                                    />
-                                                                )}
+                                                    ) : (
+                                                        <div className="sended-box">
+                                                            <div className="sended-box-img">
+                                                                <img src={currentUser.avatar} alt="avatar" />
+                                                            </div>
+                                                            <div className="sended-box-msg">
+                                                                <div className="sended-msg">
+                                                                    {m.type === 'text' && (
+                                                                        <div className="sended-text">{m.content}</div>
+                                                                    )}
+                                                                    {m.type === 'image' && (
+                                                                        <img
+                                                                            className="sended-image"
+                                                                            alt="anh"
+                                                                            src={m.content}
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                                <div className="sended-time">
+                                                                    {m.createdAt &&
+                                                                        moment
+                                                                            .utc(m.createdAt.seconds * 1000)
+                                                                            .format('DD-MM-YYYY HH:mm')}
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                )}
-                                            </>
-                                        );
-                                    })}
-                                    {/* <div className="received-box">
-                                        <div className="received-box-img">
-                                            <img
-                                                // className="header-image"
-                                                src="https://res.cloudinary.com/de0pt2lzw/image/upload/v1695581895/g0owu4lsrk7jsagvtaxp.jpg"
-                                                alt="avatar"
-                                            />
-                                        </div>
-                                        <div className="received-box-msg">
-                                            <div className="received-msg">Đây là tin nhắn </div>
-                                        </div>
+                                                    )}
+                                                </>
+                                            );
+                                        })}
+                                        <div ref={ref}></div>
                                     </div>
-                                    <div className="sended-box">
-                                        <div className="sended-box-img">
-                                            <img
-                                                // className="header-image"
-                                                src="https://res.cloudinary.com/de0pt2lzw/image/upload/v1695581895/g0owu4lsrk7jsagvtaxp.jpg"
-                                                alt="avatar"
-                                            />
-                                        </div>
-                                        <div className="sended-box-msg">
-                                            <div className="sended-msg">Đây cũng là tin nhắn</div>
-                                        </div>
-                                    </div> */}
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="chat-footer">
-                        <div className="chat-inputs">
-                            <input
-                                type="text"
-                                className="input-msg"
-                                placeholder="Aa..."
-                                value={message}
-                                onChange={(evt) => setMessage(evt.target.value)}
-                            />
-                            <div className="chat-inputs-feature">
-                                <div className="chat-inputs-image">
-                                    <input type="file" id="image" onChange={imageHandler}></input>
-                                    <label htmlFor="image">IMG</label>
-                                </div>
-                                <div className="chat-inputs-emoji">
-                                    <div
-                                        className="emoji-toggle"
-                                        onClick={(evt) => {
-                                            evt.stopPropagation();
-                                            setShowEmoji(!showEmoji);
-                                        }}
-                                    >
-                                        Emoji
+                        <div className="chat-footer">
+                            <div className="chat-inputs">
+                                <input
+                                    type="text"
+                                    className="input-msg"
+                                    placeholder="Aa..."
+                                    value={message}
+                                    onChange={(evt) => setMessage(evt.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') sendMessage();
+                                    }}
+                                />
+                                <div className="chat-inputs-feature">
+                                    <div className="chat-inputs-image">
+                                        <input type="file" id="image" onChange={imageHandler}></input>
+                                        <label htmlFor="image">IMG</label>
                                     </div>
-                                    {showEmoji && (
-                                        <div className="emoji-box">
-                                            <Picker
-                                                locale="vi"
-                                                previewPosition="none"
-                                                data={data}
-                                                navPosition="bottom"
-                                                onClickOutside={() => {
-                                                    setShowEmoji(false);
-                                                }}
-                                                onEmojiSelect={emojiHandler}
-                                            />
+                                    <div className="chat-inputs-emoji">
+                                        <div
+                                            className="emoji-toggle"
+                                            onClick={(evt) => {
+                                                evt.stopPropagation();
+                                                setShowEmoji(!showEmoji);
+                                            }}
+                                        >
+                                            Emoji
                                         </div>
-                                    )}
-                                </div>
-                                <div className="chat-inputs-text" onClick={sendMessage}>
-                                    Gửi
+                                        {showEmoji && (
+                                            <div className="emoji-box">
+                                                <Picker
+                                                    locale="vi"
+                                                    previewPosition="none"
+                                                    data={data}
+                                                    navPosition="bottom"
+                                                    onClickOutside={() => {
+                                                        setShowEmoji(false);
+                                                    }}
+                                                    onEmojiSelect={emojiHandler}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="chat-inputs-text" onClick={sendMessage}>
+                                        Gửi
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </>
     );

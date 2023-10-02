@@ -9,13 +9,20 @@ import {
   orderBy,
   onSnapshot,
   limit,
+  OrderByDirection,
+  startAfter,
+  startAt,
+  limitToLast,
 } from "firebase/firestore";
 
 type Props = {
   _collection: string;
   _condition: { [key: string]: any };
   _limit: number;
-  _orderBy: string;
+  _orderBy: {
+    by: string;
+    asc: "asc" | "desc";
+  }
 };
 
 const useDocuments = (props: Props) => {
@@ -28,12 +35,12 @@ const useDocuments = (props: Props) => {
       if (!_condition.value || !_condition.value.length) {
         return;
       }
-      console.log(_condition.value);
+
       const q = query(
         collecctionRef,
         where(_condition.fieldName, _condition.operator, _condition.value),
-        orderBy(_orderBy),
-        limit(_limit)
+        orderBy(_orderBy.by),
+        limitToLast(_limit)
       );
 
       const unsubcribe = onSnapshot(q, (snapshot: any) => {
@@ -46,7 +53,7 @@ const useDocuments = (props: Props) => {
 
       return unsubcribe;
     }
-  }, [_collection, _condition, _orderBy, _limit]);
+  }, [_collection, _condition, _limit]);
 
   return documents;
 };

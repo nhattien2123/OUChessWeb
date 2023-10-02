@@ -1,4 +1,4 @@
-import { userState } from '@/redux/reducer/user/Types';
+import { userState } from 'src/redux/reducer/user/Types';
 import { ROOT_URL, CONTENT_TYPE, COMMON, USER } from '../../config/ApiConstants';
 import * as Types from './Types';
 import Cookies from 'js-cookie';
