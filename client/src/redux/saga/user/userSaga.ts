@@ -94,7 +94,7 @@ function* patchChangePassword(action: TypesAction.ActionReqPatchChangePassword) 
         const statusCode = response.code;
         switch (statusCode) {
             case httpHandler.SUCCESS: {
-                yield put(userActions.resPatchChangePassword);
+                yield put(userActions.resPatchChangePassword({}));
                 yield put(commonAction.displayError({ errorMsg: response.message }));
                 break;
             }

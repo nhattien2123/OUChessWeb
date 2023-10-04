@@ -10,6 +10,9 @@ const userService = {
     getUserByID: async (id) => {
         return authRepository.getUserByID(id);
     },
+    getExistUser: async (username, params) => {
+        return authRepository.getExistUser(username, params)
+    },
     addUser: async (User) => {
         try {
             const salt = await bcrypt.genSalt(10);

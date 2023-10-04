@@ -19,7 +19,7 @@ const Home = (props: Props) => {
     return (
         <>
             <div>Home</div>
-            <Link to={'/profile/admin/edit'}>Go</Link>
+            <Link to={`/profile/${currentUser.username}`}>Go</Link>
         </>
     );
 };

@@ -1,10 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import '../Profile/Profile.scss';
+import { current } from '@reduxjs/toolkit';
 
 interface ProfileProps {}
 
 const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
+    const {username} = useParams();
     return (
         <>
             <div className="profile-container">
@@ -28,7 +30,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                         </div>
                     </div>
                     <div className="toEdit w-10">
-                        <Link to={'/profile/admin/edit'}>Chỉnh sửa</Link>
+                        <Link to={`/profile/${username}/edit`}>Chỉnh sửa</Link>
                     </div>
                 </div>
                 <div className="infomation-container">

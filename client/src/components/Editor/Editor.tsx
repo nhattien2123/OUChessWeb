@@ -6,21 +6,21 @@ import { userActions } from '../../redux/reducer/user/userReducer';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { RootState } from '../../app/store';
 import Sidebar from '../../share/sidebar/Sidebar';
-import "../Editor/Editor.scss";
+import './editor.scss';
+import ProfileForm from 'src/share/form/ProfileForm';
+import ChangePasswordForm from 'src/share/form/ChangePasswordForm';
 
 interface EditorProps {}
 
 const Editor: React.FC<EditorProps> = () => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
-    // const password = useAppSelector((state: RootState) => state.userReducer.password);
     const isLoading = useAppSelector((state: RootState) => state.userReducer.isLoading);
+    const errorMsg = useAppSelector((state: RootState) => state.commonReducer.errorMsg);
     const dispatch = useAppDispatch();
     const param = useParams();
     const nav = useNavigate();
 
-    const [selectedImage, setSelectedImage] = useState(
-        ""
-    );
+    const [selectedImage, setSelectedImage] = useState('');
     const [profile, setProfile] = useState(currentUser);
     const [psw, setPsw] = useState({
         newPassword: '',
@@ -39,29 +39,18 @@ const Editor: React.FC<EditorProps> = () => {
         Cookies.set('user', JSON.stringify(currentUser));
     }, [currentUser]);
 
-    const changeProfileField = (evt: any, field: string) => {
-        setProfile((current) => {
-            return { ...current, [field]: evt.target.value };
-        });
+    const updateProfile = (data: any) => {
+        dispatch(userActions.reqPatchUpdateUser({ changedUser: data }));
     };
 
-    const updateProfile = (e: { preventDefault: () => void }) => {
-        e.preventDefault();
-        dispatch(userActions.reqPatchUpdateUser({ changedUser: profile }));
-    };
+    const updatePassword = (data: any) => {
+        const { password } = data;
 
-    const updatePassword = (e: { preventDefault: () => void }) => {
-        e.preventDefault();
-
-        if (psw.newPassword === psw.confirmPassword) {
-            const data = {
-                username: profile.username,
-                password: psw.newPassword,
-            };
-            dispatch(userActions.reqPatchChangPassword({ changedPassword: data }));
-            console.log(psw);
-        }
-        // dispatch(userActions.reqPatchChangPassword({newPassword: }))
+        const d = {
+            username: profile.username,
+            password: password,
+        };
+        dispatch(userActions.reqPatchChangPassword({ changedPassword: d }));
     };
 
     const updateImage = (e: any) => {
@@ -85,7 +74,7 @@ const Editor: React.FC<EditorProps> = () => {
             <div className="profile-container">
                 <div className="avatar-container">
                     <div className="avatar-img">
-                        <img src={profile.avatar} alt="Avatar" />
+                        <img src={profile.avatar} alt="Avatar" className='profile-avatar' />
                         <div className="input-file">
                             <input onChange={updateImage} type="file" name="avatar" id="avatar" />
                             <label className="label-avatar" htmlFor="avatar">
@@ -97,94 +86,10 @@ const Editor: React.FC<EditorProps> = () => {
                         <div className="avatar-username">{profile.username}</div>
                     </div>
                 </div>
-                <div className="information-container">
-                    <div className="information-title">THÔNG TIN NGƯỜI DÙNG</div>
-                    <div className="information-content">
-                        <form onSubmit={updateProfile} className="information-form">
-                            <div className="input-form-container">
-                                <label className="label-form" htmlFor="firstName">
-                                    Họ và tên đệm
-                                </label>
-                                <input
-                                    value={profile.firstName}
-                                    type="text"
-                                    id="firstName"
-                                    className="input-form"
-                                    onChange={(evt) => changeProfileField(evt, 'firstName')}
-                                />
-                            </div>
-                            <div className="input-form-container">
-                                <label className="label-form" htmlFor="lastName">
-                                    Tên
-                                </label>
-                                <input
-                                    value={profile.lastName}
-                                    type="text"
-                                    id="lastName"
-                                    className="input-form"
-                                    onChange={(evt) => changeProfileField(evt, 'lastName')}
-                                />
-                            </div>
-                            <div className="input-form-container">
-                                <label className="label-form" htmlFor="email">
-                                    Email
-                                </label>
-                                <input
-                                    value={profile.email}
-                                    type="text"
-                                    id="email"
-                                    className="input-form"
-                                    onChange={(evt) => changeProfileField(evt, 'email')}
-                                />
-                            </div>
-                            <div className="input-form-container">
-                                <label className="label-form" htmlFor="phone">
-                                    Phone
-                                </label>
-                                <input
-                                    value={profile.phone}
-                                    type="text"
-                                    id="phone"
-                                    className="input-form"
-                                    onChange={(evt) => changeProfileField(evt, 'phone')}
-                                />
-                            </div>
-
-                            <div className="input-form-container">
-                                <label className="label-form" htmlFor="dOb">
-                                    Ngày sinh
-                                </label>
-                                <input
-                                    value={moment(profile.dateOfBirth).add(7, 'hours').format('yyyy-MM-DD')}
-                                    type="date"
-                                    id="dOb"
-                                    className="input-form"
-                                    onChange={(evt) => changeProfileField(evt, 'dateOfBirth')}
-                                />
-                            </div>
-                            <div className="input-form-container">
-                                <label className="label-form" htmlFor="nation">
-                                    Quốc tịch
-                                </label>
-                                <input value={profile.nation} type="text" id="nation" className="input-form" />
-                            </div>
-
-                            <div className="input-form-container">
-                                {!isLoading ? (
-                                    <button className="btn-form btn-form-save" type="submit">
-                                        Lưu
-                                    </button>
-                                ) : (
-                                    <button className="btn-form btn-form-save" type="submit">
-                                        ...
-                                    </button>
-                                )}
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div className="information-container">
+                
+                        <ProfileForm profile={profile} isLoading={isLoading} onSubmit={updateProfile} />
+                    
+                {/* <div className="information-container">
                     <div className="information-title">ĐẶT LẠI MẬT KHẨU</div>
                     <div className="information-content">
                         <form onSubmit={updatePassword} className="information-form">
@@ -219,7 +124,8 @@ const Editor: React.FC<EditorProps> = () => {
                             </div>
                         </form>
                     </div>
-                </div>
+                </div> */}
+                <ChangePasswordForm onSubmit={updatePassword} />
             </div>
         </>
     );
