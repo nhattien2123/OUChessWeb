@@ -6,7 +6,7 @@ import { userActions } from '../../redux/reducer/user/userReducer';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { RootState } from '../../app/store';
 import Sidebar from '../../share/sidebar/Sidebar';
-import './editor.scss';
+import './Editor.scss';
 import ProfileForm from 'src/share/form/ProfileForm';
 import ChangePasswordForm from 'src/share/form/ChangePasswordForm';
 
