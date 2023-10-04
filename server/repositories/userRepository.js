@@ -15,9 +15,14 @@ const userReposity = {
     },
     getUser: async (params) => {
         try {
+            let searchParams = [{ username: params }, { email: params }];
+            if (!isNaN(params)) {
+                searchParams.push({ phone: params });
+            }
+
             const User = await user
                 .findOne({
-                    $or: [{ username: params }, { email: params }],
+                    $or: searchParams,
                 })
                 .populate('friends');
             return User;
@@ -45,6 +50,25 @@ const userReposity = {
             const list = await user.find(searchParams);
             return list;
         } catch (error) {
+            return null;
+        }
+    },
+    getExistUser: async (username, params) => {
+        try {
+            let searchParams = [{ email: params }];
+            if (!isNaN(params)) {
+                searchParams.push({ phone: params });
+            }
+
+            const User = await user
+                .findOne({
+                    username: {$ne: username},
+                    $or: searchParams,
+                })
+                .populate('friends');
+            return User;
+        } catch (error) {
+            console.log(error);
             return null;
         }
     },
