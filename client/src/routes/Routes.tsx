@@ -8,8 +8,8 @@ import Register from 'src/components/register/Register';
 import Game from '../components/game/Game';
 import ForgetPassword from 'src/components/forget/ForgetPassword';
 import Editor from 'src/components/editor/Editor';
-import Profile from 'src/components/Profile/Profile';
-import Messenger from 'src/components/Messenger/Messenger';
+import Profile from 'src/components/profile/Profile';
+import Messenger from 'src/components/messenger/Messenger';
 
 interface RouterProps {}
 

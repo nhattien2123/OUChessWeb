@@ -18,9 +18,39 @@ interface PayLoad {
         email?: string;
     };
     emailVerify: string;
-
     emailReset: string;
     passwordReset: string;
+
+    fieldCheck: {
+        username: string;
+        email: string;
+        phone: number;
+    };
+}
+
+function* checkExist(action: TypesAction.ActionReqCheckExist) {
+    try {
+        const { fieldCheck } = action.payload as PayLoad;
+        console.log(fieldCheck);
+        const { username, email, phone } = fieldCheck;
+        const response: TypesFetch.ResCheckExist = yield call(registerService.checkExist, username, email, phone);
+        const statusCode = response.code;
+        switch (statusCode) {
+            case httpHandler.SUCCESS: {
+                const { errors } = response.data;
+                yield put(registerActions.resCheckExist({errors}));
+                break;
+            }
+            case httpHandler.SERVER_ERROR: {
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+            }
+            default:
+                break;
+        }
+    } catch (error) {
+        yield put(commonAction.displayError({ errorMsg: (error as Error).message }));
+    }
 }
 
 function* sendVerify(action: TypesAction.ActionReqSendDataVerify) {
@@ -112,4 +142,5 @@ export function* watchRegister() {
     yield takeLatest(registerActions.reqSendDataVerify.type, sendVerify);
     yield takeLatest(registerActions.reqSendDataRegister.type, setDataRegister);
     yield takeLatest(registerActions.reqChangePassword.type, resetPassword);
+    yield takeLatest(registerActions.reqCheckExist.type, checkExist)
 }

@@ -19,7 +19,14 @@ const nodeMailerHandler = {
             html: htmlContent,
         };
 
-        return transporter.sendMail(options);
+        return transporter.sendMail(options, (error, info) => {
+            if (error) {
+                console.log(error)
+                return false;
+            } else {
+                return true;
+            }
+        });
     },
 };
 

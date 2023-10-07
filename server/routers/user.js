@@ -9,7 +9,6 @@ router.get(apiConstants.API_GET_CURRENT_USER, middlewareController.verifyToken, 
 router.patch(apiConstants.API_UPDATE_USER_PROFILE, middlewareController.verifyToken, userController.updateUser);
 router.patch(apiConstants.API_UPDATE_USER_PASSWORD, middlewareController.verifyToken, userController.changePassword);
 router.patch(apiConstants.API_UPDATE_USER_AVATAR, cloudinaryConfig.uploadToCloud ,middlewareController.verifyToken, userController.changeAvatar);
-router.patch(apiConstants.API_UPDATE_USER, userController.updateUser);
 router.get(apiConstants.API_GET_USER_BY_ID, userController.getUserByID);
 
 module.exports = router;

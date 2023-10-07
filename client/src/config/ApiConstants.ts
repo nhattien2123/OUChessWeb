@@ -17,12 +17,16 @@ export const COMMON = {
         URL: '/auth/authapi-sendverify',
         METHOD: 'POST',
     },
+    API_CHECK_EXIST: {
+        URL: '/auth/authapi-checkexist',
+        METHOD: 'POST'
+    },
     API_CHART: {
         URL: '/engines/chart',
         METHOD: 'POST',
     },
-    API_UPDATE_USER: {
-        URL: '/auth/authapi-updateuser',
+    API_RESET_PASSWORD: {
+        URL: '/auth/authapi-resetpassword',
         METHOD: 'POST',
     },
 };
@@ -32,7 +36,7 @@ export const USER = {
         URL: '/user/userapi-getcurrent',
         METHOD: 'GET',
     },
-    
+
     API_UPDATE_USER: (username: string) => {
         return {
             URL: `/user/${username}/userapi-updateuser`,

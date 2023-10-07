@@ -7,7 +7,7 @@ import { db } from '../../config/FirebaseConfig';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import ChatItem from './ChatItem';
 
-import '../../components/Messenger/Messenger.scss';
+import '../../components/messenger/Messenger.scss';
 import useDocument from '../firestore/DocumentHook';
 
 interface Props {}

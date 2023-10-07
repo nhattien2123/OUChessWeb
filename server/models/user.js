@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         require: true,
-        unique: true
+        unique: [true, "Tài khoản đã tồn tại"]
     },
     password: {
         type: String,
