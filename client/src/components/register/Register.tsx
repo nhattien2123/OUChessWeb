@@ -2,121 +2,76 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { RootState } from '../../app/store';
 import { registerActions } from '../../redux/reducer/register/register';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Verify from '../../share/verify/verify';
 
 import '../register/Register.scss';
+import RegisterForm from 'src/share/form/RegisterForm';
 
 interface RegisterProps {}
 
 const Register: React.FC<RegisterProps> = () => {
-    const [step, setStep] = useState(1);
     const [info, setInfo] = useState({
         username: '',
         password: '',
         firstName: '',
         lastName: '',
-        dOb: '',
         email: '',
         phone: '',
         nation: '',
         confirmPassword: '',
         avatar: '',
     });
+    const [nextStep, setNextStep] = useState<number>(1);
     const verifyToken = useAppSelector((state: RootState) => state.registerReducer.verifyToken);
-    const isLoadding = useAppSelector((state: RootState) => state.registerReducer.isLoading);
     const dispatch = useAppDispatch();
     const nav = useNavigate();
+    const [params] = useSearchParams();
 
-    const changeHandler = (e: any, field: string) => {
-        setInfo((current) => {
-            if (field === 'avatar') return { ...current, [field]: e.target.files[0] };
-            else return { ...current, [field]: e.target.value };
-        });
+    const verifyFormHandle = (data: any): void => {
+        setInfo(data);
+        setNextStep((prev) => prev + 1);
     };
 
-    const verifyFormHandle = (): void => {
-        dispatch(registerActions.reqSendDataVerify({ emailVerify: info.email }));
-        setStep(step + 1);
+    const verifyEmail = (email: string): void => {
+        dispatch(registerActions.reqSendDataVerify({ emailVerify: email }));
     };
 
-    const submitHandler = (e: { preventDefault: () => void }): void => {
-        console.log(info);
+    const submitHandler = (): void => {
         dispatch(
             registerActions.reqSendDataRegister({
-                information: info
+                information: info,
             }),
         );
     };
 
-    const verfify =
-        step === 2 ? (
-            <Verify handler={submitHandler} email={info.email} verifyToken={verifyToken} information={info} />
-        ) : null;
+    useEffect(() => {
+        nav(`/register?step=${nextStep}`);
+    }, [nextStep]);
+
+    useEffect(() => {
+        const num = params.get("step");
+        if(num !== null){
+            const step = Number(num);
+            if(!isNaN(step))
+                setNextStep(step);
+        }
+    }, [])
 
     return (
         <>
-            {verfify}
-            <div className="container">
-                <div className="main">
-                    <div className="login-title">Đăng ký</div>
-                    <div className="login-container">
-                        <form className="login-input" onSubmit={(evt) => evt.preventDefault()}>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="email"
-                                    placeholder="Email"
-                                    value={info.email}
-                                    onChange={(evt) => changeHandler(evt, 'email')}
-                                />
-                            </div>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="text"
-                                    placeholder="Phone"
-                                    value={info.phone}
-                                    onChange={(evt) => changeHandler(evt, 'phone')}
-                                />
-                            </div>
-
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="text"
-                                    placeholder="Tài khoản"
-                                    value={info.username}
-                                    onChange={(evt) => changeHandler(evt, 'username')}
-                                />
-                            </div>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="text"
-                                    placeholder="Mật khẩu"
-                                    value={info.password}
-                                    onChange={(evt) => changeHandler(evt, 'password')}
-                                />
-                            </div>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="text"
-                                    placeholder="Xác nhận mật khẩu"
-                                    value={info.confirmPassword}
-                                    onChange={(evt) => changeHandler(evt, 'confirmPassword')}
-                                />
-                            </div>
-                            <div className="btn-container">
-                                <button className="btn-style" onClick={(evt) => verifyFormHandle()}>
-                                    Đăng ký
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            {nextStep === 1 ? (
+                <RegisterForm registerData={info} onSubmit={verifyFormHandle} />
+            ) : (
+                <Verify
+                    email={info.email}
+                    verifyToken={verifyToken}
+                    information={info}
+                    setNextStep={setNextStep}
+                    verify={verifyEmail}
+                    handler={submitHandler}
+                />
+            )}
         </>
     );
 };

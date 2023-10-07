@@ -62,7 +62,7 @@ const userReposity = {
 
             const User = await user
                 .findOne({
-                    username: {$ne: username},
+                    username: { $ne: username },
                     $or: searchParams,
                 })
                 .populate('friends');
@@ -73,13 +73,8 @@ const userReposity = {
         }
     },
     addUser: async (User) => {
-        try {
-            const newUser = await User.save();
-            return newUser;
-        } catch (error) {
-            console.log(error.message);
-            return null;
-        }
+        const newUser = await User.save();
+        return newUser;
     },
     updateUser: async (username, changed) => {
         try {
@@ -97,6 +92,10 @@ const userReposity = {
         }
     },
     deleteUser: async (username) => {},
+    countUsser: async (field, data) => {
+        const count = await user.countDocuments({[field]: data});
+        return count;
+    }
 };
 
 module.exports = userReposity;

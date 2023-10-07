@@ -5,6 +5,8 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const jwtHandler = require('../helpers/jwt');
 const mailHandler = require('../helpers/nodemailer');
+const user = require('../models/user');
+const { error } = require('console');
 // const commentInfoService = require("../services/commentInfoService");
 
 const authController = {
@@ -20,7 +22,6 @@ const authController = {
     signIn: async (req, res) => {
         try {
             const curUser = await userService.getUser(req.body.username);
-            console.log(req.body.username);
             if (req.body.username === '' || req.body.password === '')
                 httpHandler.Fail(res, {}, 'Vui lòng nhập đủ thông tin');
             else if (!curUser) {
@@ -49,7 +50,7 @@ const authController = {
                 },
                 process.env.JWT_SECRETKEY,
                 {
-                    expiresIn: '5m',
+                    expiresIn: '1m',
                 },
             );
 
@@ -63,8 +64,63 @@ const authController = {
             httpHandler.Servererror(res, error.message, 'Đã có lỗi xảy ra!');
         }
     },
+    checkExists: async (req, res) => {
+        try {
+            const { username, email, phone } = req.body;
+            let countUsername, countEmail, countPhone;
+            countUsername = countEmail = countPhone = 0;
+            const errors = {};
 
+            if (username) {
+                countUsername = await userService.countField('username', username);
+                if (countUsername > 0)
+                    errors.username = {
+                        type: 'unique',
+                        message: 'Tài khoản đã có người sử dụng',
+                    };
+            }
 
+            if (email) {
+                countEmail = await userService.countField('email', email);
+                if (countEmail > 0)
+                    errors.email = {
+                        type: 'unique',
+                        message: 'Email đã có người sử dụng',
+                    };
+            }
+
+            if (phone) {
+                countPhone = await userService.countField('phone', phone);
+                if (countPhone > 0)
+                    errors.phone = {
+                        type: 'unique',
+                        message: 'Số điện thoại đã có người sử dụng',
+                    };
+            }
+
+            httpHandler.Success(res, { errors }, 'Hoàn tất');
+        } catch (error) {
+            console.log(error);
+            httpHandler.Servererror(res, error, 'Đã có lỗi đã xảy ra');
+        }
+    },
+    resetPassword: async (req, res) => {
+        try {
+            const auth = await userService.getUser(req.body.emailReset);
+            if (!auth) httpHandler.Fail(res, {}, 'Người dùng không tồn tại');
+            else {
+                const state = await userService.changePassword(req.body.emailReset, req.body.newPassword);
+                console.log(2);
+                if (state.modifiedCount > 0) {
+                    httpHandler.Success(res, {}, 'Cập nhật mật khẩu thành công');
+                } else {
+                    httpHandler.Fail(res, {}, 'Cập nhật mật khẩu không thành công');
+                }
+            }
+        } catch (error) {
+            httpHandler.Servererror(res, {}, 'Đã có lỗi xảy ra');
+        }
+    }
 };
 
 module.exports = authController;

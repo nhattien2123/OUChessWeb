@@ -12,7 +12,7 @@ import MessageService from '../../services/message/MessageService';
 import { collection, doc, getDoc, onSnapshot, orderBy, serverTimestamp, updateDoc } from 'firebase/firestore';
 // import useDocuments from '@share/firestore/DocumentsHook';
 import useDocuments from "../../share/firestore/DocumentsHook";
-import "../Messenger/Messenger.scss"
+import "./Messenger.scss"
 
 interface Props {}
 

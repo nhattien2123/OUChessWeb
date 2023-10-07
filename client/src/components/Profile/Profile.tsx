@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import '../Profile/Profile.scss';
+import './Profile.scss';
 import { current } from '@reduxjs/toolkit';
 
 interface ProfileProps {}

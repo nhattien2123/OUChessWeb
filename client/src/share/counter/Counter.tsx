@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import '../counter/Counter.scss';
 
 type CounterProps = {
     timer: number;
+    setReset: Dispatch<SetStateAction<boolean>>;
 };
 
-const Counter: React.FC<CounterProps> = ({ timer: timer }) => {
+const Counter: React.FC<CounterProps> = ({ timer: timer, setReset: setReset }) => {
     const [time, setTime] = useState(timer);
 
     useEffect(() => {
@@ -22,7 +23,10 @@ const Counter: React.FC<CounterProps> = ({ timer: timer }) => {
         <>
            
                 {time === 0 ? (
-                    <button className="counter btn-counter" onClick={(evt) => setTime(timer)}>
+                    <button className="counter btn-counter" onClick={(evt) => {
+                        setTime(timer);
+                        setReset(true);
+                    }}>
                         Gửi
                     </button>
                 ) : (

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { RootState } from '../../app/store';
-import '../../components/Messenger/Messenger.scss';
+import '../../components/messenger/Messenger.scss';
 import useDocument from '../firestore/DocumentHook';
 import { ROOT_URL } from '../../config/ApiConstants';
 import { messageAction } from '../../redux/reducer/messages/messages';
