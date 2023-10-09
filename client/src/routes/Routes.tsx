@@ -12,7 +12,7 @@ import Editor from 'src/components/editor/Editor';
 import Profile from 'src/components/profile/Profile';
 import Messenger from 'src/components/messenger/Messenger';
 
-interface RouterProps {}
+interface RouterProps { }
 
 const Router: React.FC<RouterProps> = () => {
     return (

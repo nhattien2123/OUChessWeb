@@ -6,7 +6,7 @@ import { userState } from 'src/redux/reducer/user/Types';
 import { profileActions } from 'src/redux/reducer/profile/profile';
 import CommentInfoList from 'src/share/comment/CommentInfoList';
 
-import '../profile/Profile.scss';
+import './Profile.scss';
 
 interface ProfileProps { }
 
@@ -34,7 +34,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
         console.log(profile);
     }, [profile]);
 
-    if(isLoading){
+    if (isLoading) {
         return <div>Loading...</div>
     }
 
