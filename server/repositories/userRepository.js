@@ -24,7 +24,7 @@ const userReposity = {
                 .findOne({
                     $or: searchParams,
                 })
-                .populate('friends');
+                .populate({ path: 'friends', select: '_id username avatar' });
             return User;
         } catch (error) {
             console.log(error);

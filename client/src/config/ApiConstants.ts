@@ -56,3 +56,12 @@ export const USER = {
         };
     },
 };
+
+export const PROFILE = {
+    API_GET_PROFILE: (username: string) => {
+        return {
+            URL: `/user/${username}/userapi-getprofile`,
+            METHOD: 'GET'
+        }
+    }
+}

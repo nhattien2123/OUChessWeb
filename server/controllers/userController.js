@@ -3,7 +3,7 @@ const httpHandler = require('../helpers/httpHandler');
 const bcrypt = require('bcrypt');
 
 const userController = {
-    getProfile: async (req, res) => {
+    getCurrentUser: async (req, res) => {
         try {
             const auth = await userService.getUser(req.user.username);
             if (!auth) httpHandler.Fail(res, {}, 'Không tìm thấy người dùng');
@@ -43,11 +43,10 @@ const userController = {
                     return;
                 }
                 const existPhone = await userService.getExistUser(req.params['username'], req.body.email);
-                if(existPhone){
-                    httpHandler.Fail(res, {}, "Số điện thoại đã có người sử dụng")
+                if (existPhone) {
+                    httpHandler.Fail(res, {}, 'Số điện thoại đã có người sử dụng');
                     return;
                 }
-                
 
                 const state = await userService.updateUser(req.body.username, req.body);
 
@@ -109,6 +108,22 @@ const userController = {
         } catch (error) {}
     },
     loadListUser: async (req, res) => {},
+    getProfile: async (req, res) => {
+        try {
+            const { username } = req.params;
+            const user = await userService.getUser(username);
+            if (!user) {
+                httpHandler.Fail(res, {}, 'Không tìm thầy người chơi');
+            } else {
+                const { _id, username, avatar, friends, createdAt, elo, ...other } = user._doc;
+                const profile = { _id, username, avatar, friends, createdAt };
+                httpHandler.Success(res, { profile }, 'Tìm thầy người chơi');
+            }
+        } catch (error) {
+            console.log(error)
+            httpHandler.Servererror(res, error, 'Đã có lỗi xảy ra');
+        }
+    },
 };
 
 module.exports = userController;

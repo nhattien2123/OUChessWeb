@@ -6,19 +6,28 @@
     border: 1px solid #fff;
 }
 
+.avatar-img img {
+    border-radius: 0;
+}
+
 .list-container {
     background-color: #ffffff1a;
 }
 
 .friend-list {
     display: flex;
-    
 }
 
 .friend-item {
     border: 1px solid #fff;
-    padding: 30px 15px;
     margin: 10px 5px;
+    width: 10%;
+    height: 100px;
+}
+
+.friend-item img {
+    border-radius: 0;
+    width: 100%;
 }
 
 .notes-toggle-button {

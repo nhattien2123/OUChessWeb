@@ -1,14 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useAppSelector } from '../../app/hooks';
-import { Root } from 'react-dom/client';
 import { RootState } from '../../app/store';
 import useDocuments from '../firestore/DocumentsHook';
-import { db } from '../../config/FirebaseConfig';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import useDocument from 'src/share/firestore/DocumentHook';
 import ChatItem from './ChatItem';
-
-import '../../components/messenger/Messenger.scss';
-import useDocument from '../firestore/DocumentHook';
+import 'src/components/messenger/Messenger.scss';
 
 interface Props {}
 
