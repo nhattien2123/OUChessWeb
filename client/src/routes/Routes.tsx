@@ -6,6 +6,7 @@ import Login from 'src/components/login/Login';
 import Home from '../components/home/Home';
 import Register from 'src/components/register/Register';
 import Game from '../components/game/Game';
+import Matches from 'src/components/matches/Matches';
 import ForgetPassword from 'src/components/forget/ForgetPassword';
 import Editor from 'src/components/editor/Editor';
 import Profile from 'src/components/profile/Profile';
@@ -24,6 +25,7 @@ const Router: React.FC<RouterProps> = () => {
                 <Route path="/login" element={<Login />}></Route>
                 <Route path="/game" element={<Game />}></Route>
                 <Route path="/register" element={<Register />} />
+                <Route path='/play/online' element={<Matches />} />
                 <Route path="/forget" element={<ForgetPassword />} />
             </Routes>
         </BrowserRouter>

@@ -1,8 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 
-export type userState = {
-    currentUser: {
-        _id: string;
+export type User = {
+            _id: string;
         username: string;
         firstName: string;
         lastName: string;
@@ -13,7 +12,10 @@ export type userState = {
         nation: string;
         avatar: string;
         friends: {[key: string]: any}[]
-    };
+}
+
+export type userState = {
+    currentUser: User;
     password: string;
     isLoading?: boolean;
 };

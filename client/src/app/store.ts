@@ -4,6 +4,8 @@ import rootSaga from "src/redux/saga/RootSaga";
 import commonReducer from "src/redux/reducer/common/CommonReducer";
 import authReducer from "src/redux/reducer/auth/authReducer";
 import registerReducer from "src/redux/reducer/register/register";
+import historyReducer from 'src/redux/reducer/history/HistoryReducer';
+import matchReducer from 'src/redux/reducer/match/MatchReducer';
 import userReducer  from "src/redux/reducer/user/userReducer";
 import messageReducer from "src/redux/reducer/messages/messages"
 import profileReducer from "src/redux/reducer/profile/profile"
@@ -15,6 +17,9 @@ export const store = configureStore({
         authReducer,
         registerReducer,
         userReducer,
+        feature-game,
+        historyReducer,
+        matchReducer,
         messageReducer,
         profileReducer
     },

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
@@ -9,8 +8,7 @@ import CommentInfoList from 'src/share/comment/CommentInfoList';
 
 import '../profile/Profile.scss';
 
-
-interface ProfileProps {}
+interface ProfileProps { }
 
 const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);

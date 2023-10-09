@@ -1,20 +1,20 @@
 import type { FC } from 'react';
 import React from 'react';
-import type { GameOver } from 'src/components/game/Game';
+import type { EndGame } from 'src/components/game/Game';
 import { VscDebugRestart } from 'react-icons/vsc';
 import "src/share/game/board/Board.scss";
 
 export const GameOverScreen: FC<{
-    gameOver: GameOver | null
+    endGame: EndGame | null
     reset: () => void
-}> = ({ gameOver, reset }) => {
+}> = ({ endGame, reset }) => {
     return (
         <>
-            {gameOver && (
+            {endGame && (
                 <div className="container-game-over-screen">
                     <h1>
-                        {gameOver.type === `checkmate`
-                            ? `Checkmate! ${gameOver.winner} wins!`
+                        {endGame.type === `checkmate`
+                            ? `Checkmate! ${endGame.winner} wins!`
                             : `Stalemate!`}
                     </h1>
                     <button onClick={reset}>

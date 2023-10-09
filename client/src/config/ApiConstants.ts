@@ -57,6 +57,24 @@ export const USER = {
     },
 };
 
+export const HISTORY = {
+    API_ADD_HISTORY: {
+        URL: '/history/api-add',
+        METHOD: 'POST'
+    }
+}
+
+export const MATCH = {
+    API_GET_MATCH: {
+        URL: '/match/matchapi-getmatch',
+        METHOD: 'GET'
+    },
+    API_ADD_MATCH: {
+        URL: '/match/matchapi-addmatch',
+        METHOD: 'POST'
+    }
+}
+
 export const PROFILE = {
     API_GET_PROFILE: (username: string) => {
         return {

@@ -29,7 +29,7 @@ import { WhiteRookModel } from 'src/models/whitePieces/WhiteRook';
 // import { BlackRookModel } from 'src/models/blackPieces/BlackRook';
 
 import { TileModel } from 'src/models/Tile';
-import type { GameOver, MovingTo, ThreeMouseEvent } from 'src/components/game/Game';
+import type { EndGame, MovingTo, ThreeMouseEvent } from 'src/components/game/Game';
 import { useHistoryState } from 'src/components/game/Game';
 import { useSpring, animated } from '@react-spring/three';
 
@@ -37,6 +37,12 @@ import { isPawn } from 'src/share/game/logic/pieces/pawn';
 import { isKing } from 'src/share/game/logic/pieces/king';
 import { isRook } from 'src/share/game/logic/pieces/rook';
 import { PieceType } from 'src/share/game/logic/pieces';
+import { OrbitControls } from '@react-three/drei';
+
+export type MakeMoveClient = {
+    movingTo: MovingTo
+    room: string
+}
 
 export const BoardComponent: FC<{
     selected: Piece | null
@@ -44,7 +50,7 @@ export const BoardComponent: FC<{
     board: Board
     setBoard: React.Dispatch<React.SetStateAction<Board>>
     moves: Move[]
-    setGameOver: (gameOver: GameOver | null) => void
+    setEndGame: (endGame: EndGame | null) => void
     setMoves: (moves: Move[]) => void
     turn: Color
     setTurn: React.Dispatch<React.SetStateAction<Color>>
@@ -63,7 +69,7 @@ export const BoardComponent: FC<{
     setBoard,
     moves,
     setMoves,
-    setGameOver,
+    setEndGame,
     turn,
     setTurn,
     showPromotionDialog,
@@ -182,7 +188,7 @@ export const BoardComponent: FC<{
         useEffect(() => {
             const gameOverType = detectGameOver(board, turn)
             if (gameOverType) {
-                setGameOver({ type: gameOverType, winner: oppositeColor(turn) })
+                setEndGame({ type: gameOverType, winner: oppositeColor(turn) })
             }
         }, [board, turn])
 
@@ -202,6 +208,12 @@ export const BoardComponent: FC<{
         <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial color="#d886b7" />
       </mesh> */}
+                    <OrbitControls
+                        maxDistance={25}
+                        minDistance={7}
+                        enableZoom={true}
+                        enablePan={false}
+                    />
                     <pointLight
                         shadow-mapSize={[2048, 2048]}
                         castShadow
@@ -249,7 +261,6 @@ export const BoardComponent: FC<{
                                     setSelected(null)
                                     return
                                 }
-
 
                                 canMoveHere
                                     ? startMovingPiece(e, tile, canMoveHere)

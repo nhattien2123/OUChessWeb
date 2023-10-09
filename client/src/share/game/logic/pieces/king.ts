@@ -53,7 +53,6 @@ const canCastleKing = (king: King, board: Board, propagateDetectCheck: boolean):
         possibleRookPositions.push(props(false))
     }
 
-    // console.log(possibleRookPositions);
     return possibleRookPositions
 }
 

@@ -3,8 +3,9 @@ import { useAppSelector } from '../../app/hooks';
 import { RootState } from '../../app/store';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Sidebar from 'src/share/sidebar/Sidebar';
 
-interface Props {}
+interface Props { }
 
 const Home = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
@@ -18,6 +19,7 @@ const Home = (props: Props) => {
 
     return (
         <>
+            <Sidebar />
             <div>Home</div>
             <Link to={`/profile/${currentUser.username}`}>Go</Link>
         </>

@@ -1,21 +1,24 @@
+
 const mongoose = require("mongoose");
 
 const matchSchema = new mongoose.Schema({
     whiteId: {
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
     },
     blackId: {
-        type:String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
     },
-    name: {
-        type:String
+    matchName: {
+        type: String
     },
     winnerPlayer: {
-        type:String
+        type: String
     },
-    timeMatch: {
-        type:String
+    mode: {
+        type: String
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 module.exports = mongoose.model("match", matchSchema);

@@ -12,17 +12,19 @@ import {
     FaChessKing,
 } from 'react-icons/fa'
 
+import 'src/share/game/board/Board.scss'
+
 export const MiniMap: FC<{
     board: Board
     selected: Piece | null
     moves: Move[]
 }> = ({ board, selected, moves }) => {
     return (
-        <div>
+        <div className="mini-map">
             {board.map((row, i) => (
                 <div
                     key={i}
-                    className="mini-map"
+                    className="mini-map-row"
                 >
                     {row.map((tile, j) => {
                         const bg = `${(i + j) % 2 === 0 ? `#a5a5a5` : `#676767`}`
@@ -36,8 +38,11 @@ export const MiniMap: FC<{
                         return (
                             <div
                                 key={j}
-                                className={`mini-map-tile-move ${canMove ? 'can-move' : ''
-                                    } ${isSelected ? 'selected' : ''}`}
+                                className={`mini-map-tile-move 
+                                ${isSelected ? 'selected' : ''} 
+                                ${bg === `#a5a5a5` ? 'odd' : 'even'} 
+                                ${canMove ? 'can-move' : ''
+                                    }`}
                             >
                                 {tile && (
                                     <>
