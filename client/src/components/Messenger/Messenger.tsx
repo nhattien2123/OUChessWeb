@@ -2,17 +2,17 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
-import { useAppSelector } from '../../app/hooks';
-import { RootState } from '../../app/store';
-import uploadImage from '../../config/ImageUpload';
-import useDocument from '../../share/firestore/DocumentHook';
-import ChatList from '../../share/message/ChatList';
-import MessageService from '../../services/message/MessageService';
+import { useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import uploadImage from 'src/config/ImageUpload';
+import useDocument from 'src/share/firestore/DocumentHook';
+import ChatList from 'src/share/message/ChatList';
+import MessageService from 'src/services/message/MessageService';
 
 import { collection, doc, getDoc, onSnapshot, orderBy, serverTimestamp, updateDoc } from 'firebase/firestore';
 // import useDocuments from '@share/firestore/DocumentsHook';
 import useDocuments from "../../share/firestore/DocumentsHook";
-import "./Messenger.scss"
+import "src/components/messenger/Messenger.scss"
 
 interface Props {}
 

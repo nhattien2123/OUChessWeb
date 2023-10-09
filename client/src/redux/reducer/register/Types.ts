@@ -1,5 +1,5 @@
-import { PayloadAction } from '@reduxjs/toolkit';
-import { type } from 'os';
+import { PayloadAction } from "@reduxjs/toolkit";
+
 
 export type registerState = {
     isLoading: boolean;

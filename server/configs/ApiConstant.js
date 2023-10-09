@@ -6,6 +6,7 @@ const apiConstant = {
     API_RESET_PASSWORD: "/authapi-resetpassword",
     API_GET_CURRENT_USER: "/userapi-getcurrent",
     API_GET_USER_BY_ID: "/:id",
+    API_GET_USER_PROFILE: "/:username/userapi-getprofile",
     API_LOAD_COMMENT_USER: "/:username/commentInfos",
     API_LOAD_MATCH_USER: "/:username/matchs",
     API_UPDATE_USER_PROFILE: "/:username/userapi-updateuser",

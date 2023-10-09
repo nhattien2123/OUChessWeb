@@ -22,9 +22,11 @@ const commentInfoRepository = {
     },
     addComment: async (Comment) => {
         try {
+            console.log(Comment)
             const newComment = await Comment.save();
             return newComment;
         } catch (error) {
+            console.log(error);
             return null;
         }
     },

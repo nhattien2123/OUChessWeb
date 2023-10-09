@@ -5,12 +5,9 @@ const commentInfoSchema = new mongoose.Schema({
         type: String
     },
     userId: {
-        type:String
+        type:String,
+        ref: "user"
     },
-    parentId: {
-        type: String
-    },
-    
 }, {timestamps: true});
 
 module.exports = mongoose.model("commentInfo", commentInfoSchema);

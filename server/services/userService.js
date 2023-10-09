@@ -62,6 +62,7 @@ const userService = {
     countField: async (field, data) => {
         return authRepository.countUsser(field, data);
     },
+
 };
 
 module.exports = userService;
