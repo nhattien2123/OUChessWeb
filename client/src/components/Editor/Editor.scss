@@ -9,7 +9,7 @@
     padding: 15px;
     width: 100%;
     height: 200px;
-    display:flex;
+    display: flex;
     border-radius: 20px;
 }
 
@@ -34,7 +34,7 @@
 
 .avatar-img .input-file {
     position: absolute;
-    bottom:0;
+    bottom: 0;
     right: 100%;
     left: 0;
     width: 100%;
@@ -49,19 +49,20 @@
 .avatar-img:hover .input-file .label-avatar {
     padding: 5px;
     text-align: center;
-    display:block;
+    display: block;
     animation-name: popup;
     animation-duration: 0.1s;
 }
 
 .input-file .label-avatar {
-   display: none;
+    display: none;
 }
 
 @keyframes popup {
-    from{
+    from {
         padding: 0px;
     }
+
     to {
         padding: 5px;
         display: block;
@@ -93,12 +94,12 @@ img {
 }
 
 .information-form {
-    display:flex;
+    display: flex;
     flex-direction: column;
     width: 80%;
     margin: auto;
     padding: 10px 0;
-    
+
 }
 
 .input-form-container {
@@ -131,7 +132,7 @@ img {
     background-color: #a7a7a7d0;
     color: #fff;
     border: 0;
-    border-radius: 10px;
+    border-radius: 5px;
     width: 15%;
     cursor: pointer;
 }
@@ -139,13 +140,13 @@ img {
 .btn-form:hover {
     color: rgba(255, 255, 255, 1);
     box-shadow: 0 5px 15px #a7a7a7d0;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
-.btn-form-save:hover{
+.btn-form-save:hover {
     color: rgba(255, 255, 255, 1);
     box-shadow: 0 5px 15px #a3d160;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 .btn-form-save {
@@ -154,11 +155,8 @@ img {
 
 @for $w from 1 through 10 {
     $width: #{$w * 10};
-    .w-#{$width}{
+
+    .w-#{$width} {
         width: #{$width + "%"};
     }
 }
-    
-
-        
-

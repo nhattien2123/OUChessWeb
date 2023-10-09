@@ -1,10 +1,12 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import createSagaMiddleware from "@redux-saga/core";
-import rootSaga from "../redux/saga/RootSaga";
-import commonReducer from "../redux/reducer/common/CommonReducer";
-import authReducer from "../redux/reducer/auth/authReducer";
-import registerReducer from "../redux/reducer/register/register";
-import userReducer  from "../redux/reducer/user/userReducer";
+import rootSaga from "src/redux/saga/RootSaga";
+import commonReducer from "src/redux/reducer/common/CommonReducer";
+import authReducer from "src/redux/reducer/auth/authReducer";
+import registerReducer from "src/redux/reducer/register/register";
+import userReducer from "src/redux/reducer/user/userReducer";
+import historyReducer from 'src/redux/reducer/history/HistoryReducer';
+import matchReducer from 'src/redux/reducer/match/MatchReducer';
 
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
@@ -12,7 +14,9 @@ export const store = configureStore({
         commonReducer,
         authReducer,
         registerReducer,
-        userReducer
+        userReducer,
+        historyReducer,
+        matchReducer,
     },
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware)
     middleware: [sagaMiddleware],

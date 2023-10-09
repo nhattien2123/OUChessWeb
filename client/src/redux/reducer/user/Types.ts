@@ -1,18 +1,20 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 
+export type User = {
+    _id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    dateOfBirth: Date;
+    email: string;
+    elo: number;
+    nation: string;
+    avatar: string;
+}
+
 export type userState = {
-    currentUser: {
-        _id: string;
-        username: string;
-        firstName: string;
-        lastName: string;
-        phone: string;
-        dateOfBirth: Date;
-        email: string;
-        elo: number;
-        nation: string;
-        avatar: string;
-    };
+    currentUser: User;
     password: string;
     isLoading?: boolean;
 };

@@ -43,7 +43,6 @@ const userController = {
             if(!auth)
                 httpHandler.Fail(res, {}, "Người dùng không tồn tại");
             else{
-              
                 const state = await userService.changePassword(req.body.username, req.body.newPassword);
                 
                 if(state.modifiedCount > 0){

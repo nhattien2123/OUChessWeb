@@ -1,16 +1,16 @@
 import React from 'react';
-import {Navigate} from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 type PrivateRouterProps = {
   component: React.FC<any>;
 }
 
-const PrivateRouter:React.FC<PrivateRouterProps> = ({component: Component}) =>{
+const PrivateRouter: React.FC<PrivateRouterProps> = ({ component: Component }) => {
   const token = Cookies.get("token");
-  if(!token){
+  if (!token) {
     return <Navigate to={"/login"} />
-  }else{
+  } else {
     return <Component />
   }
 }

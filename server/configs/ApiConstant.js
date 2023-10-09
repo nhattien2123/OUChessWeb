@@ -6,10 +6,16 @@ const apiConstant = {
     API_GET_CURRENT_USER: "/userapi-getcurrent",
     // API_GET_USER: "/:username",
     API_LOAD_COMMENT_USER: "/:username/commentInfos",
+
     API_LOAD_MATCH_USER: "/:username/matchs",
+    API_GET_MATCH: "/matchapi-getmatch",
+    API_ADD_MATCH: "/matchapi-addmatch",
+    API_UPDATE_MATCH: "/matchapi-updatematch",
+    API_DELETE_MATCH: "/matchapi-deletematch",
+
     API_UPDATE_USER_PROFILE: "/:username/userapi-updateuser",
     API_UPDATE_USER_PASSWORD: "/:username/userapi-changepassword",
-    API_UPDATE_USER_AVATAR: "/:username/userapi-changeavatar"
+    API_UPDATE_USER_AVATAR: "/:username/userapi-changeavatar",
 };
 
 module.exports = apiConstant;

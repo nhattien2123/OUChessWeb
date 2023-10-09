@@ -1,6 +1,3 @@
-$canMoveColor: red;
-$isSelectedColor: red;
-
 .container-game-over-screen {
     position: absolute;
     width: 50vw;
@@ -82,37 +79,41 @@ $isSelectedColor: red;
     overflow: hidden;
     border-radius: 7px;
     opacity: 0.8;
-}
 
-.mini-map-tile-move {
-    height: 25px;
-    width: 25px;
-    // background-color: $canMove ? $canMoveColor: $bg;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    .mini-map-row {
+        display: flex;
 
-    // svg {
-    //     color: $isSelected ? $canMoveColor : $pieceColor;
-    // }
+        .mini-map-tile-move {
+            height: 25px;
+            width: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mini-map-tile-move svg {
+            color: inherit;
+        }
+
+        .selected svg {
+            color: red;
+        }
+
+        .even {
+            background-color: #a5a5a5;
+        }
+
+        .odd {
+            background-color: #676767;
+        }
+
+        .can-move {
+            background-color: red;
+        }
+    }
 }
 
 .promotion-dialog {
-    // background-color: rgba(255, 255, 255, 0.9);
-    // /* Màu nền với độ trong suốt */
-    // border: 1px solid #ccc;
-    // border-radius: 10px;
-    // padding: 20px;
-    // max-width: 300px;
-    // /* Chiều rộng tối đa của dialog */
-    // margin: 0 auto;
-    // /* Hiển thị dialog ở giữa trang */
-    // text-align: center;
-
-    // h3 {
-    //     font-size: 1.2rem;
-    //     margin-bottom: 20px;
-    // }
     position: absolute;
     width: 50vw;
     min-width: 300px;
@@ -235,5 +236,60 @@ $isSelectedColor: red;
         color: rgba(255, 255, 255, 0.8);
         cursor: pointer;
         font-size: 20px;
+    }
+}
+
+.chat-game-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 270px;
+    max-height: 178px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    padding: 15px 10px 10px 10px;
+    overflow-y: hidden;
+    z-index: 100;
+    color: white;
+}
+
+.message-game-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    overflow-y: hidden;
+    // breaks overflow-y: scroll
+    justify-content: flex-end;
+    padding: 0 15px;
+}
+
+.message-game {
+    margin-bottom: 5px;
+
+    p {
+        font-size: 14px;
+    }
+
+    span {
+        font-weight: 700;
+        color: #ffffffa1;
+    }
+}
+
+.input-message-game-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    gap: 0px;
+    border: 1px solid #ffffff12;
+    margin: 10px 0 0 0;
+
+    input {
+        border: none;
+        padding: 0 15px;
     }
 }

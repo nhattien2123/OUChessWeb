@@ -149,7 +149,7 @@ export const willBeInCheck = (
     if (!tile || !newTile) return false
     newTile.piece = piece
     tile.piece = null
-
+    
     for (const tile of newBoard.flat()) {
         if (tile.piece?.color === oppositeColor(piece.color)) {
             const moves = movesForPiece({
@@ -166,12 +166,12 @@ export const willBeInCheck = (
     return false
 }
 
-export type GameOverType = `checkmate` | `stalemate` | `threeford repetition` | `insufficient material`;
+export type EndGameType = `checkmate` | `stalemate` | `threeford repetition` | `insufficient material`;
 
 export const detectStalemate = (
     board: Board,
     turn: Color,
-): GameOverType | null => {
+): EndGameType | null => {
     for (const tile of board.flat()) {
         if (tile.piece?.color === turn) {
             const moves = movesForPiece({
@@ -190,7 +190,7 @@ export const detectStalemate = (
 export const detectCheckmate = (
     board: Board,
     turn: Color,
-): GameOverType | null => {
+): EndGameType | null => {
     for (const tile of board.flat()) {
         if (tile.piece?.color !== turn) {
             const moves = movesForPiece({
@@ -210,14 +210,14 @@ export const detectCheckmate = (
 export const detectThreefordRepetition = (
     board: Board,
     turn: Color,
-): GameOverType | null => {
+): EndGameType | null => {
     return `threeford repetition`;
 }
 
 export const detectGameOver = (
     board: Board,
     turn: Color,
-): GameOverType | null => {
+): EndGameType | null => {
     let gameOver = null
     const staleMate = detectStalemate(board, turn)
     if (staleMate) {
@@ -276,7 +276,7 @@ export const getMove = ({
             capture: cur.piece,
         }
     }
-    
+
     if (cur.piece) {
         return null
     }
