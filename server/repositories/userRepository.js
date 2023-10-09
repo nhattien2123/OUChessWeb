@@ -2,13 +2,32 @@ const user = require('../models/user');
 const bcrypt = require('bcrypt');
 
 const userReposity = {
-    getUser: async (params) => {
+    getUserByID: async (_id) => {
         try {
             const User = await user.findOne({
-                $or: [{ username: params }, { email: params }],
+                _id: _id,
             });
             return User;
         } catch (error) {
+            console.log(error);
+            return null;
+        }
+    },
+    getUser: async (params) => {
+        try {
+            let searchParams = [{ username: params }, { email: params }];
+            if (!isNaN(params)) {
+                searchParams.push({ phone: params });
+            }
+
+            const User = await user
+                .findOne({
+                    $or: searchParams,
+                })
+                .populate({ path: 'friends', select: '_id username avatar' });
+            return User;
+        } catch (error) {
+            console.log(error);
             return null;
         }
     },
@@ -20,11 +39,11 @@ const userReposity = {
                 searchParams.email = email;
             }
             const username = params.username || null;
-            if(username !== null && username !== ''){
+            if (username !== null && username !== '') {
                 searchParams.username = username;
             }
             const phone = params.phone || null;
-            if(phone !== null && phone !== ''){
+            if (phone !== null && phone !== '') {
                 searchParams.phone = phone;
             }
 
@@ -34,15 +53,28 @@ const userReposity = {
             return null;
         }
     },
-    addUser: async (User) => {
+    getExistUser: async (username, params) => {
         try {
-            const newUser = await User.save();
+            let searchParams = [{ email: params }];
+            if (!isNaN(params)) {
+                searchParams.push({ phone: params });
+            }
 
-            return newUser;
+            const User = await user
+                .findOne({
+                    username: { $ne: username },
+                    $or: searchParams,
+                })
+                .populate('friends');
+            return User;
         } catch (error) {
-            console.log(error.message);
+            console.log(error);
             return null;
         }
+    },
+    addUser: async (User) => {
+        const newUser = await User.save();
+        return newUser;
     },
     updateUser: async (username, changed) => {
         try {
@@ -60,6 +92,10 @@ const userReposity = {
         }
     },
     deleteUser: async (username) => {},
+    countUsser: async (field, data) => {
+        const count = await user.countDocuments({[field]: data});
+        return count;
+    }
 };
 
 module.exports = userReposity;

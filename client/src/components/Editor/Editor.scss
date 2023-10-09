@@ -13,6 +13,10 @@
     border-radius: 20px;
 }
 
+.profile-avatar {
+    border-radius: 0;
+}
+
 .avatar-img {
     width: 20%;
     background-color: #ffffff1a;
@@ -111,13 +115,24 @@ img {
     margin: 10px 0 0 10px;
     padding: 5px 10px;
     font-size: 20px;
-    width: 80%;
+    width: 100%;
     height: 40px;
     line-height: 1;
     border: 1px solid rgba(94, 94, 94, 0.315);
     border-radius: 5px;
     background-color: #ffffff1a;
     color: white;
+}
+
+.input-field {
+    width: 100%;
+    display:flex;
+    flex-direction: column;
+}
+
+.error-msg{
+    color: rgba(253, 59, 59, 0.808);
+    margin: 0 0 0 10px;
 }
 
 .label-form {
@@ -135,6 +150,15 @@ img {
     border-radius: 5px;
     width: 15%;
     cursor: pointer;
+}
+
+.btn-form:disabled {
+    background-color: #475a2a;
+}
+
+.btn-form-save:disabled:hover {
+    border: 0;
+    box-shadow: none;
 }
 
 .btn-form:hover {

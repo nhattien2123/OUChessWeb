@@ -14,13 +14,14 @@ const Home = (props: Props) => {
         if (currentUser) {
             Cookies.set('user', JSON.stringify(currentUser));
         }
+        console.log(currentUser);
     }, [currentUser]);
 
     return (
         <>
             <Sidebar />
             <div>Home</div>
-            <Link to={`/profile/${currentUser.username}/edit`}>Go</Link>
+            <Link to={`/profile/${currentUser.username}`}>Go</Link>
         </>
     );
 };

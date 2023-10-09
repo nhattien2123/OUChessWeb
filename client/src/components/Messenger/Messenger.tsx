@@ -2,52 +2,44 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
-import { useAppSelector } from '../../app/hooks';
-import { RootState } from '../../app/store';
-import { db } from '../../config/FirebaseConfig';
-import uploadImage from '../../config/ImageUpload';
-import useDocument from '../../share/firestore/DocumentHook';
-import ChatList from '../../share/message/ChatList';
-import MessageService from '../../services/message/MessageService';
-import '../Messenger/Messenger.scss';
+import { useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import uploadImage from 'src/config/ImageUpload';
+import useDocument from 'src/share/firestore/DocumentHook';
+import ChatList from 'src/share/message/ChatList';
+import MessageService from 'src/services/message/MessageService';
+
 import { collection, doc, getDoc, onSnapshot, orderBy, serverTimestamp, updateDoc } from 'firebase/firestore';
+// import useDocuments from '@share/firestore/DocumentsHook';
+import useDocuments from "../../share/firestore/DocumentsHook";
+import "src/components/messenger/Messenger.scss"
 
 interface Props {}
 
 const Messenger = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
-    const [message, setMessage] = useState('');
-    const [image, setImage] = useState<any>(null);
-    const [messages, SetMessages] = useState<string[]>([]);
-    const [showEmoji, setShowEmoji] = useState(false);
-    // const [list, setList] = useState<any>(null);
-    const ref = useRef<any>(null);
+    const selectedChat = useAppSelector((state: RootState) => state.messageReducer.selectedChat);
+    const selectedUser = useAppSelector((state: RootState) => state.messageReducer.selectedUser);
+    const [message, setMessage] = useState('')
+    const [showEmoji, setShowEmoji] = useState(false)
+    const ref = useRef(null);
 
-    const combineID = '6501e12f7de12e2971822b17' + '65056ed848c2bc331ff6c324';
+    const _condition = useMemo(() => {
+        return {
+            fieldName: "chatID",
+            operator: "==",
+            value: selectedChat
+        }
+    },[selectedChat])
 
-    const list =
-        useDocument({
-            _collection: 'messages',
-            _id: combineID,
-        }) || null;
+   const list = useDocuments({
+    _collection: "messages",
+    _condition: _condition,
+    _limit: 100,
+    _orderBy: "createdAt"
+   })
 
-    // useEffect(() => {
-    //     const unsub = onSnapshot(doc(db, 'messages', combineID), (doc) => {
-    //         if (doc.exists()) {
-    //             const document = Object.keys(doc.data())
-    //                 .map((key: string) => ({
-    //                     ...doc.data()[key],
-    //                     id: key,
-    //                 }))
-    //                 .sort((a: any, b: any) => a.createAt - b.createAt);
-    //             setList(document);
-    //         }
-    //     });
-
-    //     return () => {
-    //         unsub();
-    //     };
-    // }, [currentUser._id]);
+   console.log({list});
 
     const emojiHandler = (emoji: any) => {
         setMessage((current) => current + emoji['native']);
@@ -56,7 +48,6 @@ const Messenger = (props: Props) => {
     const imageHandler = async (e: any) => {
         const imageUrl = await uploadImage(e.target.files[0], currentUser._id);
         const messID = uuidv4();
-
         const newMessage = {
             sendID: currentUser._id,
             type: 'image',
@@ -64,32 +55,32 @@ const Messenger = (props: Props) => {
             createAt: serverTimestamp(),
         };
 
-        MessageService.update('messages', combineID, { [messID]: newMessage });
-        MessageService.update('chat', combineID, { lastMessage: 'Đã gửi một ảnh' });
+        MessageService.update('messages', selectedChat, { [messID]: newMessage });
+        MessageService.update('chat', selectedChat, { lastMessage: 'Đã gửi một ảnh' });
     };
     const sendMessage = async () => {
         if (message === '') {
             return;
         }
 
-        const messID = uuidv4();
         const newMessage = {
+            chatID: selectedChat,
             sendID: currentUser._id,
             type: 'text',
-            content: message,
-            createAt: serverTimestamp(),
+            content: message,     
         };
 
-        MessageService.update('messages', combineID, { [messID]: newMessage });
-        MessageService.update('chat', combineID, { lastMessage: message });
+        MessageService.add("messages", newMessage);
+        // MessageService.update('messages', selectedChat, { [messID]: newMessage });
+        MessageService.update('chat', selectedChat, { lastMessage: message });
 
-        SetMessages((prevMessages) => [...prevMessages, message]);
+        // SetMessages((prevMessages) => [...prevMessages, message]);
         setMessage('');
     };
 
     useEffect(() => {
-        if (list.length > 0) {
-            ref.current.scrollIntoView({ behavior: 'smooth' });
+        if (ref && ref.current) {
+            // ref.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [list]);
 
@@ -100,13 +91,13 @@ const Messenger = (props: Props) => {
                 <div className="chat-field">
                     <div className="chat-header">
                         <div className="header-container">
-                            <img
+                            {selectedUser?.avatar !== "" && <img
                                 className="header-image"
-                                src="https://res.cloudinary.com/de0pt2lzw/image/upload/v1695581895/g0owu4lsrk7jsagvtaxp.jpg"
+                                src={selectedUser?.avatar}
                                 alt="avatar"
-                            ></img>
+                            ></img>}
                             <div className="active">
-                                <p>Username</p>
+                                <p>{selectedUser?.username}</p>
                             </div>
                         </div>
                     </div>
@@ -122,15 +113,16 @@ const Messenger = (props: Props) => {
                                                     <div className="received-box">
                                                         <div className="received-box-img">
                                                             <img
-                                                                // className="header-image"
-                                                                src="https://res.cloudinary.com/de0pt2lzw/image/upload/v1695581895/g0owu4lsrk7jsagvtaxp.jpg"
+                                                                src={selectedUser.avatar}
                                                                 alt="avatar"
                                                             />
                                                         </div>
                                                         <div className="received-box-msg">
                                                             <div className="received-msg">
                                                                 {m.type === 'text' && (
-                                                                    <div className="received-text">{m.content}</div>
+                                                                    <div className="received-text">
+                                                                        {m.content}
+                                                                    </div>
                                                                 )}
                                                                 {m.type === 'image' && (
                                                                     <img
@@ -145,11 +137,7 @@ const Messenger = (props: Props) => {
                                                 ) : (
                                                     <div ref={ref} className="sended-box">
                                                         <div className="sended-box-img">
-                                                            <img
-                                                                // className="header-image"
-                                                                src={currentUser.avatar}
-                                                                alt="avatar"
-                                                            />
+                                                            <img src={currentUser.avatar} alt="avatar" />
                                                         </div>
                                                         <div className="sended-box-msg">
                                                             <div className="sended-msg">

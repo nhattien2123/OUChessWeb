@@ -1,51 +1,58 @@
-import React, { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import Verify from '../../share/verify/verify';
-import register, { registerActions } from '../../redux/reducer/register/register';
-import '../forget/ForgetPassword.scss';
-import { RootState } from '../../app/store';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import register, { registerActions } from 'src/redux/reducer/register/register';
+import ChangePasswordForm from 'src/share/form/ChangePasswordForm';
+import Verify from 'src/share/verify/verify';
+import 'src/components/forget/ForgetPassword.scss';
+
+
 interface ForgetPasswordProps {}
 
 const ForgetPassword: React.FC<ForgetPasswordProps> = () => {
-    const [step, setStep] = useState(1);
+    const [nextStep, setNextStep] = useState<number>(1);
     const [email, setEmail] = useState('');
-    const [information, setInformation] = useState({
-        password: '',
-        confirmPassword: '',
-    });
+    const [error, setError] = useState<string>('');
+    const [newPassword, setNewPassword] = useState();
     const verifyToken = useAppSelector((state: RootState) => state.registerReducer.verifyToken);
     const dispatch = useAppDispatch();
+    const nav = useNavigate();
+    const [params] = useSearchParams();
 
-    const verifyHandler = (e: {preventDefault: () => void}) => {
-        e.preventDefault();
-        // dispatch(registerActions.reqSendDataVerify({ emailVerify: email }));
-        setStep(step + 1);
+    const verifyEmail = (email: string): void => {
+        dispatch(registerActions.reqSendDataVerify({ emailVerify: email }));
     };
 
-    const resetPasswordHandler = (e: {preventDefault: () => void}) => {
-        e.preventDefault();
-        if(information.password === "") {
-            console.log("Nhập mật khẩu");
-            return;
-        }
-        if(information.confirmPassword === ""){
-            console.log("Nhập xác nhận");
-            return;
-        }
-
-        if (information.password === information.confirmPassword) setStep(step + 1);
-        else console.log('Mật khẩu không trùng');
+    const verifyHandler = (e: { preventDefault: () => void }) => {
+        setNextStep((prev) => prev + 1);
     };
 
-    const submitHandler = (e: {preventDefault: () => void}) => {
-        e.preventDefault();
-        dispatch(registerActions.reqChangePassword({emailReset: email, passwordReset: information.password}));
-    }
+    const resetPasswordHandler = (data: any) => {
+        setNewPassword(data.password);
+        setNextStep((prev) => prev + 1);
+    };
+
+    const submitHandler = () => {
+        dispatch(registerActions.reqChangePassword({ emailReset: email, passwordReset: newPassword }));
+    };
+
+    useEffect(() => {
+        nav(`/forget?step=${nextStep}`);
+    }, [nextStep]);
+
+    useEffect(() => {
+        const num = params.get('step');
+        if (num !== null) {
+            const step = Number(num);
+            if (!isNaN(step)) setNextStep(step);
+        }
+    }, []);
 
     return (
         <>
             <div className="forget-container">
-                {step === 1 && (
+                {nextStep === 1 && (
                     <>
                         <div className="forget-title">Đặt lại mặt khẩu</div>
                         <form className="form">
@@ -61,34 +68,17 @@ const ForgetPassword: React.FC<ForgetPasswordProps> = () => {
                         </form>
                     </>
                 )}
-                {step === 2 && (
-                    <>
-                        <div className="forget-title">Quên mật khẩu</div>
-                        <form className="form">
-                            <input
-                                type="password"
-                                className="input"
-                                placeholder="Mật khẩu mới"
-                                onChange={(evt) => setInformation({ ...information, password: evt.target.value })}
-                            />
-                            <input
-                                type="password"
-                                className="input"
-                                placeholder="Xác nhận lại mật khẩu"
-                                onChange={(evt) =>
-                                    setInformation({ ...information, confirmPassword: evt.target.value })
-                                }
-                            />
-                            <button className="btn" onClick={resetPasswordHandler}>
-                                Xác nhận
-                            </button>
-                        </form>
-                    </>
-                )}
+                {nextStep === 2 && <ChangePasswordForm onSubmit={resetPasswordHandler} />}
             </div>
-            {step === 3 && (
+            {nextStep === 3 && (
                 <>
-                    <Verify handler={submitHandler} email={email} verifyToken={verifyToken} information={information} />
+                    <Verify
+                        handler={submitHandler}
+                        email={email}
+                        verifyToken={verifyToken}
+                        verify={verifyEmail}
+                        setNextStep={setNextStep}
+                    />
                 </>
             )}
         </>

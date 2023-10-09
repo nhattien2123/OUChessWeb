@@ -17,6 +17,7 @@ const initialState: Types.userState = {
         elo: 0,
         nation: '',
         avatar: '',
+        friends: []
     },
     password: "",
     isLoading: false

@@ -1,10 +1,12 @@
 const apiConstant = {
     API_SIGN_UP: "/authapi-signup",
     API_SIGN_IN: "/authapi-signin",
+    API_CHECK_EXIST: "/authapi-checkexist",
     API_SEND_VERIFY: "/authapi-sendverify",
-    API_UPDATE_USER: "/authapi-update",
+    API_RESET_PASSWORD: "/authapi-resetpassword",
     API_GET_CURRENT_USER: "/userapi-getcurrent",
-    // API_GET_USER: "/:username",
+    API_GET_USER_BY_ID: "/:id",
+    API_GET_USER_PROFILE: "/:username/userapi-getprofile",
     API_LOAD_COMMENT_USER: "/:username/commentInfos",
 
     API_LOAD_MATCH_USER: "/:username/matchs",

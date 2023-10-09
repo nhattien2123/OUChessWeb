@@ -7,6 +7,7 @@ const initialState: Type.registerState = {
     isSuccess: false,
     verifyToken: '',
     msg: '',
+    errors: {}
 };
 
 const registerSlice = createSlice({
@@ -39,6 +40,14 @@ const registerSlice = createSlice({
         resChangePasswrod: (state, action:Type.ActionResChangePassword): void => {
             state.isLoading = false;
             state.isSuccess = true;
+        },
+        reqCheckExist: (state, action: Type.ActionReqCheckExist): void => {
+            state.isLoading = true;
+        },
+        resCheckExist: (state, action: Type.ActionResCheckExist): void => {
+            const {errors} = action.payload
+            state.isLoading = false;
+            state.errors = errors;
         }
     },
 });

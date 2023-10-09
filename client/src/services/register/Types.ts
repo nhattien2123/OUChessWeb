@@ -14,5 +14,9 @@ export type ResFetchSendDataRegister = Response<{
 }>
 
 export type ResFetchChangePassword = Response<{
-    mssg: registerState["msg"];
+    msg: registerState["msg"];
+}>
+
+export type ResCheckExist = Response<{
+    errors: registerState["errors"]
 }>

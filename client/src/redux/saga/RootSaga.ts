@@ -1,10 +1,11 @@
-import { all, fork } from "redux-saga/effects";
+import { all, fork } from 'redux-saga/effects';
 // import * as commonSaga from "src/redux/saga/common/CommonSaga";
-import * as authSaga from "./auth/authSaga";
-import * as registerSaga from "./register/registerSaga";
-import * as userSaga from "./user/userSaga";
 import * as historySaga from "src/redux/saga/history/historySaga";
 import * as matchSaga from 'src/redux/saga/match/MatchSaga';
+import * as authSaga from './auth/authSaga';
+import * as registerSaga from './register/registerSaga';
+import * as userSaga from './user/userSaga';
+import * as profileSaga from './profile/ProfileSaga';
 
 /**
  * Root saga
@@ -17,5 +18,6 @@ export default function* rootSaga() {
         fork(userSaga.watchUserFunction),
         // fork(historySaga.watchHistoryFunction),
         fork(matchSaga.watchMatchFunction),
+        fork(profileSaga.watchProfle),
     ]);
 }

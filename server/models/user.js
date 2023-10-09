@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         require: true,
-        unique: true
+        unique: [true, "Tài khoản đã tồn tại"]
     },
     password: {
         type: String,
@@ -42,7 +42,11 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         default: "PLAYER"
-    }
+    },
+    friends: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
+    }]
 }, {timestamps: true});
 
 module.exports = mongoose.model("user", userSchema);

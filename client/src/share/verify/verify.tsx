@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { RootState } from '../../app/store';
@@ -7,11 +7,12 @@ import { registerActions } from '../../redux/reducer/register/register';
 import Counter from '../counter/Counter';
 import '../verify/Verify.scss';
 import '../../components/login/Login.scss';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface verifyProps {
-    email?: string;
+    email: string;
     verifyToken?: string;
-    information: {
+    information?: {
         username?: string;
         password?: string;
         firstName?: string;
@@ -22,7 +23,9 @@ interface verifyProps {
         nation?: string;
         // avatar: object;
     };
-    handler: (e: { preventDefault: () => void }) => void;
+    setNextStep: Dispatch<React.SetStateAction<number>>;
+    verify: (email: string) => void;
+    handler: () => void;
 }
 
 interface verifyPayload extends JwtPayload {
@@ -34,55 +37,43 @@ const Verify: React.FC<verifyProps> = ({
     email: email,
     verifyToken: verifyToken,
     information: information,
+    setNextStep: setNextStep,
+    verify: verify,
     handler: handler,
 }) => {
     const isLoading = useAppSelector((state: RootState) => state.registerReducer.isLoading);
     const [verifyCode, setVerifyCode] = useState('');
-    const dispatch = useAppDispatch();
+    const [isReset, setReset] = useState<boolean>(true);
+    const [timer, setTimer] = useState<number>(60);
+    const [error, setError]= useState<string>("");
+    const nav = useNavigate();
 
-    // const RegisterCofirm = (e: { preventDefault: () => void }) => {
-    //     e.preventDefault();
-    //     if (verifyToken) {
-    //         const decode: verifyPayload = jwt_decode<verifyPayload>(verifyToken);
-    //         const exp = decode.exp || 0;
-    //         console.log(decode);
-    //         if (exp !== 0 && exp > new Date().getTime() / 1000) {
-    //             const vEmail = decode.email;
-    //             const vCode = decode.verifyCode;
-    //             if (information['email'] === vEmail && verifyCode === vCode) {
-    //                 dispatch(
-    //                     registerActions.reqSendDataRegister({
-    //                         information,
-    //                     }),
-    //                 );
-    //             } else {
-    //                 console.log('Fail');
-    //             }
-    //         } else {
-    //             console.log('Quá hạn');
-    //         }
-    //     }
-    // };
+    useEffect(() => {
+        if(isReset){
+            verify(email);
+            setReset(false);
+        }
+    }, [isReset])
 
     const verifyToHandler = (e: { preventDefault: () => void }) => {
         e.preventDefault();
+        console.log(verifyToken);
         if (verifyToken) {
             const decode: verifyPayload = jwt_decode<verifyPayload>(verifyToken);
             const exp = decode.exp || 0;
-            console.log(decode);
             if (exp !== 0 && exp > new Date().getTime() / 1000) {
                 const vEmail = decode.email;
                 const vCode = decode.verifyCode;
-                if (information['email'] === vEmail && verifyCode === vCode) {
-                    handler(e);
+                if (email === vEmail && verifyCode === vCode) {
+                    handler();
+                    nav("/login");
                 } else {
-                    console.log('Fail');
+                    setError("Mã xác nhận không trùng khớp")
                 }
             } else {
-                console.log('Quá hạn');
+                setError("Mã xác nhận đã quá hạn")
             }
         }
-        handler(e);
     };
 
     return (
@@ -98,16 +89,26 @@ const Verify: React.FC<verifyProps> = ({
                                 type="text"
                                 placeholder="Mã xác nhận"
                                 onChange={(evt) => setVerifyCode(evt.target.value)}
+                                onBlur={(evt) => setError("")}
                             />
+                            {error !== "" && <div className='error-msg'>{error}</div>}
                         </div>
-                        <Counter timer={60} />
+                        <Counter timer={timer} setReset={setReset} />
                     </div>
-                    <div className="btn-container">
-                        <button type="submit" className="btn-style">
-                            Xác nhận
-                        </button>
-                    </div>
+
+                    <button type="submit" className="btn-style btn-form btn-form-save">
+                        Xác nhận
+                    </button>
                 </form>
+                <div
+                    style={{ margin: '10px auto', padding: '10px', textAlign: 'center' }}
+                    className="w-10 btn-form"
+                    onClick={(evt) => {
+                        setNextStep((prev) => prev - 1)
+                    }}
+                >
+                    back
+                </div>
             </div>
         </>
     );

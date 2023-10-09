@@ -1,0 +1,24 @@
+.comment-info-item {
+    background-color: #fff;
+    display: flex;
+}
+
+.ci-item-avatar {
+    width: 5%;
+    height: 50px;
+    margin: 5px;
+}
+
+.ci-item-avatar img {
+    border-radius: 0;
+}
+
+.ci-sub {
+    display: flex;
+    flex-direction: column;
+}
+
+.ci-item-info {
+    font-size: 20px;
+    font-weight: bold;
+}
