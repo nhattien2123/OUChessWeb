@@ -9,12 +9,13 @@ interface Props { }
 
 const Home = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
+    const friends = useAppSelector((state:RootState) => state.userReducer.friends);
 
     useEffect(() => {
         if (currentUser) {
             Cookies.set('user', JSON.stringify(currentUser));
         }
-        console.log(currentUser);
+        console.log(currentUser, friends);
     }, [currentUser]);
 
     return (

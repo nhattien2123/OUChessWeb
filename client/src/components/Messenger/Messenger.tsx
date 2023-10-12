@@ -8,11 +8,11 @@ import uploadImage from 'src/config/ImageUpload';
 import useDocument from 'src/share/firestore/DocumentHook';
 import ChatList from 'src/share/message/ChatList';
 import MessageService from 'src/services/message/MessageService';
-
 import { collection, doc, getDoc, onSnapshot, orderBy, serverTimestamp, updateDoc } from 'firebase/firestore';
 // import useDocuments from '@share/firestore/DocumentsHook';
-import useDocuments from "../../share/firestore/DocumentsHook";
-import "src/components/messenger/Messenger.scss"
+import useDocuments from '../../share/firestore/DocumentsHook';
+import 'src/components/messenger/Messenger.scss';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface Props {}
 
@@ -20,32 +20,50 @@ const Messenger = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const selectedChat = useAppSelector((state: RootState) => state.messageReducer.selectedChat);
     const selectedUser = useAppSelector((state: RootState) => state.messageReducer.selectedUser);
-    const [message, setMessage] = useState('')
-    const [showEmoji, setShowEmoji] = useState(false)
+    const [message, setMessage] = useState('');
+    const [showEmoji, setShowEmoji] = useState(false);
+    const [limit, setLimit] = useState<number>(100)
+    const nav = useNavigate();
     const ref = useRef(null);
 
     const _condition = useMemo(() => {
         return {
-            fieldName: "chatID",
-            operator: "==",
-            value: selectedChat
-        }
-    },[selectedChat])
+            fieldName: 'chatID',
+            operator: '==',
+            value: selectedChat,
+        };
+    }, [selectedChat]);
 
-   const list = useDocuments({
-    _collection: "messages",
-    _condition: _condition,
-    _limit: 100,
-    _orderBy: "createdAt"
-   })
+    const list = useDocuments({
+        _collection: 'messages',
+        _condition: _condition,
+        _limit: limit,
+        _orderBy: {
+            by: 'createdAt',
+            asc: 'asc',
+        },
+    });
 
-   console.log({list});
+    console.log(list);
 
     const emojiHandler = (emoji: any) => {
         setMessage((current) => current + emoji['native']);
     };
 
+    const firstMessages = async () => {
+        if (list.length === 0) {
+            const _data = {
+                [selectedChat]: {
+                    sent: true,
+                },
+            };
+            await MessageService.addWithId('userCharts', selectedUser._id, _data);
+        }
+    };
+
     const imageHandler = async (e: any) => {
+        await firstMessages();
+
         const imageUrl = await uploadImage(e.target.files[0], currentUser._id);
         const messID = uuidv4();
         const newMessage = {
@@ -57,8 +75,21 @@ const Messenger = (props: Props) => {
 
         MessageService.update('messages', selectedChat, { [messID]: newMessage });
         MessageService.update('chat', selectedChat, { lastMessage: 'Đã gửi một ảnh' });
+        MessageService.update('userCharts', selectedUser._id, {
+            [selectedChat]: {
+                sent: true,
+            },
+        });
+        MessageService.update('userCharts', currentUser._id, {
+            [selectedChat]: {
+                sent: false,
+            },
+        });
     };
+
     const sendMessage = async () => {
+        await firstMessages();
+
         if (message === '') {
             return;
         }
@@ -67,12 +98,17 @@ const Messenger = (props: Props) => {
             chatID: selectedChat,
             sendID: currentUser._id,
             type: 'text',
-            content: message,     
+            content: message,
         };
 
-        MessageService.add("messages", newMessage);
+        MessageService.add('messages', newMessage);
         // MessageService.update('messages', selectedChat, { [messID]: newMessage });
         MessageService.update('chat', selectedChat, { lastMessage: message });
+        MessageService.update('userCharts', selectedUser._id, {
+            [selectedChat]: {
+                sent: true,
+            },
+        });
 
         // SetMessages((prevMessages) => [...prevMessages, message]);
         setMessage('');
@@ -91,11 +127,9 @@ const Messenger = (props: Props) => {
                 <div className="chat-field">
                     <div className="chat-header">
                         <div className="header-container">
-                            {selectedUser?.avatar !== "" && <img
-                                className="header-image"
-                                src={selectedUser?.avatar}
-                                alt="avatar"
-                            ></img>}
+                            {selectedUser?.avatar !== '' && (
+                                <img className="header-image" src={selectedUser?.avatar} alt="avatar"></img>
+                            )}
                             <div className="active">
                                 <p>{selectedUser?.username}</p>
                             </div>
@@ -112,17 +146,12 @@ const Messenger = (props: Props) => {
                                                 {m.sendID !== currentUser._id ? (
                                                     <div className="received-box">
                                                         <div className="received-box-img">
-                                                            <img
-                                                                src={selectedUser.avatar}
-                                                                alt="avatar"
-                                                            />
+                                                            <img src={selectedUser.avatar} alt="avatar" />
                                                         </div>
                                                         <div className="received-box-msg">
                                                             <div className="received-msg">
                                                                 {m.type === 'text' && (
-                                                                    <div className="received-text">
-                                                                        {m.content}
-                                                                    </div>
+                                                                    <div className="received-text">{m.content}</div>
                                                                 )}
                                                                 {m.type === 'image' && (
                                                                     <img
@@ -195,6 +224,9 @@ const Messenger = (props: Props) => {
                                 placeholder="Aa..."
                                 value={message}
                                 onChange={(evt) => setMessage(evt.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') sendMessage();
+                                }}
                             />
                             <div className="chat-inputs-feature">
                                 <div className="chat-inputs-image">

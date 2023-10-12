@@ -1,5 +1,5 @@
 .comment-info-item {
-    background-color: #fff;
+    background-color: #b6b6b685;
     display: flex;
 }
 
@@ -22,3 +22,45 @@
     font-size: 20px;
     font-weight: bold;
 }
+
+.ci-form {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    background-color: rgb(43, 42, 42);
+    padding: 10px 5px;
+}
+
+.ci-form input[type="text"] {
+    width: 80%;
+    padding: 5px 5px;
+    background-color: #585858;
+    white-space: 1;
+    font-size: 18px;
+    border: none;
+    color: #cacaca;
+}
+
+.ci-form input[type="text"]:focus {
+    outline: none;
+}
+
+.ci-form button {
+    width: 7%;
+    background-color: #585858;
+    border: none;
+    border-left: 1px solid #000;
+}
+
+.profile-feature {
+    display: flex;
+
+}
+
+.profile-feature > div {
+    width: 20%;
+    margin: 0 10px !important;
+    padding: 10px;
+    text-align: center;
+}
+

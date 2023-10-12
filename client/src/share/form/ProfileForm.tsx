@@ -39,7 +39,6 @@ const ProfileForm = (props: Props) => {
         elo: yup.number().required(),
         nation: yup.string().required(),
         avatar: yup.string().nullable().required(),
-        friends: yup.array().of(yup.object<{ [key: string]: any }>()).required(),
     });
 
     const form = useForm<Props['profile']>({

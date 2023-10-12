@@ -21,13 +21,16 @@ const Router: React.FC<RouterProps> = () => {
                 <Route path="/" element={<PrivateRouter component={Home} />} />
                 <Route path="/profile/:username/edit" element={<PrivateRouter component={Editor} />} />
                 <Route path="/messages" element={<PrivateRouter component={Messenger} />} />
+                <Route path="/messages/:chatId" element={<PrivateRouter component={Messenger} />} />
                 <Route path="/profile/:username" element={<Profile />} />
                 <Route path="/login" element={<Login />}></Route>
                 <Route path="/game" element={<Game />}></Route>
                 <Route path="/register" element={<Register />} />
                 <Route path='/play/online' element={<Matches />} />
                 <Route path="/forget" element={<ForgetPassword />} />
+                <Route path="/forget" element={<ForgetPassword />} />     
             </Routes>
+            
         </BrowserRouter>
     );
 };

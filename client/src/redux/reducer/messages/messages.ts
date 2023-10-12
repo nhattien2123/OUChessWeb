@@ -5,6 +5,7 @@ const initialState = {
     isLoading: false,
     selectedChat: '',
     selectedUser: {
+        _id: '',
         username: "",
         avatar: ""
     }

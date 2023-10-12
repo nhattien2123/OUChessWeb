@@ -7,8 +7,7 @@ const apiConstant = {
     API_GET_CURRENT_USER: "/userapi-getcurrent",
     API_GET_USER_BY_ID: "/:id",
     API_GET_USER_PROFILE: "/:username/userapi-getprofile",
-    API_LOAD_COMMENT_USER: "/:username/commentInfos",
-
+    API_LOAD_COMMENT_USER: "/:username/userapi-getcommentinfo",
     API_LOAD_MATCH_USER: "/:username/matchs",
     API_GET_MATCH: "/matchapi-getmatch",
     API_ADD_MATCH: "/matchapi-addmatch",

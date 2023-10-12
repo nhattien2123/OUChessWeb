@@ -1,37 +1,41 @@
-import { createSlice } from "@reduxjs/toolkit";
-import * as Types from "./Types";
-import Cookies from "js-cookie";
+import { createSlice } from '@reduxjs/toolkit';
+import * as Types from './Types';
+import Cookies from 'js-cookie';
+import { Friend } from '../profile/Types';
 
-
-const currentState = Cookies.get("user") || ""
+const currentState = Cookies.get('user') || '';
 
 const initialState: Types.userState = {
-    currentUser: currentState !== "" ? JSON.parse(currentState) : {
-        _id: "",
-        username: "",
-        firstName: "",
-        lastName: "",
-        phone: "",
-        dateOfBirth: new Date(),
-        email: "",
-        elo: 0,
-        nation: '',
-        avatar: '',
-        friends: []
-    },
-    password: "",
-    isLoading: false
-}
+    currentUser:
+        currentState !== ''
+            ? JSON.parse(currentState)
+            : {
+                  _id: '',
+                  username: '',
+                  firstName: '',
+                  lastName: '',
+                  phone: '',
+                  dateOfBirth: new Date(),
+                  email: '',
+                  elo: 0,
+                  nation: '',
+                  avatar: '',
+              },
+    friends: [],
+    password: '',
+    isLoading: false,
+};
 
 const userSlice = createSlice({
-    name: "user",
+    name: 'user',
     initialState,
     reducers: {
         reqGetCurrentUser: (state, action: Types.ActionReqGetCurrentUser) => {
             state.isLoading = true;
         },
         resGetCurrrentUser: (state, action: Types.ActionResGetCurrentUser) => {
-            const { currentUser } = action.payload;
+            const { currentUser, friends } = action.payload;
+            state.friends = friends;
             state.currentUser = currentUser;
             state.isLoading = false;
         },
@@ -39,7 +43,7 @@ const userSlice = createSlice({
             state.isLoading = true;
         },
         resPatchUpdateUser: (state, action: Types.ActionResPatchUpdateUser) => {
-            const {currentUser} = action.payload;
+            const { currentUser } = action.payload;
             state.currentUser = currentUser;
             state.isLoading = false;
         },
@@ -53,11 +57,15 @@ const userSlice = createSlice({
             state.isLoading = true;
         },
         resPatchChangeAvatar: (state, action: Types.ActionResChangeAvatar) => {
-            const {newAvatar} = action.payload;
+            const { newAvatar } = action.payload;
             state.currentUser.avatar = newAvatar;
-            state.isLoading = false;    
-        }
-    } 
+            state.isLoading = false;
+        },
+        reqSetFriends: (state, action: Types.ActionReqSetFriends) => {
+            const { friends } = action.payload;
+            state.friends = friends;
+        },
+    },
 });
 
 export const userActions = userSlice.actions;

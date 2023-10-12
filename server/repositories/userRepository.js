@@ -24,7 +24,21 @@ const userReposity = {
                 .findOne({
                     $or: searchParams,
                 })
-                .populate({ path: 'friends', select: '_id username avatar' });
+                .populate({
+                    path: 'friends',
+                    populate: [
+                        {
+                            path: 'requester',
+                            model: 'user',
+                            select: '_id username avatar',
+                        },
+                        {
+                            path: 'recipient',
+                            model: 'user',
+                            select: '_id username avatar',
+                        },
+                    ],
+                });
             return User;
         } catch (error) {
             console.log(error);
@@ -93,9 +107,37 @@ const userReposity = {
     },
     deleteUser: async (username) => {},
     countUsser: async (field, data) => {
-        const count = await user.countDocuments({[field]: data});
+        const count = await user.countDocuments({ [field]: data });
         return count;
-    }
+    },
+    updateFriend: async (_id, friendId) => {
+        const updated = await user.findOneAndUpdate(
+            {
+                _id: _id,
+            },
+            {
+                $push: { friends: friendId },
+            },
+            {
+                new: true,
+            },
+        );
+        return updated;
+    },
+    removeFriend: async (_id, friendId) => {
+        const after = await user.findOneAndUpdate(
+            {
+                _id: _id,
+            },
+            {
+                $pull: { friends: friendId },
+            },
+            {
+                new: true,
+            },
+        );
+        return after;
+    },
 };
 
 module.exports = userReposity;

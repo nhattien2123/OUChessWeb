@@ -55,6 +55,12 @@ export const USER = {
             METHOD: 'PATCH',
         };
     },
+    API_GET_FRIENDS: (username: string) => {
+        return {
+            URL: `/user/${username}/userapi-getfriends`,
+            METHOD: 'GET'
+        }
+    }
 };
 
 export const HISTORY = {
@@ -79,6 +85,12 @@ export const PROFILE = {
     API_GET_PROFILE: (username: string) => {
         return {
             URL: `/user/${username}/userapi-getprofile`,
+            METHOD: 'GET'
+        }
+    },
+    API_GET_COMMENT_INFO: (username: string) => {
+        return {
+            URL: `/user/${username}/userapi-getcommentinfo`,
             METHOD: 'GET'
         }
     }

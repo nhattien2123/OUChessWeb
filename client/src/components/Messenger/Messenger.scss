@@ -61,8 +61,20 @@
   .chat-list-item {
     // height: 1%;
     padding: 20px 5px;
+    height: 20%;
+    overflow: hidden;
     display: flex;
     justify-content: space-between;
+    border-bottom: 1px solid #000;
+  }
+
+  .item-username {
+    font-weight: bold;
+  }
+
+  .item-msg {
+    height: 50%;
+    overflow: hidden;
   }
 
   .chat-list-item:hover {

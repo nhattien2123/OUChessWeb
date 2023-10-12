@@ -7,7 +7,7 @@ const initialState: Types.profileState = {
         username: '',
         avatar: '',
         friends: [],
-        elo: 0
+        elo: 0,
     },
     comments: [],
     isLoading: false,
@@ -19,16 +19,23 @@ const profileSlice = createSlice({
     reducers: {
         reqGetProfile: (state, action: Types.ActionReqGetProfile): void => {
             state.isLoading = true;
-            
         },
         resGetProfile: (state, action: Types.ActionResGetProfile): void => {
             const { profile } = action.payload;
             state.profile = profile;
             state.isLoading = false;
         },
-        reqGetCommentInfoesUser: (state, action: Types.ActionReqGetCommentInfoesUser): void => {},
-        resGetCommentInfoesUser: (state, action: Types.ActionResGetCommentInfoesUser): void => {},
-        postAddCommentInfo: (state, action: Types.ActionPostAddCommentInfo): void => {},
+        reqGetCommentInfoesUser: (state, action: Types.ActionReqGetCommentInfoesUser): void => {
+            state.comments = [];
+        },
+        resGetCommentInfoesUser: (state, action: Types.ActionResGetCommentInfoesUser): void => {
+            const { comments } = action.payload;
+            state.comments = comments;
+        },
+        postAddCommentInfo: (state, action: Types.ActionPostAddCommentInfo): void => {
+            const { comment } = action.payload;
+            state.comments = [...state.comments, comment];
+        },
     },
 });
 

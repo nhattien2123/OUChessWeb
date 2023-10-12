@@ -1,6 +1,7 @@
 const userService = require('../services/userService');
 const httpHandler = require('../helpers/httpHandler');
 const bcrypt = require('bcrypt');
+const { commentInfoService } = require('../services/commentInfoService');
 
 const userController = {
     getCurrentUser: async (req, res) => {
@@ -8,8 +9,8 @@ const userController = {
             const auth = await userService.getUser(req.user.username);
             if (!auth) httpHandler.Fail(res, {}, 'Không tìm thấy người dùng');
             else {
-                const { password, ...currentUser } = auth._doc;
-                httpHandler.Success(res, { currentUser }, 'Tìm thấy thông tin người dùng');
+                const { password, friends, ...currentUser } = auth._doc;
+                httpHandler.Success(res, { currentUser, friends }, 'Tìm thấy thông tin người dùng');
             }
         } catch (error) {
             httpHandler.Servererror(res, error.message, 'Đã xảy ra lỗi !!!');
@@ -91,12 +92,13 @@ const userController = {
     },
     loadCommentOfUser: async (req, res) => {
         try {
-            const username = req.params.username;
-            let params = {};
-            params.username = username;
-            // call service
-            //  reuturn
-        } catch (error) {}
+            let params = {}
+            params.receiver = req.params.username;
+            const comments = await commentInfoService.getComments(params);
+            httpHandler.Success(res, {comments}, "Tìm thấy danh sách nhận xét người dùng");
+        } catch (error) {
+            httpHandler.Servererror(res, error.message, 'Đã có lỗi xảy ra!!!');
+        }
     },
     loadMatchsOfUser: async (req, res) => {
         try {
@@ -120,7 +122,7 @@ const userController = {
                 httpHandler.Success(res, { profile }, 'Tìm thầy người chơi');
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
             httpHandler.Servererror(res, error, 'Đã có lỗi xảy ra');
         }
     },

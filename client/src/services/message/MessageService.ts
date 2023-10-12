@@ -1,17 +1,45 @@
 import React from 'react';
 import { db, app } from '../../config/FirebaseConfig';
-import { doc, setDoc, updateDoc, serverTimestamp, collection } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, serverTimestamp, collection, getDoc } from 'firebase/firestore';
 
 export const MessageService = {
+    get: async (_collection: string, _id: string) => {
+        try {
+            const docRef = doc(db, _collection, _id);
+            const data = await getDoc(docRef);
+            return data;
+        } catch (error) {
+            console.log(error);
+        }
+    },
     add: async (_collection: string, _data: any) => {
         try {
-            const ref = doc(collection(db, 'messages'));
+            const ref = doc(collection(db, _collection));
             await setDoc(ref, {
                 ..._data,
                 createdAt: serverTimestamp(),
             });
         } catch (error) {
             console.log(error);
+        }
+    },
+    addWithId: async (_collection: string, _id: string, _data: any) => {
+        try {
+            const ref = doc(db, _collection, _id);
+            const docRef = await setDoc(
+                ref,
+                {
+                    ..._data,
+                },
+                {
+                    merge: true,
+                },
+            );
+
+            return true;
+        } catch (error) {
+            console.log(error);
+            return false;
         }
     },
     update: async (_collection: string, id: string, _data: any) => {
