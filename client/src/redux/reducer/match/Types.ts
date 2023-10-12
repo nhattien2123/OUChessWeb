@@ -12,6 +12,8 @@ export type Match = {
 
 export type matchState = {
     match: Match[];
+    playerColor?: string;
+    joinedRoom?: boolean;
     isLoading?: boolean;
 };
 

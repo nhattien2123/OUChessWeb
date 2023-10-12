@@ -3,8 +3,16 @@ import type { FC, FormEvent } from 'react';
 import React, { useEffect, useState } from 'react';
 import 'src/share/roomList/RoomList.scss';
 import { User } from 'src/redux/reducer/user/Types';
+import { socket } from 'src/index';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import { useNavigate } from 'react-router-dom';
+import { playerActions } from 'src/redux/reducer/player/PlayerReducer';
 
-interface Props { }
+export type JoinRoomClient = {
+    roomId: string | null
+    username: string
+}
 
 export const RoomListComponent: FC<{
     match: Match[];
@@ -24,39 +32,20 @@ export const RoomListComponent: FC<{
     newMatch,
     setNewMatch
 }) => {
+        const userId = useAppSelector((state: RootState) => state.userReducer.currentUser._id);
+        const username = useAppSelector((state: RootState) => state.userReducer.currentUser.username);
+        // const joinedRoom = useAppSelector((state: RootState) => state.playerReducer.joinedRoom);
+        const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
         const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-        const [selectedRoom, setSelectedRoom] = useState('');
         const [searchRoomId, setSearchRoomId] = useState('');
-        // const [roomName, setRoomName] = useState('');
-        // const [timeMatch, setTimeMatch] = useState('');
+        const nav = useNavigate();
+        const dispatch = useAppDispatch();
 
-        // const rooms = [
-        //     {
-        //         id: 1,
-        //         name: 'Phòng 1',
-        //         mode: 'Siêu chớp',
-        //         players: 2,
-        //         status: 'Đang chơi',
-        //     },
-        //     {
-        //         id: 1,
-        //         name: 'Phòng 1',
-        //         mode: 'Siêu chớp',
-        //         players: 2,
-        //         status: 'Đang chơi',
-        //     },
-        //     {
-        //         id: 1,
-        //         name: 'Phòng 1',
-        //         mode: 'Siêu chớp',
-        //         players: 2,
-        //         status: 'Đang chơi',
-        //     },
-        // ];
-
-        const handleRoomClick = (roomId: string) => {
-            setSelectedRoom(roomId);
-            console.log(roomId);
+        const handleRoomClick = (match: Match) => {
+            sendRoom(match._id);
+            // nav(`/game/live/${matchId}`);
+            nav(`/game`);
+            // handleNavigateToGame(selectedRoom)
         };
 
         const playQuick = () => {
@@ -74,14 +63,25 @@ export const RoomListComponent: FC<{
         const handleCreateRoom = (e: FormEvent) => {
             e.preventDefault();
             createMatchHandler(e);
-            setNewMatch({
-                _id: '',
-                whiteId: null,
-                blackId: null,
-                matchName: '',
-                winnerPlayer: '',
-                mode: '',
-            });
+            // sendRoom();
+            // nav(`/game/live/${newMatch._id}`);
+            nav(`/game`);
+            // setNewMatch({
+            //     _id: '',
+            //     whiteId: null,
+            //     blackId: null,
+            //     matchName: '',
+            //     winnerPlayer: '',
+            //     mode: '',
+            // });
+        }
+
+        const sendRoom = async (matchId: string | null) => {
+            if (!socket) return
+            dispatch(playerActions.setRoomId({ roomId: matchId }));
+            const data: JoinRoomClient = { roomId: matchId, username: `${username}#${userId}` }
+            socket.emit(`joinRoom`, data)
+            socket.emit(`fetchPlayers`, { roomId })
         }
 
         const handleSearchRoomIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -199,8 +199,8 @@ export const RoomListComponent: FC<{
                                             <td></td>
                                             <td>
                                                 <button onClick={() => {
-                                                    if (matchItem._id) {
-                                                        handleRoomClick(matchItem._id)
+                                                    if (matchItem) {
+                                                        handleRoomClick(matchItem)
                                                     }
                                                 }}>Vào phòng</button>
                                             </td>

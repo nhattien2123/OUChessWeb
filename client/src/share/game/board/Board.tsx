@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 
 import type { Position, Tile, Board } from 'src/share/game/logic/board';
-import { copyBoard } from 'src/share/game/logic/board';
+import { checkIfPositionsMatch, copyBoard } from 'src/share/game/logic/board';
 import type { Color, Move, Piece } from 'src/share/game/logic/pieces';
 import {
     getTile,
@@ -38,10 +38,23 @@ import { isKing } from 'src/share/game/logic/pieces/king';
 import { isRook } from 'src/share/game/logic/pieces/rook';
 import { PieceType } from 'src/share/game/logic/pieces';
 import { OrbitControls } from '@react-three/drei';
+import { useThree } from '@react-three/fiber';
+import { socket } from 'src/index';
+
+import { playerActions } from "src/redux/reducer/player/PlayerReducer";
+import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { RootState } from "src/app/store";
 
 export type MakeMoveClient = {
     movingTo: MovingTo
-    room: string
+    roomId: string | null
+}
+
+export type CameraMove = {
+    position: [number, number, number]
+    roomId: string | null
+    color: Color
 }
 
 export const BoardComponent: FC<{
@@ -52,16 +65,12 @@ export const BoardComponent: FC<{
     moves: Move[]
     setEndGame: (endGame: EndGame | null) => void
     setMoves: (moves: Move[]) => void
-    turn: Color
-    setTurn: React.Dispatch<React.SetStateAction<Color>>
     showPromotionDialog: boolean
     setShowPromotionDialog: (showPromotionDialog: boolean) => void
     tile: Tile
     setTile: (tile: Tile) => void
     lastSelected: Tile | null
     setLastSelected: (lastSelected: Tile | null) => void
-    movingTo: MovingTo | null
-    setMovingTo: (movingTo: MovingTo | null) => void
 }> = ({
     selected,
     setSelected,
@@ -70,17 +79,20 @@ export const BoardComponent: FC<{
     moves,
     setMoves,
     setEndGame,
-    turn,
-    setTurn,
     showPromotionDialog,
     setShowPromotionDialog,
     tile,
     setTile,
     lastSelected,
     setLastSelected,
-    movingTo,
-    setMovingTo
 }) => {
+        const playerColor = useAppSelector((state: RootState) => state.playerReducer.playerColor);
+        const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
+        const turn = useAppSelector((state: RootState) => state.gameSettingsReducer.turn);
+        const gameStarted = useAppSelector((state: RootState) => state.gameSettingsReducer.gameStarted);
+        const movingTo = useAppSelector((state: RootState) => state.gameSettingsReducer.movingTo);
+        const dispatch = useAppDispatch();
+
         const [history, setHistory] = useHistoryState((state) => [
             state.history,
             state.addItem,
@@ -93,12 +105,15 @@ export const BoardComponent: FC<{
 
         const selectThisPiece = (e: ThreeMouseEvent, tile: Tile | null) => {
             e.stopPropagation()
+            const isPlayersTurn = turn === playerColor
+            if (!isPlayersTurn || !gameStarted) return
             if (!tile?.piece?.type && !selected) return
             if (!tile?.piece) {
                 setSelected(null)
                 return
             }
-            setMovingTo(null)
+
+            dispatch(gameSettingActions.setMovingTo({ movingTo: null }));
             setMoves(
                 movesForPiece({ piece: tile.piece, board, propagateDetectCheck: true }),
             )
@@ -126,6 +141,7 @@ export const BoardComponent: FC<{
             if (!(selectedTile && isPawn(selectedTile.piece) && shouldPromotePawn({ tile }))) {
                 setBoard((prev) => {
                     const newBoard = copyBoard(prev)
+                    if (!movingTo.move.piece) return prev
                     const selectedTile = getTile(newBoard, selected.position)
                     const tileToMoveTo = getTile(newBoard, tile.position)
 
@@ -174,8 +190,8 @@ export const BoardComponent: FC<{
                     return newBoard
                 })
 
-                setTurn((prev) => oppositeColor(prev))
-                setMovingTo(null)
+                dispatch(gameSettingActions.setTurn());
+                dispatch(gameSettingActions.setMovingTo({ movingTo: null }));
                 setMoves([])
                 setSelected(null)
                 setLastSelected(null)
@@ -194,12 +210,36 @@ export const BoardComponent: FC<{
 
         const startMovingPiece = (e: ThreeMouseEvent, tile: Tile, nextTile: Move) => {
             e.stopPropagation()
-            setMovingTo({ move: nextTile, tile: tile })
+            // setMovingTo({ move: nextTile, tile: tile })
+            if (!socket) return
+            const newMovingTo: MovingTo = {
+                move: nextTile,
+                tile: tile,
+            }
+            const makeMove: MakeMoveClient = {
+                movingTo: newMovingTo,
+                roomId: roomId,
+            }
+            socket.emit(`makeMove`, makeMove)
         }
 
         const { intensity } = useSpring({
             intensity: selected ? 0.35 : 0,
         })
+
+        const { camera } = useThree();
+
+        useEffect(() => {
+            const interval = setInterval(() => {
+                const { x, y, z } = camera.position
+                socket?.emit(`cameraMove`, {
+                    position: [x, y, z],
+                    roomId: roomId,
+                    color: playerColor,
+                } satisfies CameraMove)
+            }, 1000)
+            return () => clearInterval(interval)
+        }, [camera.position, socket, roomId, playerColor])
 
         return (
             <>
@@ -278,7 +318,10 @@ export const BoardComponent: FC<{
                                     : false,
                                 canMoveHere: canMoveHere?.newPosition ?? null,
                                 movingTo:
-                                    isSelected && movingTo
+                                    checkIfPositionsMatch(
+                                        tile.position,
+                                        movingTo?.move.piece?.position,
+                                    ) && movingTo
                                         ? movingTo.move.steps
                                         : isBeingCastled
                                             ? movingTo.move.castling?.rookSteps ?? null

@@ -2,17 +2,17 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { Friend } from 'src/redux/reducer/profile/Types';
 
 export type User = {
-            _id: string;
-        username: string;
-        firstName: string;
-        lastName: string;
-        phone: string;
-        dateOfBirth: Date;
-        email: string;
-        elo: number;
-        nation: string;
-        avatar: string;
-        friends: {[key: string]: any}[]
+    _id: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    dateOfBirth: Date;
+    email: string;
+    elo: number;
+    nation: string;
+    avatar: string;
+    friends: { [key: string]: any }[]
 }
 
 export type userState = {

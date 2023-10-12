@@ -1,25 +1,33 @@
-// import { useEffect } from 'react'
+import { useEffect } from 'react'
 
-// import { toast } from 'react-toastify'
-// import type { Socket } from 'socket.io-client'
-// // eslint-disable-next-line import/no-named-as-default
-// import io from 'socket.io-client'
-// import create from 'zustand'
+import { toast } from 'react-toastify'
+import type { Socket } from 'socket.io-client'
+// eslint-disable-next-line import/no-named-as-default
+import io from 'socket.io-client'
 
-// import type { MovingTo } from '@/components/Board'
+import type { MovingTo } from 'src/components/game/Game'
 // import type {
 //     SocketClientToServer,
 //     SocketServerToClient,
 //     playerJoinedServer,
 // } from '@/pages/api/socket'
-// import type { CameraMove } from '@/server/cameraMove'
+
+import { socket } from 'src/index';
 // import { useGameSettingsState } from '@/state/game'
-// import type { Message } from '@/state/player'
+import type { Message } from 'src/redux/reducer/messageMatch/Types';
 // import {
 //     useOpponentState,
 //     usePlayerState,
 //     useMessageState,
 // } from 'state/player'
+
+import { opponentActions } from 'src/redux/reducer/opponent/OpponentReducer';
+import { playerActions } from 'src/redux/reducer/player/PlayerReducer';
+import { messageMatchActions } from 'src/redux/reducer/messageMatch/MessageMatchReducer';
+import { gameSettingActions } from 'src/redux/reducer/gameSettings/GameSettingsReducer';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { Color } from 'src/share/game/logic/pieces';
+import { RootState } from 'src/app/store'
 
 // type ClientSocket = Socket<SocketServerToClient, SocketClientToServer>
 // let socket: ClientSocket
@@ -32,99 +40,103 @@
 //     setSocket: (socket) => set({ socket }),
 // }))
 
-// export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
-//     const [addMessage] = useMessageState((state) => [state.addMessage])
-//     const { setGameStarted, setMovingTo } = useGameSettingsState((state) => ({
-//         setGameStarted: state.setGameStarted,
-//         setMovingTo: state.setMovingTo,
-//     }))
-//     const { setPlayerColor, setJoinedRoom } = usePlayerState((state) => state)
-
-//     const { setPosition, setName: setOpponentName } = useOpponentState(
-//         (state) => state,
-//     )
-
-//     const { socket: socketState, setSocket } = useSocketState((state) => ({
-//         socket: state.socket,
-//         setSocket: state.setSocket,
-//     }))
-//     useEffect(() => {
-//         socketInitializer()
-
-//         return () => {
-//             if (socketState) {
-//                 socketState.emit(`playerLeft`, { room: usePlayerState.getState().room })
-//                 socketState.disconnect()
-//             }
-//         }
-//     }, [])
-
-//     const socketInitializer = async () => {
-//         await fetch(`/api/socket`)
-//         socket = io()
-//         setSocket(socket)
-
-//         socket.on(`newIncomingMessage`, (msg: Message) => {
-//             addMessage(msg)
-//         })
-
-//         socket.on(`playerJoined`, (data: playerJoinedServer) => {
-//             const split = data.username.split(`#`)
-//             addMessage({
-//                 author: `System`,
-//                 message: `${split[0]} has joined ${data.room}`,
-//             })
-//             const { id, username } = usePlayerState.getState()
-//             if (split[1] === id) {
-//                 setPlayerColor(data.color)
-//                 setJoinedRoom(true)
-//             } else {
-//                 socket.emit(`existingPlayer`, {
-//                     room: data.room,
-//                     name: `${username}#${id}`,
-//                 })
-//                 setOpponentName(split[0])
-//             }
-//         })
-
-//         socket.on(`clientExistingPlayer`, (data: string) => {
-//             const split = data.split(`#`)
-//             if (split[1] !== usePlayerState.getState().id) {
-//                 setOpponentName(split[0])
-//             }
-//         })
-
-//         socket.on(`cameraMoved`, (data: CameraMove) => {
-//             const { playerColor } = usePlayerState.getState()
-//             if (playerColor === data.color) {
-//                 return
-//             }
-//             setPosition(data.position)
-//         })
-
-//         socket.on(`moveMade`, (data: MovingTo) => {
-//             setMovingTo(data)
-//         })
-
-//         socket.on(`gameReset`, () => {
-//             reset()
-//         })
-
-//         socket.on(`playersInRoom`, (data: number) => {
-//             if (data === 2) {
-//                 setGameStarted(true)
-//             }
-//         })
-
-//         socket.on(`newError`, (err: string) => {
-//             toast.error(err, {
-//                 toastId: err,
-//             })
-//         })
-//     }
-// }
-const Example = () => {
-    return;
+export type playerJoinedServer = {
+    roomId: string
+    username: string
+    color: Color
+    playerCount: number
 }
 
-export default Example;
+export type CameraMove = {
+    position: [number, number, number]
+    room: string
+    color: Color
+}
+
+export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
+    const dispatch = useAppDispatch();
+    const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
+    const userId = useAppSelector((state: RootState) => state.userReducer.currentUser._id);
+    const playerColor = useAppSelector((state: RootState) => state.playerReducer.playerColor);
+    const username = useAppSelector((state: RootState) => state.userReducer.currentUser.username);
+
+    useEffect(() => {
+        socketInitializer()
+
+        return () => {
+            if (!socket.connected) {
+                socket.emit(`playerLeft`, { roomId: roomId })
+                // socket.disconnect()
+            }
+            socket.removeAllListeners();
+        }
+    }, [])
+
+    const socketInitializer = async () => {
+        // await fetch(`/api/socket`)
+        // socket = io()
+        // setSocket(socket)
+
+        socket.on(`newIncomingMessage`, (msg: Message) => {
+            dispatch(messageMatchActions.addMessage({ messages: msg }))
+        })
+
+        socket.on(`playerJoined`, (data: playerJoinedServer) => {
+            const split = data.username.split(`#`)
+            const message: Message = {
+                author: `System`,
+                message: `${split[0]} has joined ${data.roomId}`,
+            }
+            dispatch(messageMatchActions.addMessage({
+                messages: message
+            }))
+            // const { id, username } = usePlayerState.getState()
+            console.log(split[1]);
+            if (split[1] === userId) {
+                console.log("test")
+                dispatch(playerActions.setPlayerColor({ playerColor: data.color }));
+                dispatch(playerActions.setJoinedRoom({ joinedRoom: true }));
+            } else {
+                socket.emit(`existingPlayer`, {
+                    roomId: data.roomId,
+                    name: `${username}#${userId}`,
+                })
+                dispatch(opponentActions.setName({ name: split[0] }));
+            }
+        })
+
+        socket.on(`clientExistingPlayer`, (data: string) => {
+            const split = data.split(`#`)
+            if (split[1] !== userId) {
+                dispatch(opponentActions.setName({ name: split[0] }));
+            }
+        })
+
+        socket.on(`cameraMoved`, (data: CameraMove) => {
+            if (playerColor === data.color) {
+                return
+            }
+            dispatch(opponentActions.setPosition({ position: data.position }))
+        })
+
+        socket.on(`moveMade`, (data: MovingTo) => {
+            dispatch(gameSettingActions.setMovingTo({ movingTo: data }))
+        })
+
+        socket.on(`gameReset`, () => {
+            reset()
+        })
+
+        socket.on(`playersInRoom`, (data: number) => {
+            if (data === 2) {
+                dispatch(gameSettingActions.setGameStarted({ gameStarted: true }));
+            }
+        })
+
+        socket.on(`newError`, (err: string) => {
+            toast.error(err, {
+                toastId: err,
+            })
+        })
+    }
+}

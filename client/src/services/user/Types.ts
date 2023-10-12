@@ -1,6 +1,6 @@
-import type { Response } from '@/config/Constants';
-import { userState } from '@/redux/reducer/user/Types';
-import { CommonState } from '@/redux/reducer/common/Types';
+import type { Response } from "src/config/Constants";
+import { userState } from "src/redux/reducer/user/Types";
+import { CommonState } from "src/redux/reducer/common/Types";
 
 export type ResFetchGetCurrrentUser = Response<{
     currentUser: userState['currentUser'];

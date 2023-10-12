@@ -10,7 +10,7 @@ import type { Board, Tile } from 'src/share/game/logic/board';
 import { createBoard } from 'src/share/game/logic/board';
 import type { Color, EndGameType, Move, Piece, PieceType } from 'src/share/game/logic/pieces';
 // import { Border } from 'src/models/Border';
-import { Environment, OrbitControls } from '@react-three/drei';
+import { Environment } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import PromoteDialog from 'src/share/game/board/PromotionDialog';
 import create from 'zustand';
@@ -18,6 +18,9 @@ import create from 'zustand';
 import { Loader } from 'src/share/game/board/Loader';
 import 'src/components/game/Game.scss';
 import { BoardModel } from 'src/models/Board';
+import { Opponent } from 'src/share/game/board/Opponent';
+import { StatusBar } from 'src/share/game/board/StatusBar';
+import { useSockets } from 'src/util/Socket';
 
 export type ThreeMouseEvent = {
     stopPropagation: () => void
@@ -45,81 +48,6 @@ export const useHistoryState = create<{
     undo: () => set((state) => ({ history: state.history.slice(0, -1) })),
 }))
 
-// export const useGameSettingsState = create<{
-//     gameType: `local` | `online`
-//     setGameType: (type: `local` | `online`) => void
-//     turn: Color
-//     setTurn: () => void
-//     resetTurn: () => void
-//     gameStarted: boolean
-//     setGameStarted: (started: boolean) => void
-//     movingTo: MovingTo | null
-//     setMovingTo: (move: MovingTo | null) => void
-// }>((set) => ({
-//     gameType: `online`,
-//     setGameType: (type) => set({ gameType: type }),
-//     turn: `white`,
-//     setTurn: () => set((state) => ({ turn: oppositeColor(state.turn) })),
-//     resetTurn: () => set({ turn: `white` }),
-//     gameStarted: false,
-//     setGameStarted: (started: boolean) => set({ gameStarted: started }),
-//     movingTo: null,
-//     setMovingTo: (move: MovingTo | null) => set({ movingTo: move }),
-// }))
-
-// export type Message = {
-//     author: string
-//     message: string
-// }
-
-// export const useMessageState = create<{
-//     messages: Message[]
-//     addMessage: (message: Message) => void
-// }>((set) => ({
-//     messages: [] as Message[],
-//     addMessage: (message) =>
-//         set((state) => ({ messages: [...state.messages, message] })),
-// }))
-
-// export const useOpponentState = create<{
-//     position: [number, number, number]
-//     mousePosition: [number, number, number]
-//     setPosition: (position: [number, number, number]) => void
-//     setMousePosition: (mousePosition: [number, number, number]) => void
-//     name: string
-//     setName: (name: string) => void
-// }>((set) => ({
-//     position: [0, 100, 0],
-//     setPosition: (position) => set({ position }),
-//     name: ``,
-//     setName: (name) => set({ name }),
-//     mousePosition: [0, 0, 0],
-//     setMousePosition: (mousePosition) => set({ mousePosition }),
-// }))
-
-// export const usePlayerState = create<{
-//     username: string
-//     id: string
-//     setUsername: (username: string) => void
-//     room: string
-//     setRoom: (room: string) => void
-//     joinedRoom: boolean
-//     setJoinedRoom: (joinedRoom: boolean) => void
-//     playerColor: Color
-//     setPlayerColor: (color: Color) => void
-// }>((set) => ({
-//     username: isDev ? `dev` : ``,
-//     setUsername: (username) => set({ username }),
-//     id: nanoid(),
-//     room: isDev ? `room` : ``,
-//     setRoom: (room) => set({ room }),
-//     joinedRoom: false,
-//     setJoinedRoom: (joinedRoom) => set({ joinedRoom }),
-//     playerColor: `white`,
-//     setPlayerColor: (color: Color) => set({ playerColor: color }),
-// }))
-
-
 export const Game: FC = () => {
     const [board, setBoard] = useState<Board>(createBoard())
     const [showPromotionDialog, setShowPromotionDialog] = useState<boolean>(false);
@@ -133,7 +61,6 @@ export const Game: FC = () => {
     const resetHistory = useHistoryState((state) => state.reset)
     const [turn, setTurn] = useState<Color>(`white`)
     const [lastSelected, setLastSelected] = useState<Tile | null>(null)
-    const [movingTo, setMovingTo] = useState<MovingTo | null>(null)
 
     const reset = () => {
         setBoard(createBoard())
@@ -143,6 +70,8 @@ export const Game: FC = () => {
         setTurn(`white`)
         setEndGame(null)
     }
+
+    useSockets({ reset });
 
     return (
         <div
@@ -156,6 +85,7 @@ export const Game: FC = () => {
                 setBoard={setBoard}
                 setTurn={setTurn}
             />
+            <StatusBar />
             <GameOverScreen endGame={endGame} reset={reset} />
             <Loader />
             <PromoteDialog
@@ -168,13 +98,11 @@ export const Game: FC = () => {
                 setSelected={setSelected}
                 lastSelected={lastSelected}
                 setLastSelected={setLastSelected}
-                movingTo={movingTo}
-                setMovingTo={setMovingTo}
-                setTurn={setTurn}
                 setMoves={setMoves}
             />
             <Canvas shadows camera={{ position: [0, 10, 6], fov: 70 }}>
                 <Environment files="dawn.hdr" />
+                <Opponent />
                 <BoardModel />
                 <BoardComponent
                     selected={selected}
@@ -184,16 +112,12 @@ export const Game: FC = () => {
                     moves={moves}
                     setMoves={setMoves}
                     setEndGame={setEndGame}
-                    turn={turn}
-                    setTurn={setTurn}
                     showPromotionDialog={showPromotionDialog}
                     setShowPromotionDialog={setShowPromotionDialog}
                     tile={tile}
                     setTile={setTile}
                     lastSelected={lastSelected}
                     setLastSelected={setLastSelected}
-                    movingTo={movingTo}
-                    setMovingTo={setMovingTo}
                 />
             </Canvas>
         </div>

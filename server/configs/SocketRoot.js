@@ -24,11 +24,11 @@ const rootSocket = (io) => {
         user += 1;
         console.log("connection - (con): ",userConnected);
 
-        socket.use(([event, ...arg], next) => {
-            if (socket.token) {
-                next();
-            }
-        });
+        // socket.use(([event, ...arg], next) => {
+        //     if (socket.token) {
+        //         next();
+        //     }
+        // });
 
         socket.on('disconnect', () => {
             user -= 1;
@@ -43,6 +43,17 @@ const rootSocket = (io) => {
         });
 
         require('../services/friendService').friendSocket(socket, io, userConnected);
+        socket.on(`existingPlayer`, (data) => {
+            io.sockets.in(data.roomId).emit(`clientExistingPlayer`, data.name)
+        })
+
+        require("../services/gameService").cameraMove(socket, io);
+        require("../services/gameService").disconnect(socket, io);
+        require("../services/gameService").fetchPlayers(socket, io);
+        require("../services/gameService").joinRoom(socket, io);
+        require("../services/gameService").makeMove(socket, io);
+        require("../services/gameService").resetGame(socket, io);
+        require("../services/gameService").sendMessage(socket, io);
     });
 };
 
