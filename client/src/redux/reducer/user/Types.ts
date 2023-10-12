@@ -12,7 +12,7 @@ export type User = {
         elo: number;
         nation: string;
         avatar: string;
-        friends: {[key: string]: any}[]
+        // friends: {[key: string]: any}[]
 }
 
 export type userState = {
