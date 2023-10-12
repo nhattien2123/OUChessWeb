@@ -1,28 +1,22 @@
 const commentInfo = require('../models/commentInfo');
 
 const commentInfoRepository = {
-    getComment: async (params) => {
+    getComments: async (params) => {
         try {
             let searchParams = {};
-            const username = params.username;
-            if(username !== null && username !== ''){
-                searchParams.username = username
+            const receiver = params.receiver;
+            if (receiver !== null && receiver !== '') {
+                searchParams.receiver = receiver;
             }
-
-            commentInfo.find(searchParams, (error, result) => {
-                if(error){
-                    return null;
-                }else{
-                    return result;
-                }
-            })
+            const comments = await commentInfo.find(searchParams).populate('sender', '_id username avatar');
+            return comments;
         } catch (error) {
             return null;
         }
     },
     addComment: async (Comment) => {
         try {
-            console.log(Comment)
+            console.log(Comment);
             const newComment = await Comment.save();
             return newComment;
         } catch (error) {
@@ -30,11 +24,8 @@ const commentInfoRepository = {
             return null;
         }
     },
-    updateComment: async (commentId, changed) => {
-    },
-    deleteComment: async (commentId) => {
-
-    },
+    updateComment: async (commentId, changed) => {},
+    deleteComment: async (commentId) => {},
 };
 
 module.exports = commentInfoRepository;

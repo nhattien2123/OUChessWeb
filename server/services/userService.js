@@ -2,6 +2,7 @@ const authRepository = require('../repositories/userRepository');
 const bcrypt = require('bcrypt');
 const user = require('../models/user');
 const cloudinaryConfig = require('../configs/CloundinaryConfig');
+const userReposity = require('../repositories/userRepository');
 
 const userService = {
     getUser: async (param) => {
@@ -17,7 +18,7 @@ const userService = {
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(User.password, salt);
 
-        if(!User.avatar || User.avatar === ""){
+        if (!User.avatar || User.avatar === '') {
             User.avatar = process.env.DEFAULT_AVATAR;
         }
 
@@ -30,7 +31,7 @@ const userService = {
             email: User.email,
             phone: User.phone,
             nation: User.nation,
-            avatar: User.avatar
+            avatar: User.avatar,
         });
 
         return await authRepository.addUser(newUser);
@@ -62,7 +63,12 @@ const userService = {
     countField: async (field, data) => {
         return authRepository.countUsser(field, data);
     },
-
+    addFriend: async (_id, friendId) => {
+        return await userReposity.updateFriend(_id, friendId);
+    },
+    removeFriend: async (_id, friendId) => {
+        return await userReposity.removeFriend(_id, friendId);
+    },
 };
 
 module.exports = userService;

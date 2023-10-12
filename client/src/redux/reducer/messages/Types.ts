@@ -5,6 +5,7 @@ export type messageState = {
     isLoading: boolean,
     selectedChat: string,
     selectedUser: {
+        _id: string,
         username: string,
         avatar: string
     }

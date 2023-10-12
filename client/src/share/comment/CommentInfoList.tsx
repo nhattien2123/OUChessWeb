@@ -1,27 +1,33 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import CommentInfoItem from './CommentInfoItem';
-import io from 'socket.io-client';
-import { ROOT_URL } from 'src/config/ApiConstants';
-import './Comment.scss';
-import Cookies from 'js-cookie';
-import { socket } from 'src/index';
-import { useAppSelector } from 'src/app/hooks';
+import { socket } from 'src/share/header/Header';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
-
+import { profileActions } from 'src/redux/reducer/profile/profile';
+import { CommentInfo, profileState } from 'src/redux/reducer/profile/Types';
+import CommentInfoItem from './CommentInfoItem';
+import './Comment.scss';
 
 type Props = object;
 
 const CommentInfoList = (props: Props) => {
+    // const { comments } = props;
+    const comments = useAppSelector((state: RootState) => state.profileReducer.comments);
+    const profile = useAppSelector((state: RootState) => state.profileReducer.profile);
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
+    const dispatch = useAppDispatch();
     const [comment, setComment] = useState<string>('');
-    const [comments, setComments] = useState<any[]>([])
 
-    const handlerSubmit = (e: {preventDefault: () => void}) => {
+    const handlerSubmit = (e: { preventDefault: () => void }) => {
         e.preventDefault();
         if (comment.trim() !== '') {
             socket.emit('newComment', {
                 content: comment,
-                userId: {
+                receiver: {
+                    _id: profile._id,
+                    username: profile.username,
+                    avatar: profile.avatar,
+                },
+                sender: {
                     _id: currentUser._id,
                     username: currentUser.username,
                     avatar: currentUser.avatar
@@ -33,25 +39,38 @@ const CommentInfoList = (props: Props) => {
 
     useEffect(() => {
         socket.on('newComment', (comment) => {
-            setComments((prev) => [...prev, comment]);
-        })
+           dispatch(profileActions.postAddCommentInfo({comment}))
+        });
 
         return () => {
-            socket.off("newComment")
-        }
-    }, [])
+            socket.off('newComment');
+        };
+    }, []);
 
     useEffect(() => {
-        console.log(comments);
-    }, [comments])
+        socket.on('error_msg', (status) => {
+            console.log(status);
+        });
+
+        return () => {
+            socket.off('error_msg');
+        };
+    }, []);
+
+    useEffect(() => {
+        console.log(comments.length);
+    }, [comments]);
+
+    if (comments.length === 0) <div style={{ textAlign: 'center' }}>...</div>;
 
     return (
         <>
             {comments.map((m) => {
-                return <CommentInfoItem key={m} comment={m} />
+                return <CommentInfoItem key={m.sender._id} comment={m} />;
             })}
-            <form onSubmit={handlerSubmit}>
-                <input type="text" value={comment} onChange={evt => setComment(evt.target.value)}/>
+
+            <form className="ci-form" onSubmit={handlerSubmit}>
+                <input type="text" value={comment} onChange={(evt) => setComment(evt.target.value)} />
                 <button type="submit">Gửi</button>
             </form>
         </>

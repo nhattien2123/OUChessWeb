@@ -15,7 +15,7 @@ interface PayLoad {
     changedAvatar: {
         username: string;
         form: FormData;
-    }
+    };
 }
 
 function* getCurrentUser(action: TypesAction.ActionReqGetCurrentUser) {
@@ -24,8 +24,8 @@ function* getCurrentUser(action: TypesAction.ActionReqGetCurrentUser) {
         const statusCode = response.code;
         switch (statusCode) {
             case httpHandler.SUCCESS: {
-                const { currentUser } = response.data;
-                yield put(userActions.resGetCurrrentUser({ currentUser }));
+                const { currentUser, friends } = response.data;
+                yield put(userActions.resGetCurrrentUser({ currentUser, friends }));
                 break;
             }
             case httpHandler.FAIL: {
@@ -123,12 +123,12 @@ function* patchChangeAvatar(action: TypesAction.ActionReqChangeAvatar) {
     try {
         const { changedAvatar } = action.payload as PayLoad;
         console.log(action.payload);
-        const {username, form} = changedAvatar;
-        
+        const { username, form } = changedAvatar;
+
         const response: TypesFetch.ResFetchPatchChangeAvatar = yield call(
             UserService.fetchPatchChangeAvatar,
             username,
-            form
+            form,
         );
         const statusCode = response.code;
         switch (statusCode) {
@@ -157,6 +157,7 @@ function* patchChangeAvatar(action: TypesAction.ActionReqChangeAvatar) {
         yield put(commonAction.displayError({ errorMsg: (error as Error).message }));
     }
 }
+
 
 export function* watchUserFunction() {
     yield takeLatest(userActions.reqGetCurrentUser.type, getCurrentUser);

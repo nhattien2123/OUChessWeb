@@ -3,12 +3,12 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
-        require: true,
+        required: true,
         unique: [true, "Tài khoản đã tồn tại"]
     },
     password: {
         type: String,
-        require: true,
+        required: true,
     },
     firstName: {
         type: String
@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
     },
     friends: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user"
+        ref: "friend"
     }]
 }, {timestamps: true});
 

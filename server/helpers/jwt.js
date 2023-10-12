@@ -5,6 +5,7 @@ const jwtHandler = {
     createToken: (curUser) => {
         const token = jwt.sign(
             {
+                _id: curUser._id,
                 username: curUser.username,
                 email: curUser.email,
                 role: curUser.role

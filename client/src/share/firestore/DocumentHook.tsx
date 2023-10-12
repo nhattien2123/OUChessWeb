@@ -16,19 +16,10 @@ const useDocument = (props: Props) => {
 
         const unsubcribe = onSnapshot(doc(db, _collection, _id), (doc) => {
             if (doc.exists()) {
-                // const document = Object.keys(doc.data())
-                //     .map((key: string) => ({
-                //         ...doc.data()[key],
-                //         id: key,
-                //     }))
-                //     .sort((a: any, b: any) => a.createAt - b.createAt);
-
                 const document = Object.keys(doc.data()).map((key: string) => ({
                     data: doc.data()[key],
                     key: key,
-                }))
-                .sort((a: {[key:string]: any}, b: {[key:string]: any}) => a.data.createAt - b.data.createAt)
-                .slice(-20);
+                }));
 
                 setDocuments(document);
             }

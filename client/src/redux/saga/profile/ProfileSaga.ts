@@ -9,6 +9,7 @@ import { fetchProfile } from 'three-stdlib';
 
 interface Payload {
     username: string;
+    params: any;
 }
 
 function* getProfile(action: TypesAction.ActionReqGetProfile) {
@@ -16,7 +17,7 @@ function* getProfile(action: TypesAction.ActionReqGetProfile) {
         const { username } = action.payload as Payload;
         const response: TypesFetch.ResFetchGetProfile = yield call(ProfileServices.fetchProfile, username);
         const statusCode = response.code;
-     
+
         switch (statusCode) {
             case httpHandler.SUCCESS: {
                 const { profile } = response.data;
@@ -42,6 +43,42 @@ function* getProfile(action: TypesAction.ActionReqGetProfile) {
     }
 }
 
+function* getCommentInfo(action: TypesAction.ActionReqGetCommentInfoesUser) {
+    try {
+      
+        const { username, params } = action.payload as Payload;
+        const response: TypesFetch.ResFetchGetCommentInfoUser = yield call(
+            ProfileServices.fetchCommentInfo,
+            username,
+            params,
+        );
+        const statusCode = response.code;
+        switch (statusCode) {
+            case httpHandler.SUCCESS: {
+                const { comments } = response.data;
+                yield put(profileActions.resGetCommentInfoesUser({ comments }));
+                break;
+            }
+            case httpHandler.FAIL:
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+            case httpHandler.UNAUTHORIZED:
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+            case httpHandler.SERVER_ERROR:
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+            default:
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+        }
+    } catch (error) {
+        console.log(error);
+        yield put(commonAction.displayError({ errorMsg: (error as Error).message }));
+    }
+}
+
 export function* watchProfle() {
     yield takeLatest(profileActions.reqGetProfile.type, getProfile);
+    yield takeLatest(profileActions.reqGetCommentInfoesUser.type, getCommentInfo);
 }

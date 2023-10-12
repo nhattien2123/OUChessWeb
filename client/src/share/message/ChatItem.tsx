@@ -6,6 +6,7 @@ import { ROOT_URL } from 'src/config/ApiConstants';
 import { messageAction } from 'src/redux/reducer/messages/messages';
 import { messageState } from 'src/redux/reducer/messages/Types';
 import 'src/components/messenger/Messenger.scss';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type Props = {
     chat: { [key: string]: any };
@@ -16,15 +17,19 @@ const ChatItem: React.FC<Props> = ({ chat: chat, kw: kw }) => {
     const [user, setUser] = useState<{ [key: string]: any }>({});
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const selectedChat = useAppSelector((state: RootState) => state.messageReducer.selectedChat);
+    const nav = useNavigate();
     const dispatch = useAppDispatch();
+    const { chatId } = useParams();
 
     const chatInfo = useDocument({
         _collection: 'chat',
         _id: chat.key,
     }).sort((a: { [k: string]: any }, b: { [k: string]: any }) => a.key.localeCompare(b.key));
 
+    console.log({chatInfo});
+
     useEffect(() => {
-        const userInfo = chatInfo[1]?.data[0] !== currentUser._id ? chatInfo[1]?.data[0] : chatInfo[1]?.data[1];
+        const userInfo = chatInfo[2]?.data[0] !== currentUser._id ? chatInfo[2]?.data[0] : chatInfo[2]?.data[1];
         if (chatInfo.length > 0) {
             fetch(`${ROOT_URL}/user/${userInfo}`).then((res) =>
                 res.json().then((json) => {
@@ -35,6 +40,17 @@ const ChatItem: React.FC<Props> = ({ chat: chat, kw: kw }) => {
         }
     }, [chatInfo]);
 
+    useEffect(() => {
+        if (chat.key === chatId) {
+            dispatch(
+                messageAction.setSelectedChat({
+                    selectedChat: chat.key,
+                    selectedUser: user as messageState['selectedUser'],
+                }),
+            );
+        }
+    }, [user]);
+
     const selectChatHandler = () => {
         dispatch(
             messageAction.setSelectedChat({
@@ -42,9 +58,10 @@ const ChatItem: React.FC<Props> = ({ chat: chat, kw: kw }) => {
                 selectedUser: user as messageState['selectedUser'],
             }),
         );
+        nav(`/messages/${chat.key}`);
     };
 
-    if (user.username && kw !== "" && !user.username.includes(kw)) {
+    if (user.username && kw !== '' && !user.username.includes(kw)) {
         return <></>;
     }
 
@@ -60,8 +77,8 @@ const ChatItem: React.FC<Props> = ({ chat: chat, kw: kw }) => {
                         <img src={user?.avatar} alt={user?.username}></img>
                     </div>
                     <div className="item-profile">
-                        <div>{user?.username}</div>
-                        <div>{chatInfo[0]?.data}</div>
+                        <div className='item-username'>{user?.username}</div>
+                        <div className='item-msg' style={chat.data.sent ? { color: '#fff', fontWeight: 'bold' }: {color: "#ffffffaa"}} >{">> "+ chatInfo[1]?.data}</div>
                     </div>
                 </div>
             )}

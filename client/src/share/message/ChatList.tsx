@@ -1,17 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { RootState } from '../../app/store';
-import useDocuments from '../firestore/DocumentsHook';
 import useDocument from 'src/share/firestore/DocumentHook';
 import ChatItem from './ChatItem';
 import 'src/components/messenger/Messenger.scss';
+import { useNavigate, useParams } from 'react-router-dom';
+import { messageAction } from 'src/redux/reducer/messages/messages';
 
 interface Props {}
 
 const Chat = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const [kw, setKw] = useState('');
-    const [chats, setChats] = useState<any>(null);
+    const { chatId } = useParams();
+    const nav = useNavigate();
+    const dispatch = useAppDispatch();
 
     const listChat = useDocument({
         _collection: 'userCharts',
@@ -19,9 +22,23 @@ const Chat = (props: Props) => {
     }).sort((a: { [key: string]: any }, b: { [key: string]: any }) => a.updateAt - b.updateAt);
     // .filter((kw:string) => );
 
+    console.log({ listChat });
+
     useEffect(() => {
-        console.log(listChat);
-    }, []);
+        if (listChat.length > 0)
+            if (chatId) {
+                for (const c of listChat) {
+                    if (chatId === c.key) {
+                        console.log("In")
+                        return;
+                    }
+                }
+                nav('/messages');
+                console.log("not In")
+            } else {
+                console.log('not ok');
+            }
+    }, [listChat]);
 
     return (
         <>
@@ -36,10 +53,9 @@ const Chat = (props: Props) => {
                     ></input>
                 </div>
                 <div className="chat-list-items">
-                    {listChat.length > 0 &&
-                        listChat.map((c: any) => {
-                            return <ChatItem chat={c} key={c.id} kw={kw} />;
-                        })}
+                    {listChat.map((c: any) => {
+                        return <ChatItem chat={c} key={c.key} kw={kw} />;
+                    })}
                 </div>
             </div>
         </>

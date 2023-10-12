@@ -1,4 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
+import { Friend } from 'src/redux/reducer/profile/Types';
 
 export type User = {
             _id: string;
@@ -16,6 +17,7 @@ export type User = {
 
 export type userState = {
     currentUser: User;
+    friends: Friend[];
     password: string;
     isLoading?: boolean;
 };
@@ -23,6 +25,7 @@ export type userState = {
 export type ActionReqGetCurrentUser = PayloadAction<{}>;
 export type ActionResGetCurrentUser = PayloadAction<{
     currentUser: userState['currentUser'];
+    friends: userState['friends'];
 }>;
 export type ActionReqPatchUpdateUser = PayloadAction<{}>;
 export type ActionResPatchUpdateUser = PayloadAction<{
@@ -33,4 +36,8 @@ export type ActionResPatchChangePassword = PayloadAction<{}>;
 export type ActionReqChangeAvatar = PayloadAction<{}>;
 export type ActionResChangeAvatar = PayloadAction<{
     newAvatar: userState['currentUser']['avatar'];
+}>;
+
+export type ActionReqSetFriends = PayloadAction<{
+    friends: Friend[];
 }>;
