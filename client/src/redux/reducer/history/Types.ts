@@ -1,4 +1,4 @@
-import { Board, Position } from "@/share/game/logic/board"
+import { Board, Position } from "src/share/game/logic/board"
 import { MoveTypes, Piece } from "src/share/game/logic/pieces"
 import { PayloadAction } from "@reduxjs/toolkit";
 

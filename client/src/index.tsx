@@ -7,6 +7,15 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie';
+import { ROOT_URL } from './config/ApiConstants';
+import { io } from 'socket.io-client';
+
+export const socket = io(ROOT_URL, {
+    auth: {
+        token: Cookies.get("token"),
+    }
+})
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(

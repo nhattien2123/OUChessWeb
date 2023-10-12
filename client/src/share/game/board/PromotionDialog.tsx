@@ -3,8 +3,9 @@ import { Color, Move, Piece, PieceType, getTile, oppositeColor, shouldPromotePaw
 import { Board, Tile, copyBoard } from '../logic/board';
 import { isPawn } from '../logic/pieces/pawn';
 import { MovingTo } from 'src/components/game/Game';
-
-
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
 
 const PromoteDialog: FC<{
     showPromotionDialog: boolean;
@@ -16,9 +17,9 @@ const PromoteDialog: FC<{
     setSelected: (piece: Piece | null) => void
     lastSelected: Tile | null
     setLastSelected: (lastSelected: Tile | null) => void
-    movingTo: MovingTo | null
-    setMovingTo: (movingTo: MovingTo | null) => void
-    setTurn: React.Dispatch<React.SetStateAction<Color>>
+    // movingTo: MovingTo | null
+    // setMovingTo: (movingTo: MovingTo | null) => void
+    // setTurn: React.Dispatch<React.SetStateAction<Color>>
     setMoves: (moves: Move[]) => void
 }> = ({
     showPromotionDialog,
@@ -30,11 +31,16 @@ const PromoteDialog: FC<{
     setSelected,
     lastSelected,
     setLastSelected,
-    movingTo,
-    setMovingTo,
-    setTurn,
+    // movingTo,
+    // setMovingTo,
+    // setTurn,
     setMoves
 }) => {
+        const turn = useAppSelector((state: RootState) => state.gameSettingsReducer.turn);
+        const gameStarted = useAppSelector((state: RootState) => state.gameSettingsReducer.gameStarted);
+        const movingTo = useAppSelector((state: RootState) => state.gameSettingsReducer.movingTo);
+        const dispatch = useAppDispatch();
+
         const handleSelectPieceType = (pieceType: PieceType) => {
             setBoard((prev) => {
                 const newBoard = copyBoard(prev)
@@ -56,9 +62,8 @@ const PromoteDialog: FC<{
             });
 
             setShowPromotionDialog(false);
-
-            setTurn((prev) => oppositeColor(prev))
-            setMovingTo(null)
+            dispatch(gameSettingActions.setTurn());
+            dispatch(gameSettingActions.setMovingTo({ movingTo: null }));
             setMoves([])
             setSelected(null)
             setLastSelected(null)
