@@ -32,10 +32,6 @@ const Matches = (props: Props) => {
         dispatch(matchActions.reqGetMatch({}));
     }, []);
 
-    useEffect(() => {
-        console.log(matchState)
-    }, [matchState])
-
     return (<>
         <Sidebar />
         <div className="content">

@@ -3,11 +3,18 @@ import React from 'react';
 import type { EndGame } from 'src/components/game/Game';
 import { VscDebugRestart } from 'react-icons/vsc';
 import "src/share/game/board/Board.scss";
+import { socket } from "src/index"
+import { useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import playerReducer from 'src/redux/reducer/player/PlayerReducer';
 
 export const GameOverScreen: FC<{
     endGame: EndGame | null
-    reset: () => void
-}> = ({ endGame, reset }) => {
+}> = ({ endGame }) => {
+    const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
+    const reset = () => {
+        socket?.emit(`resetGame`, { roomId });
+    }
     return (
         <>
             {endGame && (
