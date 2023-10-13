@@ -5,6 +5,7 @@ import type { Position, Tile, Board } from 'src/share/game/logic/board';
 import { checkIfPositionsMatch, copyBoard } from 'src/share/game/logic/board';
 import type { Color, Move, Piece } from 'src/share/game/logic/pieces';
 import {
+    createId,
     getTile,
     detectGameOver,
     oppositeColor,
@@ -123,9 +124,7 @@ export const BoardComponent: FC<{
         }
 
         const finishMovingPiece = (tile: Tile | null) => {
-            if (!selected) return
-            if (!tile) return
-            if (!movingTo) return
+            if (!tile || !movingTo || !socket) return
 
             setHistory({
                 board: copyBoard(board),
@@ -137,12 +136,12 @@ export const BoardComponent: FC<{
                 piece: movingTo.move.piece,
             })
 
-            const selectedTile = getTile(board, selected.position);
+            const selectedTile = getTile(board, movingTo.move.piece.position)
             if (!(selectedTile && isPawn(selectedTile.piece) && shouldPromotePawn({ tile }))) {
                 setBoard((prev) => {
                     const newBoard = copyBoard(prev)
                     if (!movingTo.move.piece) return prev
-                    const selectedTile = getTile(newBoard, selected.position)
+                    const selectedTile = getTile(newBoard, movingTo.move.piece.position)
                     const tileToMoveTo = getTile(newBoard, tile.position)
 
                     if (!selectedTile || !tileToMoveTo) return prev
@@ -282,12 +281,12 @@ export const BoardComponent: FC<{
 
                             const tileId = tile.piece?.getId()
                             const pieceIsBeingReplaced =
-                                movingTo?.move.piece && tile.piece
-                                    ? tileId === movingTo?.move.capture?.getId()
+                                movingTo?.move.piece && tile.piece && movingTo?.move.capture
+                                    ? tileId === createId(movingTo?.move.capture)
                                     : false
                             const rookCastled = movingTo?.move.castling?.rook
                             const isBeingCastled =
-                                rookCastled && rookCastled.getId() === tile.piece?.getId()
+                                rookCastled && createId(rookCastled) === tile.piece?.getId()
 
                             const handleClick = (e: ThreeMouseEvent) => {
                                 if (movingTo) {

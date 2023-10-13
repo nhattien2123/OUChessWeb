@@ -21,6 +21,9 @@ import { BoardModel } from 'src/models/Board';
 import { Opponent } from 'src/share/game/board/Opponent';
 import { StatusBar } from 'src/share/game/board/StatusBar';
 import { useSockets } from 'src/util/Socket';
+import { useAppDispatch } from 'src/app/hooks';
+
+import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
 
 export type ThreeMouseEvent = {
     stopPropagation: () => void
@@ -61,13 +64,18 @@ export const Game: FC = () => {
     const resetHistory = useHistoryState((state) => state.reset)
     const [turn, setTurn] = useState<Color>(`white`)
     const [lastSelected, setLastSelected] = useState<Tile | null>(null)
+    const dispatch = useAppDispatch();
+
+    const resetTurn = () => {
+        dispatch(gameSettingActions.resetTurn());
+    }
 
     const reset = () => {
         setBoard(createBoard())
         setSelected(null)
         setMoves([])
         resetHistory()
-        setTurn(`white`)
+        resetTurn()
         setEndGame(null)
     }
 
@@ -86,7 +94,7 @@ export const Game: FC = () => {
                 setTurn={setTurn}
             />
             <StatusBar />
-            <GameOverScreen endGame={endGame} reset={reset} />
+            <GameOverScreen endGame={endGame} />
             <Loader />
             <PromoteDialog
                 showPromotionDialog={showPromotionDialog}
