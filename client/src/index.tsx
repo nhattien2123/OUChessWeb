@@ -13,7 +13,7 @@ import { io } from 'socket.io-client';
 
 export const socket = io(ROOT_URL, {
     auth: {
-        token: Cookies.get("token"),
+        token: Cookies.get("token")
     }
 })
 

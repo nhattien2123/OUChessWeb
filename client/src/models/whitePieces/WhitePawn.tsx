@@ -14,8 +14,8 @@ interface GLTFResult extends STDLIB.GLTF {
 }
 
 export const WhitePawnModel: React.FC = () => {
-    const { nodes } = useGLTF(`./assets/w-pawn-stone.gltf`) as unknown as GLTFResult
+    const { nodes } = useGLTF(`/assets/w-pawn-stone.gltf`) as unknown as GLTFResult
     return <mesh attach="geometry" {...nodes.W_Pawn.geometry} />
 }
 
-useGLTF.preload(`./assets/w-pawn-stone.gltf`)
+useGLTF.preload(`/assets/w-pawn-stone.gltf`)

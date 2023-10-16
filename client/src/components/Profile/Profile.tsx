@@ -5,12 +5,11 @@ import { RootState } from 'src/app/store';
 import { Friend, Profile as ProfileStyle } from 'src/redux/reducer/profile/Types';
 import { profileActions } from 'src/redux/reducer/profile/profile';
 import CommentInfoList from 'src/share/comment/CommentInfoList';
-import Header, { socket } from 'src/share/header/Header';
-
-import '../profile/Profile.scss';
 import { toast } from 'react-toastify';
 import MessageService from 'src/services/message/MessageService';
 import { serverTimestamp } from 'firebase/firestore';
+import {socket} from 'src/index'
+import '../profile/Profile.scss';
 
 interface ProfileProps {}
 
@@ -67,7 +66,6 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
 
     if (isLoading) {
         return <div>Loading...</div>;
-
     }
 
     const requestHandle = () => {
@@ -90,8 +88,6 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
             if (currentUser._id > profile._id) combineId = profile._id + currentUser._id;
             else combineId = currentUser._id + profile._id;
         }
-
-        console.log(combineId);
 
         const doc = await MessageService.get('chat', combineId);
         console.log(doc);
@@ -116,7 +112,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                     };
 
                     await MessageService.addWithId('userCharts', currentUser._id, _chat);
-                    nav(`/messages/${combineId}`)
+                    nav(`/messages/${combineId}`);
                 }
             } catch (error) {
                 toast.error('Đã có lỗi xảy ra');
@@ -126,7 +122,6 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
 
     return (
         <>
-            <Header />
             <div className="profile-container">
                 <div className="avatar-container">
                     <div className="avatar-img ">
@@ -134,7 +129,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                     </div>
                     <div className="avatar-content">
                         <div className="avatar-username">
-                            {profile?.username} - {profile?.elo || 0}
+                            {profile?.username} (Elo: {profile?.elo || 0})
                         </div>
                         {profile._id !== currentUser._id && (
                             <div className="profile-feature">
@@ -193,7 +188,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                             Nhận xet
                         </button>
                     </div>
-                    {option === 'history' && <div>div</div>}
+                    {option === 'history' && <div></div>}
                     {option === 'comment' && <CommentInfoList />}
                 </div>
             </div>

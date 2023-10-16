@@ -20,7 +20,7 @@ interface GLTFResult extends STDLIB.GLTF {
 }
 
 export const BoardModel: React.FC = () => {
-    const { nodes, materials } = useGLTF(`./assets/board-stone.gltf`) as unknown as GLTFResult
+    const { nodes, materials } = useGLTF(`/assets/board-stone.gltf`) as unknown as GLTFResult
 
     return <>
         <mesh
@@ -50,4 +50,4 @@ export const BoardModel: React.FC = () => {
     </>
 }
 
-useGLTF.preload(`./assets/board-stone.gltf`)
+useGLTF.preload(`/assets/board-stone.gltf`)

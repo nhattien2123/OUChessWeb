@@ -14,8 +14,8 @@ interface GLTFResult extends STDLIB.GLTF {
 }
 
 export const WhiteKnightModel: React.FC = () => {
-    const { nodes } = useGLTF(`./assets/w-knight-stone.gltf`) as unknown as GLTFResult
+    const { nodes } = useGLTF(`/assets/w-knight-stone.gltf`) as unknown as GLTFResult
     return <mesh attach="geometry" {...nodes.W_Knight.geometry} />
 }
 
-useGLTF.preload(`./assets/w-knight-stone.gltf`)
+useGLTF.preload(`/assets/w-knight-stone.gltf`)

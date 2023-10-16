@@ -4,6 +4,7 @@ import { RootState } from '../../app/store';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from 'src/share/sidebar/Sidebar';
+import Header from 'src/share/header/Header';
 
 interface Props { }
 
@@ -20,9 +21,8 @@ const Home = (props: Props) => {
 
     return (
         <>
+            <Header />
             <Sidebar />
-            <div>Home</div>
-            <Link to={`/profile/${currentUser.username}`}>Go</Link>
         </>
     );
 };

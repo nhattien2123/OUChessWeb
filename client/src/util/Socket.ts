@@ -70,7 +70,7 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
             }
             socket.removeAllListeners();
         }
-    }, [])
+    }, [playerColor])
 
     const socketInitializer = async () => {
         // await fetch(`/api/socket`)
@@ -90,10 +90,8 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
             dispatch(messageMatchActions.addMessage({
                 messages: message
             }))
-            // const { id, username } = usePlayerState.getState()
             console.log(split[1]);
             if (split[1] === userId) {
-                console.log("test")
                 dispatch(playerActions.setPlayerColor({ playerColor: data.color }));
                 dispatch(playerActions.setJoinedRoom({ joinedRoom: true }));
             } else {
@@ -113,6 +111,8 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
         })
 
         socket.on(`cameraMoved`, (data: CameraMove) => {
+
+            console.log(playerColor, " - ", data.color);
             if (playerColor === data.color) {
                 return
             }

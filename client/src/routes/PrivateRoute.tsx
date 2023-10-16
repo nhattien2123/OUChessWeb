@@ -3,7 +3,7 @@ import { Navigate, useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 type PrivateRouterProps = {
-    component: React.FC<any>;
+    component: any;
 };
 
 const PrivateRouter: React.FC<PrivateRouterProps> = ({ component: Component }) => {
@@ -11,7 +11,7 @@ const PrivateRouter: React.FC<PrivateRouterProps> = ({ component: Component }) =
     if (!token) {
         return <Navigate to={'/login'} />;
     } else {
-        return <Component />;
+        return <>{Component}</>;
     }
 };
 

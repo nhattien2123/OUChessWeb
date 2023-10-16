@@ -29,6 +29,7 @@ export const MiniMap: FC<{
                     {row.map((tile, j) => {
                         const bg = `${(i + j) % 2 === 0 ? `#a5a5a5` : `#676767`}`
                         const isSelected = selected?.getId() === tile.piece?.getId?.()
+                        
                         const canMove = checkIfSelectedPieceCanMoveHere({
                             selected,
                             moves,
@@ -39,7 +40,8 @@ export const MiniMap: FC<{
                             <div
                                 key={j}
                                 className={`mini-map-tile-move 
-                                ${isSelected ? 'selected' : ''} 
+                                // ${isSelected ? 'selected' : ''} 
+                                ${isSelected ? 'selected' : `${tile.piece?.color}`}
                                 ${bg === `#a5a5a5` ? 'odd' : 'even'} 
                                 ${canMove ? 'can-move' : ''
                                     }`}

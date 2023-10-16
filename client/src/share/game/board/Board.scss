@@ -80,6 +80,14 @@
     border-radius: 7px;
     opacity: 0.8;
 
+    .white svg {
+        color: #ffffff;
+    }
+    
+    .black svg {
+        color: #000000;
+    }
+
     .mini-map-row {
         display: flex;
 
@@ -312,3 +320,4 @@
         font-weight: 600;
     }
 }
+

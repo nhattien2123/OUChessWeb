@@ -4,20 +4,14 @@ import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
 import { userActions } from 'src/redux/reducer/user/userReducer';
 import { Friend } from 'src/redux/reducer/profile/Types';
-import 'src/share/header/Header.scss';
-import { ROOT_URL } from 'src/config/ApiConstants';
-import { io } from 'socket.io-client';
-import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { socket } from 'src/index';
+import 'src/share/header/Header.scss';
 
 type Props = object;
 
-export const socket = io(ROOT_URL, {
-    auth: {
-        token: Cookies.get('token'),
-    },
-});
+
 
 const Header = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
@@ -79,7 +73,6 @@ const Header = (props: Props) => {
             const newList = friends.filter((f: Friend) => {
                 return f.recipient._id !== friend.recipient._id;
             });
-            console.log(newList);
             dispatch(userActions.reqSetFriends({ friends: newList }));
         });
 
@@ -91,7 +84,7 @@ const Header = (props: Props) => {
     return (
         <>
             <nav>
-                <div className="header-container">
+                <div className="headers-container">
                     <div className="notify friends" onClick={(evt) => setShow(!show)}>
                         <div>Bạn bè</div>
                         {friendNotify && <span className="badge"></span>}

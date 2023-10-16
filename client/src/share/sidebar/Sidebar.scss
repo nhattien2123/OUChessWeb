@@ -11,15 +11,18 @@
     position: fixed;
     top:0;
     bottom: 0;
-    background-color: #ffffff1a;
+    background-color: #4b4b4b;
     text-align: center;
 }
 
-.sidebar-item a {
+a {
     display: block;
+    text-decoration: none;
+}
+
+.sidebar-item a {
     padding: 15px 50px;
     color: white;
-    text-decoration: none;
 }
 
 .sidebar-item a:hover {
@@ -28,4 +31,30 @@
 
 .sidebar-item li:first-child() a {
     margin-top: 10px;
+}
+
+.sidebar-btn a {
+    margin: 10px auto;
+    padding: 10px 0;
+}
+
+.sidebar-input {
+    margin: 10px 0;
+}
+
+.sidebar-input input::placeholder {
+    color: #fff;
+}
+
+.sidebar-input input:focus {
+    outline: none;
+}
+
+.sidebar-input input {
+    width: 80%;
+    height: 25px;
+    display: inline-block;
+    background-color: #747070;
+    border: 0;
+    color: #fff;
 }

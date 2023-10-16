@@ -1,28 +1,31 @@
-.header-container {
+.headers-container {
     display: flex;
     justify-content: flex-end;
-    background-color: #000;
+    background-color: #707070;
     position: sticky;
     top: 0;
+    width: 90%;
+    margin: 0 0 0 auto;
+    z-index: 0;
 }
 
-.header-container .notify {
+.headers-container .notify {
     width: 10%;
-    padding: 10px;
+    padding: 5px;
     margin: 5px 10px;
     text-align: center;
     background-color: #fff;
     position: relative;
 }
 
-.header-container .notify:hover {
+.headers-container .notify:hover {
     cursor: pointer;
     background-color: #575151;
 }
 
 
 
-.header-container .notify .badge {
+.headers-container .notify .badge {
     position: absolute;
     background-color: red;
     top: 100%;
