@@ -10,7 +10,7 @@ interface Props { }
 
 const Home = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
-    const friends = useAppSelector((state:RootState) => state.userReducer.friends);
+    const friends = useAppSelector((state: RootState) => state.userReducer.friends);
 
     useEffect(() => {
         if (currentUser) {

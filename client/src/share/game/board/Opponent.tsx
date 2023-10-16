@@ -5,9 +5,9 @@ import { Float, Html } from '@react-three/drei'
 
 // import { useOpponentState, usePlayerState } from '@/state/player'
 
-import { playerActions } from "src/redux/reducer/player/PlayerReducer";
-import { opponentActions } from "src/redux/reducer/opponent/OpponentReducer";
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+// import { playerActions } from "src/redux/reducer/player/PlayerReducer";
+// import { opponentActions } from "src/redux/reducer/opponent/OpponentReducer";
+import { useAppSelector } from 'src/app/hooks';
 import { RootState } from "src/app/store";
 
 export const Opponent: FC = () => {

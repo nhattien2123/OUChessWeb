@@ -42,9 +42,9 @@ export const RoomListComponent: FC<{
         const dispatch = useAppDispatch();
 
         const handleRoomClick = (match: Match) => {
-            sendRoom(match._id);
+            sendRoom(match._id)
+            nav(`/game`);
             // nav(`/game/live/${matchId}`);
-            nav(`/game/online`);
             // handleNavigateToGame(selectedRoom)
         };
 
@@ -63,7 +63,7 @@ export const RoomListComponent: FC<{
         const handleCreateRoom = (e: FormEvent) => {
             e.preventDefault();
             createMatchHandler(e);
-            // sendRoom();
+            sendRoom(newMatch._id);
             // nav(`/game/live/${newMatch._id}`);
             nav(`/game`);
             // setNewMatch({
@@ -76,12 +76,12 @@ export const RoomListComponent: FC<{
             // });
         }
 
-        const sendRoom = async (matchId: string | null) => {
+        const sendRoom = async (matchId: string | null, callback?: () => void) => {
             if (!socket) return
             dispatch(playerActions.setRoomId({ roomId: matchId }));
             const data: JoinRoomClient = { roomId: matchId, username: `${username}#${userId}` }
-            socket.emit(`joinRoom`, data)
-            socket.emit(`fetchPlayers`, { roomId: matchId })
+            await socket.emit(`joinRoom`, data);
+            await socket.emit(`fetchPlayers`, { roomId: matchId });
         }
 
         const handleSearchRoomIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {

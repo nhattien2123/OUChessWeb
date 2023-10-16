@@ -21,9 +21,11 @@ import { BoardModel } from 'src/models/Board';
 import { Opponent } from 'src/share/game/board/Opponent';
 import { StatusBar } from 'src/share/game/board/StatusBar';
 import { useSockets } from 'src/util/Socket';
-import { useAppDispatch } from 'src/app/hooks';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 
 import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
+import { RootState } from 'src/app/store';
+import { Chat } from 'src/share/game/board/Chat';
 
 export type ThreeMouseEvent = {
     stopPropagation: () => void
@@ -70,6 +72,8 @@ export const Game: FC = () => {
         dispatch(gameSettingActions.resetTurn());
     }
 
+    const joinedRoom = useAppSelector((state: RootState) => state.playerReducer.joinedRoom)
+
     const reset = () => {
         setBoard(createBoard())
         setSelected(null)
@@ -93,6 +97,8 @@ export const Game: FC = () => {
                 setBoard={setBoard}
                 setTurn={setTurn}
             />
+            {joinedRoom && <Chat />}
+            {/* {joinedRoom && <Chat />} */}
             <StatusBar />
             <GameOverScreen endGame={endGame} />
             <Loader />
@@ -108,7 +114,7 @@ export const Game: FC = () => {
                 setLastSelected={setLastSelected}
                 setMoves={setMoves}
             />
-            <Canvas shadows camera={{ position: [0, 10, 6], fov: 70 }}>
+            <Canvas shadows camera={{ position: [0, 10, 6], fov: 50 }}>
                 <Environment files="dawn.hdr" />
                 <Opponent />
                 <BoardModel />

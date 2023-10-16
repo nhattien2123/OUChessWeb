@@ -32,11 +32,10 @@ const Router: React.FC<RouterProps> = () => {
                 <Route path="/profile/:username" element={<Base component={<Profile />} />} />
                 <Route path="/player" element={<PrivateRouter component={<Base component={<Players />} />} />} />
                 <Route path="/login" element={<Login />}></Route>
-                <Route path="/game/online" element={<Game />}></Route>
+                <Route path="/game" element={<Game />}></Route>
                 <Route path="/register" element={<Register />} />
                 <Route path="/play/online" element={<Matches />} />
-                <Route path="/forget" element={<ForgetPassword />} />
-                <Route path="/forget" element={<ForgetPassword />} />
+                <Route path="/forget" element={<ForgetPassword />} />     
             </Routes>
         </BrowserRouter>
     );

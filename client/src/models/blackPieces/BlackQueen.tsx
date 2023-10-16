@@ -14,8 +14,8 @@ interface GLTFResult extends STDLIB.GLTF {
 }
 
 export const BlackQueenModel: React.FC = () => {
-    const { nodes } = useGLTF(`./assets/b-queen-stone.gltf`) as unknown as GLTFResult
+    const { nodes } = useGLTF(`/assets/b-queen-stone.gltf`) as unknown as GLTFResult
     return <mesh attach="geometry" {...nodes.B_Queen.geometry} />
 }
 
-useGLTF.preload(`./assets/b-queen-stone.gltf`)
+useGLTF.preload(`/assets/b-queen-stone.gltf`)
