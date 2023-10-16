@@ -4,7 +4,7 @@ import * as Types from './Types';
 const initialState: Types.OpponentState = {
     position: [0, 100, 0],
     mousePosition: [0, 0, 0],
-    name: ""
+    name: ``
 }
 
 const opponentSlice = createSlice({

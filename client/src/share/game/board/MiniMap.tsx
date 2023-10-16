@@ -40,8 +40,7 @@ export const MiniMap: FC<{
                             <div
                                 key={j}
                                 className={`mini-map-tile-move 
-                                // ${isSelected ? 'selected' : ''} 
-                                ${isSelected ? 'selected' : `${tile.piece?.color}`}
+                                ${isSelected ? 'selected' : `${tile.piece?.color}`} 
                                 ${bg === `#a5a5a5` ? 'odd' : 'even'} 
                                 ${canMove ? 'can-move' : ''
                                     }`}
