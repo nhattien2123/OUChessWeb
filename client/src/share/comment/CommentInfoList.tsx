@@ -65,16 +65,18 @@ const CommentInfoList = (props: Props) => {
 
     return (
         <>
-            <div style={{overflow: "auto", height: "240px"}}>
+            <div style={{ overflow: 'auto', maxHeight: '240px' }}>
                 {comments.map((m) => {
                     return <CommentInfoItem key={m.sender._id} comment={m} />;
                 })}
             </div>
 
-            <form className="ci-form" onSubmit={handlerSubmit}>
-                <input type="text" value={comment} onChange={(evt) => setComment(evt.target.value)} />
-                <button type="submit">Gửi</button>
-            </form>
+            {profile.username !== currentUser.username && (
+                <form className="ci-form" onSubmit={handlerSubmit}>
+                    <input type="text" value={comment} onChange={(evt) => setComment(evt.target.value)} />
+                    <button type="submit">Gửi</button>
+                </form>
+            )}
         </>
     );
 };

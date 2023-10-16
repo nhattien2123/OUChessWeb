@@ -1,7 +1,7 @@
 const userService = require('../services/userService');
 const httpHandler = require('../helpers/httpHandler');
 const bcrypt = require('bcrypt');
-const { commentInfoService } = require('../services/commentInfoService');
+const { commentInfoService, commentInfoSocket } = require('../services/commentInfoService');
 
 const userController = {
     getCurrentUser: async (req, res) => {
@@ -92,10 +92,10 @@ const userController = {
     },
     loadCommentOfUser: async (req, res) => {
         try {
-            let params = {}
+            let params = {};
             params.receiver = req.params.username;
             const comments = await commentInfoService.getComments(params);
-            httpHandler.Success(res, {comments}, "Tìm thấy danh sách nhận xét người dùng");
+            httpHandler.Success(res, { comments }, 'Tìm thấy danh sách nhận xét người dùng');
         } catch (error) {
             httpHandler.Servererror(res, error.message, 'Đã có lỗi xảy ra!!!');
         }
@@ -109,7 +109,21 @@ const userController = {
             // return
         } catch (error) {}
     },
-    loadListUser: async (req, res) => {},
+    getListUser: async (req, res) => {
+        try {
+            const { kw } = req.query;
+            if (!kw) {
+                httpHandler.Fail(res, {}, 'Từ khoá không phù hợp');
+                return;
+            }else{
+                const list = await userService.getListUserByUsername(kw);
+                httpHandler.Success(res, {list}, "Tìm kiếm thành công");
+            }
+        } catch (error) {
+            console.log(error)
+            httpHandler.Servererror(res, {}, 'Đã có lỗi xảy ra');
+        }
+    },
     getProfile: async (req, res) => {
         try {
             const { username } = req.params;
@@ -117,8 +131,8 @@ const userController = {
             if (!user) {
                 httpHandler.Fail(res, {}, 'Không tìm thầy người chơi');
             } else {
-                const { _id, username, avatar, friends, createdAt, elo, ...other } = user._doc;
-                const profile = { _id, username, avatar, friends, createdAt };
+                const { _id, username, avatar, friends, createdAt, elo, firstName, lastName, nation, ...other } = user._doc;
+                const profile = { _id, username, avatar, friends, createdAt, elo, firstName, lastName, nation};
                 httpHandler.Success(res, { profile }, 'Tìm thầy người chơi');
             }
         } catch (error) {

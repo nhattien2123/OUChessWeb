@@ -13,6 +13,8 @@ const apiConstant = {
     API_ADD_MATCH: "/matchapi-addmatch",
     API_UPDATE_MATCH: "/matchapi-updatematch",
     API_DELETE_MATCH: "/matchapi-deletematch",
+    API_GET_LIST_USER: "/userapi-getlistuser/",
+
 
     API_UPDATE_USER_PROFILE: "/:username/userapi-updateuser",
     API_UPDATE_USER_PASSWORD: "/:username/userapi-changepassword",

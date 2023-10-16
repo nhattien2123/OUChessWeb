@@ -19,7 +19,7 @@ const Sidebar = (props: Props) => {
         Cookies.remove('user');
         Cookies.remove('token');
         socket.auth = {
-            token: "",
+            token: '',
         };
         socket.disconnect();
         socket.connect();
@@ -48,7 +48,9 @@ const Sidebar = (props: Props) => {
                         onChange={(evt) => setKw(evt.target.value)}
                         onKeyDown={(evt) => {
                             if (evt.key === 'Enter') {
-                                nav(`/player/?kw=${kw}`);
+                                if (kw.trim() !== '') {
+                                    nav(`/player/?kw=${kw}`);
+                                }
                             }
                         }}
                     ></input>

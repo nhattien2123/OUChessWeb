@@ -69,6 +69,9 @@ const userService = {
     removeFriend: async (_id, friendId) => {
         return await userReposity.removeFriend(_id, friendId);
     },
+    getListUserByUsername : async (kw) => {
+        return await userReposity.getListUserByUsername(kw);
+    }
 };
 
 module.exports = userService;

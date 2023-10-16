@@ -60,7 +60,8 @@ export const USER = {
             URL: `/user/${username}/userapi-getfriends`,
             METHOD: 'GET'
         }
-    }
+    },
+
 };
 
 export const HISTORY = {
@@ -93,5 +94,9 @@ export const PROFILE = {
             URL: `/user/${username}/userapi-getcommentinfo`,
             METHOD: 'GET'
         }
+    },
+    API_GET_LIST_USER: {
+        URL: "/user/userapi-getlistuser",
+        METHOD: 'GET'
     }
 }

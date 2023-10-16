@@ -9,9 +9,12 @@ export type Friend = {
 export type Profile = {
     _id?: string,
     username: string,
+    firstName?: string,
+    lastName?: string,
     avatar: string,
     friends?: Friend[],
-    elo?: number
+    elo?: number,
+    nation?: string
 }
 
 export type CommentInfo = {
