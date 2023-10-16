@@ -14,8 +14,8 @@ interface GLTFResult extends STDLIB.GLTF {
 }
 
 export const WhiteRookModel: React.FC = () => {
-    const { nodes } = useGLTF(`./assets/w-rook-stone.gltf`) as unknown as GLTFResult
+    const { nodes } = useGLTF(`/assets/w-rook-stone.gltf`) as unknown as GLTFResult
     return <mesh attach="geometry" {...nodes.W_Rook.geometry} />
 }
 
-useGLTF.preload(`./assets/w-rook-stone.gltf`)
+useGLTF.preload(`/assets/w-rook-stone.gltf`)

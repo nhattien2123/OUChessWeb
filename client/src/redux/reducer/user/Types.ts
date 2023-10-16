@@ -41,3 +41,5 @@ export type ActionResChangeAvatar = PayloadAction<{
 export type ActionReqSetFriends = PayloadAction<{
     friends: Friend[];
 }>;
+
+export type ActionClearUser = PayloadAction<{}>

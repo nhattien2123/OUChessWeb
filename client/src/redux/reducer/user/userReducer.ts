@@ -65,6 +65,9 @@ const userSlice = createSlice({
             const { friends } = action.payload;
             state.friends = friends;
         },
+        clearUser: (state, action: Types.ActionClearUser) => {
+            state.currentUser = initialState.currentUser;
+        }
     },
 });
 

@@ -22,6 +22,11 @@ export type ActionResGetDataLogin = PayloadAction<{
 export type ActionResGetDataRefreshToken = PayloadAction<{
     token: authState["token"];
 }>
+
 export type ActionResLogOut = PayloadAction<{
     msg: authState["msg"];
 }>;
+
+export type ActionReqLogOut = PayloadAction<{
+}>;
+

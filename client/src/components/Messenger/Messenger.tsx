@@ -13,6 +13,8 @@ import { collection, doc, getDoc, onSnapshot, orderBy, serverTimestamp, updateDo
 import useDocuments from '../../share/firestore/DocumentsHook';
 import 'src/components/messenger/Messenger.scss';
 import { useNavigate, useParams } from 'react-router-dom';
+import Header from 'src/share/header/Header';
+import Sidebar from 'src/share/sidebar/Sidebar';
 
 interface Props {}
 
@@ -22,7 +24,7 @@ const Messenger = (props: Props) => {
     const selectedUser = useAppSelector((state: RootState) => state.messageReducer.selectedUser);
     const [message, setMessage] = useState('');
     const [showEmoji, setShowEmoji] = useState(false);
-    const [limit, setLimit] = useState<number>(100)
+    const [limit, setLimit] = useState<number>(100);
     const nav = useNavigate();
     const ref = useRef(null);
 
@@ -65,15 +67,16 @@ const Messenger = (props: Props) => {
         await firstMessages();
 
         const imageUrl = await uploadImage(e.target.files[0], currentUser._id);
-        const messID = uuidv4();
+     
         const newMessage = {
+            chatID: selectedChat,
             sendID: currentUser._id,
             type: 'image',
             content: imageUrl,
-            createAt: serverTimestamp(),
         };
 
-        MessageService.update('messages', selectedChat, { [messID]: newMessage });
+        MessageService.add('messages', newMessage);
+        // MessageService.update('messages', selectedChat, { [messID]: newMessage });
         MessageService.update('chat', selectedChat, { lastMessage: 'Đã gửi một ảnh' });
         MessageService.update('userCharts', selectedUser._id, {
             [selectedChat]: {
@@ -109,6 +112,11 @@ const Messenger = (props: Props) => {
                 sent: true,
             },
         });
+        MessageService.update('userCharts', currentUser._id, {
+            [selectedChat]: {
+                sent: false,
+            },
+        });
 
         // SetMessages((prevMessages) => [...prevMessages, message]);
         setMessage('');
@@ -122,6 +130,8 @@ const Messenger = (props: Props) => {
 
     return (
         <>
+            {/* <Header />
+            <Sidebar /> */}
             <div className="chat-container">
                 <ChatList />
                 <div className="chat-field">

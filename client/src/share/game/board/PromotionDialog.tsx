@@ -47,8 +47,6 @@ const PromoteDialog: FC<{
                 console.log(newBoard);
                 const selectedTile = selected ? getTile(newBoard, selected.position) : null;
                 const tileToMoveTo = getTile(newBoard, tile.position)
-                console.log(selectedTile)
-                console.log(selected);
                 if (tileToMoveTo && selectedTile && isPawn(selectedTile.piece) && shouldPromotePawn({ tile })) {
                     selectedTile.piece.type = pieceType;
                     selectedTile.piece.id = selectedTile.piece.id + 2

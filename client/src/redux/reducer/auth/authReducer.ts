@@ -29,6 +29,7 @@ const authSlice = createSlice({
             state.isLoggedOut = false;
             state.token = token;
             state.refreshToken = refreshToken;
+            state.msg = "";
         },
         resGetDataRefreshToken: (state, action: Types.ActionResGetDataRefreshToken) => {
             const { token } = action.payload;
@@ -46,6 +47,12 @@ const authSlice = createSlice({
             state.isLoggedOut = true;
             state.isLoggedIn = false;
         },
+        reqLogOut: (state, action: Types.ActionReqLogOut) => {
+            state.isLoggedIn = false;
+            state.isLoggedOut = true;
+            state.token = "";
+        }
+
     },
 });
 

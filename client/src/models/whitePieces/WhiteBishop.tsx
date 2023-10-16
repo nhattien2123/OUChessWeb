@@ -14,8 +14,8 @@ interface GLTFResult extends STDLIB.GLTF {
 }
 
 export const WhiteBishopModel: React.FC = () => {
-    const { nodes } = useGLTF(`./assets/w-bishop-stone.gltf`) as unknown as GLTFResult
+    const { nodes } = useGLTF(`/assets/w-bishop-stone.gltf`) as unknown as GLTFResult
     return <mesh attach='geometry' {...nodes.W_Bishop.geometry} />
 }
 
-useGLTF.preload(`./assets/w-bishop-stone.gltf`)
+useGLTF.preload(`/assets/w-bishop-stone.gltf`)

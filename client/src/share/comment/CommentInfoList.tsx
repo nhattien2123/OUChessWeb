@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import { socket } from 'src/share/header/Header';
+import { socket } from 'src/index';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
 import { profileActions } from 'src/redux/reducer/profile/profile';
@@ -30,8 +30,8 @@ const CommentInfoList = (props: Props) => {
                 sender: {
                     _id: currentUser._id,
                     username: currentUser.username,
-                    avatar: currentUser.avatar
-                }
+                    avatar: currentUser.avatar,
+                },
             });
             setComment('');
         }
@@ -39,7 +39,7 @@ const CommentInfoList = (props: Props) => {
 
     useEffect(() => {
         socket.on('newComment', (comment) => {
-           dispatch(profileActions.postAddCommentInfo({comment}))
+            dispatch(profileActions.postAddCommentInfo({ comment }));
         });
 
         return () => {
@@ -65,9 +65,11 @@ const CommentInfoList = (props: Props) => {
 
     return (
         <>
-            {comments.map((m) => {
-                return <CommentInfoItem key={m.sender._id} comment={m} />;
-            })}
+            <div style={{overflow: "auto", height: "240px"}}>
+                {comments.map((m) => {
+                    return <CommentInfoItem key={m.sender._id} comment={m} />;
+                })}
+            </div>
 
             <form className="ci-form" onSubmit={handlerSubmit}>
                 <input type="text" value={comment} onChange={(evt) => setComment(evt.target.value)} />

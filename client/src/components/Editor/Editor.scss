@@ -1,6 +1,6 @@
 .profile-container {
-    width: 80%;
-    margin: 30px auto 30px 190px;
+    width: 90%;
+    margin: auto
 }
 
 .avatar-container {
@@ -142,6 +142,7 @@ img {
 }
 
 .btn-form {
+    display: block;
     padding: 15px 15px;
     margin: 10px 5px 5px auto;
     background-color: #a7a7a7d0;

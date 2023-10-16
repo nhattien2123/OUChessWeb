@@ -6,6 +6,7 @@ import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { ErrorMessage } from '@hookform/error-message';
+import { Link } from 'react-router-dom';
 
 type Props = {
     registerData: {
@@ -49,7 +50,7 @@ const RegisterForm = (props: Props) => {
         resolver: yupResolver(schema),
     });
 
-    const {submitCount} = form.formState;
+    const { submitCount } = form.formState;
 
     const submitHandler = async (data: Props['registerData']) => {
         await dispatch(
@@ -60,13 +61,12 @@ const RegisterForm = (props: Props) => {
                     phone: data.phone,
                 },
             }),
-        )
-
+        );
     };
 
     useEffect(() => {
         const isErros: boolean = Object.keys(errors).length > 0;
-        if(isErros){
+        if (isErros) {
             if (errors.email) {
                 form.setError('email', {
                     message: errors.email.message,
@@ -82,13 +82,11 @@ const RegisterForm = (props: Props) => {
                     message: errors.username.message,
                 });
             }
-        }else {
-            if(submitCount > 0 && !isLoading){
-                onSubmit(form.getValues())
+        } else {
+            if (submitCount > 0 && !isLoading) {
+                onSubmit(form.getValues());
             }
         }
-
-
     }, [errors, isLoading]);
 
     return (
@@ -168,6 +166,9 @@ const RegisterForm = (props: Props) => {
                                 Đăng ký
                             </button>
                         </form>
+                        <div className="register-link">
+                            <Link to={'/login'} className='register-dir'>Đăng nhập</Link>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -13,6 +13,7 @@ const disconnect = (socket, io) => {
 
 const fetchPlayers = (socket, io) => {
     socket.on(`fetchPlayers`, (data) => {
+        console.log(data);
         const players = io.sockets.adapter.rooms.get(data.roomId)?.size || 0
         io.sockets.in(data.roomId).emit(`playersInRoom`, players)
     })

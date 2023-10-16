@@ -70,7 +70,6 @@ const Editor: React.FC<EditorProps> = () => {
 
     return (
         <>
-            <Sidebar />
             <div className="profile-container">
                 <div className="avatar-container">
                     <div className="avatar-img">

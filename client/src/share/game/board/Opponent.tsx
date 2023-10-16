@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import { useEffect, type FC } from 'react'
 
 import { animated, useSpring } from '@react-spring/three'
 import { Float, Html } from '@react-three/drei'
@@ -24,6 +24,7 @@ export const Opponent: FC = () => {
   const { smoothPosition } = useSpring({
     smoothPosition: position,
   })
+
   return (
     <Float speed={7} rotationIntensity={0.05} floatIntensity={1}>
       <animated.group position={smoothPosition}>

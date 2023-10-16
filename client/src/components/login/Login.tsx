@@ -7,6 +7,8 @@ import { authActions } from '../../redux/reducer/auth/authReducer';
 import { userActions } from '../../redux/reducer/user/userReducer';
 import '../login/Login.scss';
 import LoginForm from 'src/share/form/LoginForm';
+import { socket } from 'src/index';
+import { toast } from 'react-toastify';
 interface LoginProps {}
 
 const Login = () => {
@@ -20,7 +22,7 @@ const Login = () => {
         password: '',
     };
 
-    const loginHandler = (data: {username: string, password: string}) => {
+    const loginHandler = (data: { username: string; password: string }) => {
         dispatch(authActions.reqGetDataLogin(data));
     };
 
@@ -29,15 +31,20 @@ const Login = () => {
             Cookies.set('token', token, {
                 path: '/',
             });
+            socket.auth = {
+                token: token,
+            };
+            socket.disconnect();
+            socket.connect();
             dispatch(userActions.reqGetCurrentUser({}));
+            toast.success("Đăng nhập thành công");
             nav('/');
         }
-        console.log(currentUser);
     }, [isLoggIn, token]);
 
     return (
         <>
-         <LoginForm defaultData={defaultData} onSubmit={loginHandler} />
+            <LoginForm defaultData={defaultData} onSubmit={loginHandler} />
         </>
     );
 };
