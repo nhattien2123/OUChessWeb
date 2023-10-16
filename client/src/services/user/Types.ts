@@ -1,6 +1,7 @@
 import type { Response } from "src/config/Constants";
 import { userState } from "src/redux/reducer/user/Types";
 import { CommonState } from "src/redux/reducer/common/Types";
+import { PlayerListState } from "src/redux/reducer/playersList/Types";
 
 export type ResFetchGetCurrrentUser = Response<{
     currentUser: userState['currentUser'];
@@ -22,3 +23,4 @@ export type ResFetchPatchChangeAvatar = Response<{
     newAvatar: userState['currentUser']['avatar'];
     errorMsg: CommonState['errorMsg'];
 }>;
+

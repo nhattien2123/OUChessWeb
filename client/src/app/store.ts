@@ -13,6 +13,7 @@ import messageMatchReducer from "src/redux/reducer/messageMatch/MessageMatchRedu
 import opponentReducer from "src/redux/reducer/opponent/OpponentReducer";
 import playerReducer from "src/redux/reducer/player/PlayerReducer";
 import gameSettingsReducer from "src/redux/reducer/gameSettings/GameSettingsReducer"
+import PlayerListReducer from "src/redux/reducer/playersList/PlayerList";
 
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
@@ -29,6 +30,7 @@ export const store = configureStore({
         opponentReducer,
         playerReducer,
         gameSettingsReducer,
+        PlayerListReducer
     },
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware)
     middleware: [sagaMiddleware],

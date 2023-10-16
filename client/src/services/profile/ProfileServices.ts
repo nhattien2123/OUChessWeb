@@ -25,3 +25,16 @@ export const fetchCommentInfo = async (username: string, params: any): Promise<T
 
     return await res.json();
 };
+
+export const fetchGetListUser = async (kw: string):Promise<Types.ResGetListUser> => {
+    const {URL, METHOD} = PROFILE.API_GET_LIST_USER;
+    const url = `${ROOT_URL}${URL}/?kw=${kw}`;
+    const res = await fetch(url, {
+        method: METHOD,
+        headers: {
+            "Content-type": CONTENT_TYPE
+        }
+    })
+
+    return await res.json();
+}

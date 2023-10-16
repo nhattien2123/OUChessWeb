@@ -129,7 +129,13 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                     </div>
                     <div className="avatar-content">
                         <div className="avatar-username">
-                            {profile?.username} (Elo: {profile?.elo || 0})
+                            {profile?.username} {profile?.nation && `(${profile.nation})`}
+                        </div>
+                        <div className='avatar-fullname'>
+                            {profile?.firstName} {profile?.lastName}
+                        </div>
+                        <div className='avatar-fullname'>
+                            Elo: {profile?.elo}
                         </div>
                         {profile._id !== currentUser._id && (
                             <div className="profile-feature">

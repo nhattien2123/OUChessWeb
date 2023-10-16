@@ -6,6 +6,7 @@ import * as authSaga from './auth/authSaga';
 import * as registerSaga from './register/registerSaga';
 import * as userSaga from './user/userSaga';
 import * as profileSaga from './profile/ProfileSaga';
+import * as playerListSaga from "./playerList/PlayerListSaga"
 
 /**
  * Root saga
@@ -19,5 +20,6 @@ export default function* rootSaga() {
         // fork(historySaga.watchHistoryFunction),
         fork(matchSaga.watchMatchFunction),
         fork(profileSaga.watchProfle),
+        fork(playerListSaga.watchPlayerList)
     ]);
 }

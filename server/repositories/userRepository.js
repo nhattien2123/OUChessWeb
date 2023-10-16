@@ -138,6 +138,14 @@ const userReposity = {
         );
         return after;
     },
+    getListUserByUsername: async (kw) => {
+     
+        const list = await user.find(
+            { username: {$regex: kw, $options: 'i'} }, 
+            '_id firstName lastName username elo nation avatar');
+ 
+        return list;
+    },
 };
 
 module.exports = userReposity;
