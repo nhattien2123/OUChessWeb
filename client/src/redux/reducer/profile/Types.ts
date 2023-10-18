@@ -15,6 +15,9 @@ export type Profile = {
     friends?: Friend[],
     elo?: number,
     nation?: string
+    createdAt?: Date,
+    role?: string
+    dateOfBirth?: Date
 }
 
 export type CommentInfo = {

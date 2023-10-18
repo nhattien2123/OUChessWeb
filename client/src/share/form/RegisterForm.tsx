@@ -8,19 +8,20 @@ import * as yup from 'yup';
 import { ErrorMessage } from '@hookform/error-message';
 import { Link } from 'react-router-dom';
 
-type Props = {
-    registerData: {
-        username: string;
-        password: string;
-        firstName?: string;
-        lastName?: string;
-        email: string;
-        phone: string;
-        nation?: string;
-        confirmPassword: string;
-        avatar?: string;
-    };
+export type registerData = {
+    username: string;
+    password: string;
+    firstName?: string;
+    lastName?: string;
+    email: string;
+    phone: string;
+    nation?: string;
+    confirmPassword: string;
+    avatar?: string;
+};
 
+type Props = {
+    registerData: registerData;
     onSubmit: (data: Props['registerData']) => void;
 };
 
@@ -38,7 +39,11 @@ const RegisterForm = (props: Props) => {
             .oneOf([yup.ref('password'), ''], 'Mật khẩu không khớp')
             .required('Vui lòng nhập mật khẩu xác nhận'),
         email: yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
-        phone: yup.string().required('Vui lòng nhập số điện thoại'),
+        phone: yup
+            .string()
+            .length(11, 'Số điện thoại chưa đủ')
+            .matches(/^[\\+]?[(]?[0-9]{3}[)]?[-\s\\.]?[0-9]{3}[-\s\\.]?[0-9]{4,6}$/im, 'Số điện thoại không hợp lệ')
+            .required('Vui lòng nhập số điện thoại'),
         firstname: yup.string(),
         lastName: yup.string(),
         nation: yup.string(),
@@ -167,7 +172,9 @@ const RegisterForm = (props: Props) => {
                             </button>
                         </form>
                         <div className="register-link">
-                            <Link to={'/login'} className='register-dir'>Đăng nhập</Link>
+                            <Link to={'/login'} className="register-dir">
+                                Đăng nhập
+                            </Link>
                         </div>
                     </div>
                 </div>

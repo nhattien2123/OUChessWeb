@@ -14,6 +14,7 @@ import opponentReducer from "src/redux/reducer/opponent/OpponentReducer";
 import playerReducer from "src/redux/reducer/player/PlayerReducer";
 import gameSettingsReducer from "src/redux/reducer/gameSettings/GameSettingsReducer"
 import PlayerListReducer from "src/redux/reducer/playersList/PlayerList";
+import adminReducer from "src/redux/reducer/admin/adminReducer";
 
 const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
@@ -30,7 +31,8 @@ export const store = configureStore({
         opponentReducer,
         playerReducer,
         gameSettingsReducer,
-        PlayerListReducer
+        PlayerListReducer,
+        adminReducer
     },
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware)
     middleware: [sagaMiddleware],

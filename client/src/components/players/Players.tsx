@@ -18,7 +18,8 @@ const Players = (props: Props) => {
 
     useEffect(() => {
         const kw = p.get('kw');
-        dispatch(playerListActions.ReqGetListUser({ kw }));
+        if(kw)
+            dispatch(playerListActions.ReqGetListUser({ kw }));
     }, [p]);
 
     useEffect(() => {
@@ -41,7 +42,7 @@ const Players = (props: Props) => {
                 <div className="players-title">Danh sách người chơi</div>
                 <div className="players-list">
                     {isLoadding && <div style={{textAlign: "center"}}>...</div>}
-                    {!isLoadding && players.length === 0 ? <div style={{textAlign: "center"}}>Không có bất kì người dùng nào</div> :
+                    {!isLoadding && players.length === 0 ? <div style={{textAlign: "center"}}>{p.get('kw') ? "Không có bất kì người dùng nào" : "Vui lòng nhập từ khoá"}</div> :
                         players.map((p) => {
                             return (
                                 <>

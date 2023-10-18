@@ -10,6 +10,7 @@ import MessageService from 'src/services/message/MessageService';
 import { serverTimestamp } from 'firebase/firestore';
 import {socket} from 'src/index'
 import '../profile/Profile.scss';
+import moment from 'moment';
 
 interface ProfileProps {}
 
@@ -137,6 +138,9 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                         <div className='avatar-fullname'>
                             Elo: {profile?.elo}
                         </div>
+                        <div className='avatar-fullname'>
+                            Tham gia: {moment(profile?.createdAt).format("DD/MM/YYYY")}
+                        </div>
                         {profile._id !== currentUser._id && (
                             <div className="profile-feature">
                                 <div className="btn-form btn-form-save" onClick={requestHandle}>
@@ -191,7 +195,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                             }
                             onClick={(evt) => setOption('comment')}
                         >
-                            Nhận xet
+                            Nhận xét
                         </button>
                     </div>
                     {option === 'history' && <div></div>}

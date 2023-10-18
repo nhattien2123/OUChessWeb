@@ -19,6 +19,10 @@ const apiConstant = {
     API_UPDATE_USER_PROFILE: "/:username/userapi-updateuser",
     API_UPDATE_USER_PASSWORD: "/:username/userapi-changepassword",
     API_UPDATE_USER_AVATAR: "/:username/userapi-changeavatar",
+
+    API_ADMIN_ADD_USER: "/adminapi-adduser",
+    API_ADMIN_UPDATE_USER: "/adminapi-updateuser",
+    API_ADMIN_DELETE_USER: "/adminapi-deleleuser"
 };
 
 module.exports = apiConstant;

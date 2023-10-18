@@ -25,13 +25,13 @@ const userService = {
         const newUser = await new user({
             username: User.username,
             password: hashed,
-            firstName: User.firstName,
-            lastName: User.lastName,
-            dateOfBirth: User.dOb,
             email: User.email,
             phone: User.phone,
-            nation: User.nation,
             avatar: User.avatar,
+            nation: User.nation,
+            elo: User.elo,
+            firstName: User.firstName,
+            lastName: User.lastName,
         });
 
         return await authRepository.addUser(newUser);
@@ -69,8 +69,8 @@ const userService = {
     removeFriend: async (_id, friendId) => {
         return await userReposity.removeFriend(_id, friendId);
     },
-    getListUserByUsername : async (kw) => {
-        return await userReposity.getListUserByUsername(kw);
+    getListUser : async (params) => {
+        return await userReposity.getUsers(params);
     }
 };
 
