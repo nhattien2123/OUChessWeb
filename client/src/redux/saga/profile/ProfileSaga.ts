@@ -5,7 +5,7 @@ import { profileActions } from 'src/redux/reducer/profile/profile';
 import * as ProfileServices from 'src/services/profile/ProfileServices';
 import * as TypesAction from 'src/redux/reducer/profile/Types';
 import * as TypesFetch from 'src/services/profile/Types';
-import { fetchProfile } from 'three-stdlib';
+
 
 interface Payload {
     username: string;

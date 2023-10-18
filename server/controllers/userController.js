@@ -80,9 +80,9 @@ const userController = {
     },
     changeAvatar: async (req, res) => {
         try {
-            const state = await userService.changeAvatar(req.user.username, req.avatar);
+            const state = await userService.changeAvatar(req.user.username, req.body.avatar);
             if (state.modifiedCount > 0) {
-                httpHandler.Success(res, { newAvatar: req.avatar }, 'Cập nhật ảnh đại diện thành công');
+                httpHandler.Success(res, { newAvatar: req.body.avatar }, 'Cập nhật ảnh đại diện thành công');
             } else {
                 httpHandler.Fail(res, {}, 'Cập nhật ảnh đại diện thất bại');
             }
@@ -111,12 +111,13 @@ const userController = {
     },
     getListUser: async (req, res) => {
         try {
-            const { kw } = req.query;
-            if (!kw) {
+            const params = req.query;
+            
+            if (params === null) {
                 httpHandler.Fail(res, {}, 'Từ khoá không phù hợp');
                 return;
             }else{
-                const list = await userService.getListUserByUsername(kw);
+                const list = await userService.getListUser(params);
                 httpHandler.Success(res, {list}, "Tìm kiếm thành công");
             }
         } catch (error) {
@@ -140,6 +141,7 @@ const userController = {
             httpHandler.Servererror(res, error, 'Đã có lỗi xảy ra');
         }
     },
+
 };
 
 module.exports = userController;

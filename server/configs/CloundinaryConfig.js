@@ -11,14 +11,12 @@ cloudinary.config({
 const cloudinaryConfig = {
     uploadToCloud: async (req, res, next) => {
         try {
-            console.log(req.file);
-            if (!req.file) httpHandler.Fail(res, {}, 'Vui lòng chọn hình ảnh');
-            else {
-
+            if (req.file) {
                 const result = await cloudinary.uploader.upload(req.file.path);
-                req.avatar = result.secure_url;
-                next();
+                req.body.avatar = result.secure_url;
+                console.log(req.body.avatar);
             }
+            next();
         } catch (error) {
             httpHandler.Servererror(res, {}, 'Đã có lỗi xảy ra' + error);
         }

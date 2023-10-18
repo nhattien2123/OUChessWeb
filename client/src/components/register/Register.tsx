@@ -6,12 +6,12 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Verify from '../../share/verify/verify';
 
 import '../register/Register.scss';
-import RegisterForm from 'src/share/form/RegisterForm';
+import RegisterForm, { registerData } from 'src/share/form/RegisterForm';
 
 interface RegisterProps {}
 
 const Register: React.FC<RegisterProps> = () => {
-    const [info, setInfo] = useState({
+    const [info, setInfo] = useState<registerData>({
         username: '',
         password: '',
         firstName: '',

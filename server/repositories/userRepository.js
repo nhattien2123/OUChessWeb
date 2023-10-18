@@ -48,22 +48,27 @@ const userReposity = {
     getUsers: async (params) => {
         try {
             let searchParams = {};
+            console.log(params);
             const email = params.email || null;
             if (email !== null && email !== '') {
                 searchParams.email = email;
             }
             const username = params.username || null;
             if (username !== null && username !== '') {
-                searchParams.username = username;
+                searchParams.username = { $regex: username, $options: 'i' };
             }
             const phone = params.phone || null;
             if (phone !== null && phone !== '') {
                 searchParams.phone = phone;
             }
 
-            const list = await user.find(searchParams);
+            const list = await user
+                .find(searchParams, '_id username firstName lastName avatar elo nation dateOfBirth createdAt')
+                .exec();
+
             return list;
         } catch (error) {
+            console.log(error);
             return null;
         }
     },
@@ -139,11 +144,11 @@ const userReposity = {
         return after;
     },
     getListUserByUsername: async (kw) => {
-     
         const list = await user.find(
-            { username: {$regex: kw, $options: 'i'} }, 
-            '_id firstName lastName username elo nation avatar');
- 
+            { username: { $regex: kw, $options: 'i' } },
+            '_id firstName lastName username elo nation avatar',
+        );
+
         return list;
     },
 };
