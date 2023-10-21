@@ -2,6 +2,7 @@ const userService = require('../services/userService');
 const httpHandler = require('../helpers/httpHandler');
 const bcrypt = require('bcrypt');
 const { commentInfoService, commentInfoSocket } = require('../services/commentInfoService');
+const matchService = require('../services/matchService');
 
 const userController = {
     getCurrentUser: async (req, res) => {
@@ -102,26 +103,34 @@ const userController = {
     },
     loadMatchsOfUser: async (req, res) => {
         try {
-            const username = req.params.username;
-            let params = {};
-            params.username = username;
-            // Call service
-            // return
-        } catch (error) {}
+            const playerId = req.params._id;
+
+            const matches = await matchService.getMatchByPlayerID(playerId);
+            if(!matches){
+                httpHandler.Fail(res, {matches}, "Không tìm thấy trận đấu nào");
+                return;
+            }else{
+                httpHandler.Success(res, {matches}, "Tìm thấy các trận đấu của người chơi");
+                return;
+            }
+        } catch (error) {
+            console.log(error);
+            httpHandler.Servererror(res, {}, "Đã có lỗi xảy ra");
+        }
     },
     getListUser: async (req, res) => {
         try {
             const params = req.query;
-            
+
             if (params === null) {
                 httpHandler.Fail(res, {}, 'Từ khoá không phù hợp');
                 return;
-            }else{
+            } else {
                 const list = await userService.getListUser(params);
-                httpHandler.Success(res, {list}, "Tìm kiếm thành công");
+                httpHandler.Success(res, { list }, 'Tìm kiếm thành công');
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
             httpHandler.Servererror(res, {}, 'Đã có lỗi xảy ra');
         }
     },
@@ -132,8 +141,9 @@ const userController = {
             if (!user) {
                 httpHandler.Fail(res, {}, 'Không tìm thầy người chơi');
             } else {
-                const { _id, username, avatar, friends, createdAt, elo, firstName, lastName, nation, ...other } = user._doc;
-                const profile = { _id, username, avatar, friends, createdAt, elo, firstName, lastName, nation};
+                const { _id, username, avatar, friends, createdAt, elo, firstName, lastName, nation, ...other } =
+                    user._doc;
+                const profile = { _id, username, avatar, friends, createdAt, elo, firstName, lastName, nation };
                 httpHandler.Success(res, { profile }, 'Tìm thầy người chơi');
             }
         } catch (error) {
@@ -141,7 +151,6 @@ const userController = {
             httpHandler.Servererror(res, error, 'Đã có lỗi xảy ra');
         }
     },
-
 };
 
 module.exports = userController;

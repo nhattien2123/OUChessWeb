@@ -1,4 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit";
+import { Match } from "../match/Types";
 
 export type Friend = {
     requester: Profile,
@@ -28,9 +29,9 @@ export type CommentInfo = {
 
 export type profileState = {
     profile: Profile;
-    comments: CommentInfo[]
-    mathes?: any
-    isLoading: boolean
+    comments: CommentInfo[];
+    matches: Match[];
+    isLoading: boolean;
 }
 
 export type ActionReqGetProfile = PayloadAction<{}>
@@ -44,4 +45,9 @@ export type ActionPostAddCommentInfo = PayloadAction<{
 export type ActionReqGetCommentInfoesUser = PayloadAction<{}>
 export type ActionResGetCommentInfoesUser = PayloadAction<{
     comments: profileState["comments"]
+}>
+
+export type ActionReqGetMatchesOfUser = PayloadAction<{}>
+export type ActionResGetMatchesOfUser = PayloadAction<{
+    matches: Match[];
 }>

@@ -11,6 +11,7 @@ const initialState: Types.profileState = {
         elo: 0,
     },
     comments: [],
+    matches: [],
     isLoading: false,
 };
 
@@ -36,6 +37,13 @@ const profileSlice = createSlice({
         postAddCommentInfo: (state, action: Types.ActionPostAddCommentInfo): void => {
             const { comment } = action.payload;
             state.comments = [...state.comments, comment];
+        },
+        reqGetMatchesOfUser: (state, action: Types.ActionReqGetMatchesOfUser) => {
+            state.matches = [];
+        },
+        resGetMatchesOfUser: (state, action: Types.ActionResGetMatchesOfUser): void => {
+            const { matches } = action.payload;
+            state.matches = matches;
         },
     },
 });

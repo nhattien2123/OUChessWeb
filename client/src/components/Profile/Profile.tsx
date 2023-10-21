@@ -8,7 +8,7 @@ import CommentInfoList from 'src/share/comment/CommentInfoList';
 import { toast } from 'react-toastify';
 import MessageService from 'src/services/message/MessageService';
 import { serverTimestamp } from 'firebase/firestore';
-import {socket} from 'src/index'
+import { socket } from 'src/index';
 import '../profile/Profile.scss';
 import moment from 'moment';
 
@@ -18,6 +18,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const profile = useAppSelector((state: RootState) => state.profileReducer.profile);
     const isLoading = useAppSelector((state: RootState) => state.profileReducer.isLoading);
+    const matches = useAppSelector((state: RootState) => state.profileReducer.matches);
     const dispatch = useAppDispatch();
     const [option, setOption] = useState<string>('history');
     const [friends, setFriends] = useState<Friend[]>([]);
@@ -48,7 +49,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
 
     useEffect(() => {
         if (option === 'history') {
-            console.log('history');
+            dispatch(profileActions.reqGetMatchesOfUser({ _id: profile._id }));
         }
         if (option === 'comment') {
             dispatch(profileActions.reqGetCommentInfoesUser({ username: profile._id, params: {} }));
@@ -132,14 +133,12 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                         <div className="avatar-username">
                             {profile?.username} {profile?.nation && `(${profile.nation})`}
                         </div>
-                        <div className='avatar-fullname'>
+                        <div className="avatar-fullname">
                             {profile?.firstName} {profile?.lastName}
                         </div>
-                        <div className='avatar-fullname'>
-                            Elo: {profile?.elo}
-                        </div>
-                        <div className='avatar-fullname'>
-                            Tham gia: {moment(profile?.createdAt).format("DD/MM/YYYY")}
+                        <div className="avatar-fullname">Elo: {profile?.elo}</div>
+                        <div className="avatar-fullname">
+                            Tham gia: {moment(profile?.createdAt).format('DD/MM/YYYY')}
                         </div>
                         {profile._id !== currentUser._id && (
                             <div className="profile-feature">
@@ -198,7 +197,49 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                             Nhận xét
                         </button>
                     </div>
-                    {option === 'history' && <div></div>}
+                    {option === 'history' && (
+                        <>
+                            {matches.length === 0 ? (
+                                <div>Không có bất kỳ trận đấu nào</div>
+                            ) : (
+                                <div className="matches-list">
+                                    {matches.map((m) => {
+                                        return (
+                                            <>
+                                                <div
+                                                    className={
+                                                        m.winnerPlayer === profile._id
+                                                            ? 'match-item win'
+                                                            : 'match-item lose'
+                                                    }
+                                                >
+                                                    <div className="white-profile" onClick={evt => nav(`/profile/${m.whiteId?.username}`)}>
+                                                        <div>Người chơi trắng</div>
+                                                        <div className="white-img">
+                                                            <img src={m.whiteId?.avatar} alt={m.whiteId?.username} />
+                                                        </div>
+                                                        {m.whiteId?.username}
+                                                    </div>
+                                                    <div className="winner">
+                                                        <div> Tỉ số</div>
+                                                        <div>{m.winnerPlayer === m.whiteId?._id ? '1-0' : '0-1'}</div>
+                                                    </div>
+
+                                                    <div className="black-profile" onClick={evt => nav(`/profile/${m.blackId?.username}`)}>
+                                                        <div>Người chơi đen</div>
+                                                        <div className="black-img">
+                                                            <img src={m.blackId?.avatar} alt={m.blackId?.username} />
+                                                        </div>
+                                                        {m.blackId?.username}
+                                                    </div>
+                                                </div>
+                                            </>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </>
+                    )}
                     {option === 'comment' && <CommentInfoList />}
                 </div>
             </div>

@@ -98,6 +98,12 @@ export const PROFILE = {
         URL: '/user/userapi-getlistuser',
         METHOD: 'GET',
     },
+    API_GET_MATCHES: (_id: string) => {
+        return {
+            URL: `/user/${_id}/userapi-getmatches`,
+            METHOD: 'GET'
+        }
+    }
 };
 
 export const ADMIN = {
