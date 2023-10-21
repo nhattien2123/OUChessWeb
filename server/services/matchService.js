@@ -41,6 +41,9 @@ const matchService = {
             return null;
         }
     },
+    getMatchByPlayerID: async (playerID) => {
+        return await matchRepository.getMatchByPlayerID(playerID);
+    }
 };
 
 module.exports = matchService;

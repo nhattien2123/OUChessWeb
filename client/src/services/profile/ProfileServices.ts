@@ -37,4 +37,17 @@ export const fetchGetListUser = async (kw: string):Promise<Types.ResGetListUser>
     })
 
     return await res.json();
+};
+
+export const fetchMatches = async (_id: string): Promise<Types.ResFetchGetMatchesOfUser> => {
+    const {URL, METHOD} = PROFILE.API_GET_MATCHES(_id);
+    const url = `${ROOT_URL}${URL}`;
+    const res = await fetch(url, {
+        method: METHOD,
+        headers: {
+            "Content-type": CONTENT_TYPE
+        }
+    })
+
+    return await res.json();
 }

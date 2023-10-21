@@ -1,4 +1,4 @@
-const match = require("../models/match");
+const match = require('../models/match');
 
 const matchRepository = {
     getMatch: async (matchId) => {
@@ -22,7 +22,7 @@ const matchRepository = {
     addMatch: async (newMatchData) => {
         try {
             delete newMatchData._id;
-            
+
             const newMatch = new match(newMatchData);
             console.log(newMatch);
             const savedMatch = await newMatch.save();
@@ -37,7 +37,7 @@ const matchRepository = {
             const updatedMatch = await match.findOneAndUpdate(
                 { _id: matchId },
                 { $set: updatedMatchData },
-                { new: true }
+                { new: true },
             );
             return updatedMatch;
         } catch (error) {
@@ -53,6 +53,17 @@ const matchRepository = {
             console.error(error.message);
             return null;
         }
+    },
+    getMatchByPlayerID: async (playerId) => {
+        const matches = await match
+            .find({
+                $or: [{ whiteId: playerId }, { blackId: playerId }],
+                winnerPlayer: {$ne: null}
+            })
+            .populate('whiteId')
+            .populate('blackId');
+
+        return matches;
     },
 };
 
