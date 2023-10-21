@@ -5,15 +5,15 @@ const httpHandler = {
   Success: (res, data, messages = "") => {
     return res.status(errorHandler.CODE_200).json({
       data: data,
-      messages: messages || errorHandler.MSG_200,
+      message: messages || errorHandler.MSG_200,
       code: errorHandler.CODE_200,
     });
   },
   Created: (res, data, messages = "") => {
     return res.status(errorHandler.CODE_201).json({
       data: data,
-      messages: messages || errorHandler.MSG_201,
-      code: errorHandler.MSG_201
+      message: messages || errorHandler.MSG_201,
+      code: errorHandler.CODE_201
     });
   },
   Servererror: (res, data, message) => {

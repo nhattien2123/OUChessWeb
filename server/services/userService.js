@@ -69,9 +69,18 @@ const userService = {
     removeFriend: async (_id, friendId) => {
         return await userReposity.removeFriend(_id, friendId);
     },
-    getListUser : async (params) => {
+    getListUser: async (params) => {
         return await userReposity.getUsers(params);
-    }
+    },
+    getListUserFromAdmin: async (params) => {
+        return await userReposity.getListUserFromAdmin(params);
+    },
+    updateUserFromAdmin: async (username, changed) => {
+        return await userReposity.updateUserFromAdmin(username, changed);
+    },
+    deleteUserFromAdmin: async (username) => {
+        return await userReposity.deleteUserFromAdmin(username);
+    },
 };
 
 module.exports = userService;

@@ -22,18 +22,23 @@ const authController = {
     signIn: async (req, res) => {
         try {
             const curUser = await userService.getUser(req.body.username);
-            if (req.body.username === '' || req.body.password === '')
-                httpHandler.Fail(res, {}, 'Vui lòng nhập đủ thông tin');
-            else if (!curUser) {
+            if (!curUser) {
                 httpHandler.Fail(res, {}, 'Tài khoản không đúng');
+                return;
             } else {
                 const validPassword = await bcrypt.compare(req.body.password, curUser.password);
                 if (!validPassword) {
                     httpHandler.Fail(res, {}, 'Mật khẩu không đúng');
+                    return;
                 } else {
-                    const token = jwtHandler.createToken(curUser);
-                    const refreshToken = jwtHandler.createToken(curUser);
-                    httpHandler.Success(res, { token, refreshToken }, 'Đăng nhập thành công');
+                    if (curUser.deletedAt) {
+                        httpHandler.Fail(res, {}, 'Tài khoản của bạn đã bị cấm');
+                        return;
+                    } else {
+                        const token = jwtHandler.createToken(curUser);
+                        const refreshToken = jwtHandler.createToken(curUser);
+                        httpHandler.Success(res, { token, refreshToken }, 'Đăng nhập thành công');
+                    }
                 }
             }
         } catch (error) {
@@ -120,7 +125,7 @@ const authController = {
         } catch (error) {
             httpHandler.Servererror(res, {}, 'Đã có lỗi xảy ra');
         }
-    }
+    },
 };
 
 module.exports = authController;

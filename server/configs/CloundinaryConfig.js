@@ -11,6 +11,7 @@ cloudinary.config({
 const cloudinaryConfig = {
     uploadToCloud: async (req, res, next) => {
         try {
+            console.log(req.file);
             if (req.file) {
                 const result = await cloudinary.uploader.upload(req.file.path);
                 req.body.avatar = result.secure_url;

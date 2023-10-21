@@ -13,6 +13,7 @@ import Messenger from 'src/components/messenger/Messenger';
 import Base from 'src/share/base/Base';
 import Players from 'src/components/players/Players';
 import Admin from 'src/components/admin/Admin';
+import AdminRouter from './AdminRoute';
 
 interface RouterProps {}
 
@@ -37,7 +38,7 @@ const Router: React.FC<RouterProps> = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/play/online" element={<Matches />} />
                 <Route path="/forget" element={<ForgetPassword />} />     
-                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin" element={<AdminRouter component={<Admin />} />} />
             </Routes>
         </BrowserRouter>
     );

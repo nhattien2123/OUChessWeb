@@ -12,6 +12,7 @@ export type User = {
     elo: number;
     nation: string;
     avatar: string;
+    role?: string;
     // friends: { [key: string]: any }[]
 }
 

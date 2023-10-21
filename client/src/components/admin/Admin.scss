@@ -65,18 +65,22 @@
     border: none;
     border-spacing: 0;
     width: 100%;
+    
     .table-header {
-        background-color: #aaaaaa;
+       
         th {
             border-top: 1px solid black;
             border-bottom: 1px solid black;
             padding: 10px 0;
+            position: sticky;
+            top: 0px;
+            background-color: #aaaaaa;
         }
     }
     .table-body {
         border: none;
         background-color: #fff;
- 
+       
   
         .col-avatar {
             width: 5%;
@@ -94,6 +98,13 @@
                 padding: 5px;
                 margin: 5px;
             }
+        }
+        .banned {
+            background-color: rgb(243, 127, 127);
+        }
+        
+        .default {
+            background-color: #cfffcb;
         }
     }
 }
@@ -166,3 +177,4 @@
         opacity: 1;
     }
 }
+

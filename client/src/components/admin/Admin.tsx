@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
 import 'src/components/admin/Admin.scss';
@@ -21,7 +22,9 @@ const defaultUser: userDataForm = {
     phone: '',
     nation: '',
     avatar: '',
+    dateOfBirth: new Date(),
     elo: 500,
+    friends: [],
     file: undefined,
 };
 
@@ -29,6 +32,7 @@ const Admin = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const userList = useAppSelector((state: RootState) => state.adminReducer.userList);
     const isLoadding = useAppSelector((state: RootState) => state.adminReducer.isLoading);
+    const notify = useAppSelector((state: RootState) => state.adminReducer.notify);
     const dispatch = useAppDispatch();
     const nav = useNavigate();
     const [p] = useSearchParams();
@@ -43,11 +47,11 @@ const Admin = (props: Props) => {
 
     const AddHandler = async (data: userDataForm) => {
         // console.log(data["username"]);
-        console.log(data.file);
+        console.log('adding...');
         const fd = new FormData();
 
         for (const d in data) {
-            if (d === 'file') {
+            if (d === 'file' && data[d]) {
                 fd.append(d, (data[d as keyof typeof data] as any)[0]);
                 continue;
             }
@@ -55,22 +59,60 @@ const Admin = (props: Props) => {
             fd.append(d, data[d as keyof typeof data] as any);
         }
 
-        const res = await fetch('http://localhost:8080/admin/adminapi-adduser', {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ` + Cookies.get('token') || '',
-            },
-            body: fd,
-        });
-
-        console.log({ res });
+        dispatch(adminActions.reqAddUser({ user: fd }));
     };
 
-    const closeModel = () => {
-        setAddActive(false);
+    const updateHandler = async (data: userDataForm) => {
+        console.log('updating...');
+        const fd = new FormData();
+        for (const d in data) {
+            if (d === 'file' && data[d]) {
+                fd.append(d, (data[d as keyof typeof data] as any)[0]);
+                continue;
+            }
+
+            fd.append(d, data[d as keyof typeof data] as any);
+        }
+
+        dispatch(adminActions.reqUpdateUser({ user: fd }));
     };
 
-    const addModel = add ? <AdminAddUserForm newUser={newUser} onSubmit={AddHandler} closeModel={setAddActive} /> : '';
+    const submitHandler = (data: userDataForm) => {
+        if (!newUser._id) {
+            AddHandler(data);
+        } else {
+            updateHandler(data);
+        }
+    };
+
+    const banPlayer = (username: string) => {
+        dispatch(adminActions.reqDeletedUser({ username }));
+    };
+
+    const addModel = add ? (
+        <AdminAddUserForm newUser={newUser} onSubmit={submitHandler} closeModel={setAddActive} />
+    ) : (
+        ''
+    );
+
+    useEffect(() => {
+        console.log(notify);
+        switch (notify.type) {
+            case 'success': {
+                toast.success(notify.msg);
+                setAddActive(false);
+                break;
+            }
+            case 'error': {
+                toast.error(notify.msg);
+                break;
+            }
+        }
+    }, [notify]);
+
+    useEffect(() => {
+        console.log(userList);
+    }, [userList]);
 
     return (
         <>
@@ -111,7 +153,7 @@ const Admin = (props: Props) => {
                     </div>
                 </div>
                 <div className="content-body">
-                    <div>
+                    <div style={{ overflow: 'auto', height: '350px', display: 'inline-block' }}>
                         <table className="table-content">
                             <thead className="table-header">
                                 <tr>
@@ -129,24 +171,36 @@ const Admin = (props: Props) => {
                                         if (u?.username !== currentUser.username) {
                                             return (
                                                 <>
-                                                    <tr>
+                                                    <tr className={u.deletedAt ? 'banned' : 'default'}>
                                                         <td className="col-avatar">
                                                             <img src={u.avatar} alt={u.username} />
                                                         </td>
                                                         <td>{u.username}</td>
                                                         <td>{u.elo}</td>
                                                         <td>{moment(u?.createdAt).format('DD-MM-YYYY')}</td>
+
                                                         <td>
-                                                            <button
-                                                                onClick={(evt) => {
-                                                                    setNewUser(u);
-                                                                    setAddActive(true);
-                                                                }}
-                                                            >
-                                                                Sửa
-                                                            </button>
-                                                            <button>Reset</button>
-                                                            <button>Vô hiệu</button>
+                                                            {!u.deletedAt && (
+                                                                <>
+                                                                    <button
+                                                                        onClick={(evt) => {
+                                                                            setNewUser(u);
+                                                                            setAddActive(true);
+                                                                        }}
+                                                                    >
+                                                                        Sửa
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={(evt) => {
+                                                                            if (u.username) {
+                                                                                banPlayer(u.username);
+                                                                            }
+                                                                        }}
+                                                                    >
+                                                                        Vô hiệu
+                                                                    </button>
+                                                                </>
+                                                            )}
                                                         </td>
                                                     </tr>
                                                 </>

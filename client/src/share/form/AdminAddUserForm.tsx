@@ -36,8 +36,7 @@ const AdminAddUserForm = (props: Props) => {
     });
 
     const submitHandler = (data: Props['newUser']) => {
-        // onSubmit(data);
-        console.log(data);
+        onSubmit(data);
     };
 
     return (
@@ -122,6 +121,7 @@ const AdminAddUserForm = (props: Props) => {
                                 id="username"
                                 type="text"
                                 placeholder="Tên tài khoản"
+                                disabled={newUser._id ? true : false}
                                 {...form.register('username')}
                             />
                             <ErrorMessage
@@ -155,7 +155,7 @@ const AdminAddUserForm = (props: Props) => {
                                 className="input-style"
                                 id="nation"
                                 type="text"
-                                placeholder="Tên tài khoản"
+                                placeholder="Quốc tịch"
                                 {...form.register('nation')}
                             />
                             <ErrorMessage

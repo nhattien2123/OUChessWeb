@@ -19,7 +19,7 @@ export const COMMON = {
     },
     API_CHECK_EXIST: {
         URL: '/auth/authapi-checkexist',
-        METHOD: 'POST'
+        METHOD: 'POST',
     },
     API_CHART: {
         URL: '/engines/chart',
@@ -58,45 +58,65 @@ export const USER = {
     API_GET_FRIENDS: (username: string) => {
         return {
             URL: `/user/${username}/userapi-getfriends`,
-            METHOD: 'GET'
-        }
+            METHOD: 'GET',
+        };
     },
-
 };
 
 export const HISTORY = {
     API_ADD_HISTORY: {
         URL: '/history/api-add',
-        METHOD: 'POST'
-    }
-}
+        METHOD: 'POST',
+    },
+};
 
 export const MATCH = {
     API_GET_MATCH: {
         URL: '/match/matchapi-getmatch',
-        METHOD: 'GET'
+        METHOD: 'GET',
     },
     API_ADD_MATCH: {
         URL: '/match/matchapi-addmatch',
-        METHOD: 'POST'
-    }
-}
+        METHOD: 'POST',
+    },
+};
 
 export const PROFILE = {
     API_GET_PROFILE: (username: string) => {
         return {
             URL: `/user/${username}/userapi-getprofile`,
-            METHOD: 'GET'
-        }
+            METHOD: 'GET',
+        };
     },
     API_GET_COMMENT_INFO: (username: string) => {
         return {
             URL: `/user/${username}/userapi-getcommentinfo`,
-            METHOD: 'GET'
-        }
+            METHOD: 'GET',
+        };
     },
     API_GET_LIST_USER: {
-        URL: "/user/userapi-getlistuser",
-        METHOD: 'GET'
-    }
-}
+        URL: '/user/userapi-getlistuser',
+        METHOD: 'GET',
+    },
+};
+
+export const ADMIN = {
+    API_GET_LIST_USER: {
+        URL: `/admin/adminapi-getlistuser`,
+        METHOD: 'GET',
+    },
+    API_ADD_USER: {
+        URL: `/admin/adminapi-adduser`,
+        METHOD: `POST`,
+    },
+    API_UPDATE_USER: {
+        URL: `/admin/adminapi-updateuser/`,
+        METHOD: `PUT`,
+    },
+    API_DELETE_USER: (username: string) => {
+        return {
+            URL: `/admin/adminapi-deleteuser/${username}`,
+            METHOD: `DELETE`,
+        };
+    },
+};
