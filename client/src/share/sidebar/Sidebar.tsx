@@ -42,6 +42,11 @@ const Sidebar = (props: Props) => {
                 <li className="sidebar-item">
                     <Link to={'/messages'}>Tin nhắn</Link>
                 </li>
+                {currentUser.role === 'ADMIN' && (
+                    <li className="sidebar-item">
+                        <Link to={'/admin'}>Admin</Link>
+                    </li>
+                )}
                 <li className="sidebar-input">
                     <input
                         placeholder="Tìm kiếm..."

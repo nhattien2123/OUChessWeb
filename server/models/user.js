@@ -46,7 +46,10 @@ const userSchema = new mongoose.Schema({
     friends: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "friend"
-    }]
+    }],
+    deletedAt: {
+        type: Date
+    }
 }, {timestamps: true});
 
 module.exports = mongoose.model("user", userSchema);

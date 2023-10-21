@@ -16,6 +16,7 @@ export type userDataForm = {
     createdAt?: Date;
     friends?: Friend[];
     avatar?: string;
+    deletedAt?: Date;
     file?: object;
 };
 
@@ -32,6 +33,19 @@ export type ActionReqGetListUser = PayloadAction<{}>;
 export type ActionResGetListUser = PayloadAction<{
     list: adminState['userList'];
 }>;
+export type ActionReqAddUser = PayloadAction<{}>;
+export type ActionResAddUser = PayloadAction<{
+    newUser: userDataForm;
+}>
+export type ActionReqUpdateUser = PayloadAction<{}>
+export type ActionResUpdateUser = PayloadAction<{
+    updatedUser: userDataForm;
+}>
+export type ActionReqDeleteUser = PayloadAction<{}>
+export type ActionResDeleteUser = PayloadAction<{
+    deletedUser: userDataForm;
+}>
+
 
 export type ActionSetNotify = PayloadAction<{
     notify: adminState['notify'];

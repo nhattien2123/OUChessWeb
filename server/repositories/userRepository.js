@@ -151,6 +151,20 @@ const userReposity = {
 
         return list;
     },
+    getListUserFromAdmin: async (params) => {
+        const list = await user
+            .find({ username: { $regex: params.username, $options: 'i' } })
+            .sort({ role: 1, createdAt: -1 });
+
+        return list;
+    },
+    updateUserFromAdmin: async (username, changed) => {
+        const after = await user.findOneAndUpdate({ username: username }, { $set: changed }, { new: true });
+        return after;
+    },
+    deleteUserFromAdmin: async (username) => {
+        return await user.findOneAndUpdate({ username: username }, { $set: { deletedAt: Date.now() } }, { new: true });
+    },
 };
 
 module.exports = userReposity;

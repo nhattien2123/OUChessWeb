@@ -39,6 +39,7 @@ const ProfileForm = (props: Props) => {
         elo: yup.number().required(),
         nation: yup.string().required(),
         avatar: yup.string().nullable().required(),
+        role: yup.string().optional()
     });
 
     const form = useForm<Props['profile']>({

@@ -7,6 +7,7 @@ const initialState: Types.profileState = {
         username: '',
         avatar: '',
         friends: [],
+        createdAt: new Date(),
         elo: 0,
     },
     comments: [],
