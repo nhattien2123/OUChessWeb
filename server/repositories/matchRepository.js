@@ -12,7 +12,7 @@ const matchRepository = {
     },
     getMatches: async () => {
         try {
-            const matches = await match.find({});
+            const matches = await match.find({ state: null });
             return matches;
         } catch (error) {
             console.error(error.message);
@@ -22,9 +22,8 @@ const matchRepository = {
     addMatch: async (newMatchData) => {
         try {
             delete newMatchData._id;
-
+            console.log(newMatchData);
             const newMatch = new match(newMatchData);
-            console.log(newMatch);
             const savedMatch = await newMatch.save();
             return savedMatch;
         } catch (error) {
@@ -58,12 +57,23 @@ const matchRepository = {
         const matches = await match
             .find({
                 $or: [{ whiteId: playerId }, { blackId: playerId }],
-                winnerPlayer: {$ne: null}
+                state: { $ne: null }
             })
             .populate('whiteId')
             .populate('blackId');
 
         return matches;
+    },
+    getMatchById: async (matchId) => {
+        try {
+            const Match = await match.find({
+                _id: matchId,
+            });
+            return Match;
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
     },
 };
 

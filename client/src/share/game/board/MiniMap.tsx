@@ -29,7 +29,7 @@ export const MiniMap: FC<{
                     {row.map((tile, j) => {
                         const bg = `${(i + j) % 2 === 0 ? `#a5a5a5` : `#676767`}`
                         const isSelected = selected?.getId() === tile.piece?.getId?.()
-                        
+
                         const canMove = checkIfSelectedPieceCanMoveHere({
                             selected,
                             moves,

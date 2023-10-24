@@ -6,6 +6,8 @@ const initialState: Types.GameSettingsState = {
   turn: 'white',
   gameStarted: false,
   movingTo: null,
+  promotePawn: 'bishop',
+  isPromotePawn: false,
 }
 
 const gameSettingsSlice = createSlice({
@@ -27,6 +29,12 @@ const gameSettingsSlice = createSlice({
     setMovingTo: (state, action: Types.ActionSetMovingTo) => {
       state.movingTo = action.payload.movingTo;
     },
+    setPromotePawn: (state, action: Types.ActionSetPromotePawn) => {
+      state.promotePawn = action.payload.promotePawn;
+    },
+    setIsPromotePawn: (state, action: Types.ActionSetIsPromotePawn) => {
+      state.isPromotePawn = action.payload.isPromotePawn;
+    }
   },
 });
 

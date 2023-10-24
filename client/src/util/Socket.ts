@@ -6,45 +6,25 @@ import type { Socket } from 'socket.io-client'
 import io from 'socket.io-client'
 
 import type { MovingTo } from 'src/components/game/Game'
-// import type {
-//     SocketClientToServer,
-//     SocketServerToClient,
-//     playerJoinedServer,
-// } from '@/pages/api/socket'
 
 import { socket } from 'src/index';
-// import { useGameSettingsState } from '@/state/game'
 import type { Message } from 'src/redux/reducer/messageMatch/Types';
-// import {
-//     useOpponentState,
-//     usePlayerState,
-//     useMessageState,
-// } from 'state/player'
 
 import { opponentActions } from 'src/redux/reducer/opponent/OpponentReducer';
 import { playerActions } from 'src/redux/reducer/player/PlayerReducer';
 import { messageMatchActions } from 'src/redux/reducer/messageMatch/MessageMatchReducer';
 import { gameSettingActions } from 'src/redux/reducer/gameSettings/GameSettingsReducer';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { Color } from 'src/share/game/logic/pieces';
+import { Color, PieceType } from 'src/share/game/logic/pieces';
 import { RootState } from 'src/app/store'
-
-// type ClientSocket = Socket<SocketServerToClient, SocketClientToServer>
-// let socket: ClientSocket
-
-// export const useSocketState = create<{
-//     socket: ClientSocket | null
-//     setSocket: (socket: ClientSocket) => void
-// }>((set) => ({
-//     socket: null,
-//     setSocket: (socket) => set({ socket }),
-// }))
+import { LeaveRoom } from 'src/share/game/board/Sidebar'
 
 export type playerJoinedServer = {
     roomId: string
     username: string
     color: Color
     playerCount: number
+    avatar: string
 }
 
 export type CameraMove = {
@@ -53,12 +33,22 @@ export type CameraMove = {
     color: Color
 }
 
+export type OpponentUser = {
+    roomId: string,
+    name: string,
+    avatar: string,
+    color: Color,
+    playerCount: number,
+}
+
 export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
     const dispatch = useAppDispatch();
     const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
     const userId = useAppSelector((state: RootState) => state.userReducer.currentUser._id);
     const playerColor = useAppSelector((state: RootState) => state.playerReducer.playerColor);
     const username = useAppSelector((state: RootState) => state.userReducer.currentUser.username);
+    const avatar = useAppSelector((state: RootState) => state.userReducer.currentUser.avatar);
+    const opponentColor = useAppSelector((state: RootState) => state.opponentReducer.color);
 
     useEffect(() => {
         socketInitializer()
@@ -73,10 +63,6 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
     }, [playerColor])
 
     const socketInitializer = async () => {
-        // await fetch(`/api/socket`)
-        // socket = io()
-        // setSocket(socket)
-
         socket.on(`newIncomingMessage`, (msg: Message) => {
             dispatch(messageMatchActions.addMessage({ messages: msg }))
         })
@@ -87,32 +73,56 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
                 author: `System`,
                 message: `${split[0]} has joined ${data.roomId}`,
             }
+
             dispatch(messageMatchActions.addMessage({
                 messages: message
             }))
-            console.log(split[1]);
             if (split[1] === userId) {
-                dispatch(playerActions.setPlayerColor({ playerColor: data.color }));
+                if (data.playerCount === 0) {
+                    if (!opponentColor || opponentColor === `black`)
+                        dispatch(playerActions.setPlayerColor({ playerColor: `white` }));
+                    else dispatch(playerActions.setPlayerColor({ playerColor: `black` }));
+                }
                 dispatch(playerActions.setJoinedRoom({ joinedRoom: true }));
             } else {
                 socket.emit(`existingPlayer`, {
                     roomId: data.roomId,
                     name: `${username}#${userId}`,
+                    avatar: `${avatar}`,
+                    color: `${playerColor}`,
+                    playerCount: data.playerCount,
                 })
                 dispatch(opponentActions.setName({ name: split[0] }));
+                dispatch(opponentActions.setAvatar({ avatar: data.avatar }));
+                if (playerColor === `black`)
+                    dispatch(opponentActions.setColor({ color: `white` }));
+                else dispatch(opponentActions.setColor({ color: `black` }));
             }
         })
 
-        socket.on(`clientExistingPlayer`, (data: string) => {
-            const split = data.split(`#`)
+        socket.on(`setLeavedRoom`, (data: LeaveRoom) => {
+            dispatch(playerActions.setJoinedRoom({ joinedRoom: false }));
+            reset();
+        })
+
+        socket.on(`clientExistingPlayer`, (data: OpponentUser) => {
+            const split = data.name.split(`#`)
+            console.log(split + " 2")
             if (split[1] !== userId) {
                 dispatch(opponentActions.setName({ name: split[0] }));
+                dispatch(opponentActions.setAvatar({ avatar: data.avatar }));
+                if (data.color === `black`)
+                    dispatch(opponentActions.setColor({ color: `white` }));
+                else dispatch(opponentActions.setColor({ color: `black` }));
+                if (data.playerCount === 1) {
+                    if (data.color !== `black`)
+                        dispatch(playerActions.setPlayerColor({ playerColor: `black` }));
+                    else dispatch(playerActions.setPlayerColor({ playerColor: `white` }));
+                }
             }
         })
 
         socket.on(`cameraMoved`, (data: CameraMove) => {
-
-            console.log(playerColor, " - ", data.color);
             if (playerColor === data.color) {
                 return
             }
@@ -128,9 +138,15 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
         })
 
         socket.on(`playersInRoom`, (data: number) => {
+            console.log("Test PlayerInRoom")
             if (data === 2) {
                 dispatch(gameSettingActions.setGameStarted({ gameStarted: true }));
             }
+        })
+
+        socket.on(`promotedPawn`, (data: PieceType) => {
+            dispatch(gameSettingActions.setPromotePawn({ promotePawn: data }));
+            dispatch(gameSettingActions.setIsPromotePawn({ isPromotePawn: true }));
         })
 
         socket.on(`newError`, (err: string) => {

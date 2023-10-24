@@ -4,7 +4,9 @@ import * as Types from './Types';
 const initialState: Types.OpponentState = {
     position: [0, 100, 0],
     mousePosition: [0, 0, 0],
-    name: ``
+    name: ``,
+    avatar: ``,
+    color: null,
 }
 
 const opponentSlice = createSlice({
@@ -20,6 +22,12 @@ const opponentSlice = createSlice({
         setName: (state, action: Types.ActionSetName) => {
             state.name = action.payload.name;
         },
+        setAvatar: (state, action: Types.ActionSetAvatar) => {
+            state.avatar = action.payload.avatar;
+        },
+        setColor: (state, action: Types.ActionSetColor) => {
+            state.color = action.payload.color;
+        }
     }
 })
 

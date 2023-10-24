@@ -43,6 +43,14 @@ const matchService = {
     },
     getMatchByPlayerID: async (playerID) => {
         return await matchRepository.getMatchByPlayerID(playerID);
+    },
+    getMatchById: async (matchId) => {
+        try {
+            return await matchRepository.getMatchById(matchId);
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
     }
 };
 

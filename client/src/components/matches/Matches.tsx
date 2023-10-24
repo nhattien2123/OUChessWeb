@@ -6,27 +6,23 @@ import Sidebar from "src/share/sidebar/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { matchActions } from "src/redux/reducer/match/MatchReducer";
 import { User } from 'src/redux/reducer/user/Types';
+import { Match } from 'src/redux/reducer/match/Types';
 
 interface Props { }
 
 const Matches = (props: Props) => {
     const errorMsg = useAppSelector((state: RootState) => state.commonReducer.errorMsg);
     const matchState = useAppSelector((state: RootState) => state.matchReducer.match);
-    const [newMatch, setNewMatch] = useState({
+    const [newMatch, setNewMatch] = useState<Match>({
         _id: '',
         whiteId: null,
         blackId: null,
         matchName: '',
-        winnerPlayer: '',
+        state: null,
         mode: '',
     });
     const dispatch = useAppDispatch();
     const nav = useNavigate();
-
-    const createMatchHandler = (e: { preventDefault: () => void }) => {
-        e.preventDefault();
-        dispatch(matchActions.reqPostAddMatch({ match: newMatch }));
-    };
 
     useEffect(() => {
         dispatch(matchActions.reqGetMatch({}));
@@ -37,7 +33,6 @@ const Matches = (props: Props) => {
         <div className="content">
             <RoomListComponent
                 match={matchState}
-                createMatchHandler={createMatchHandler}
                 newMatch={newMatch}
                 setNewMatch={setNewMatch}
             />

@@ -12,7 +12,7 @@ import { socket } from 'src/index';
 import '../profile/Profile.scss';
 import moment from 'moment';
 
-interface ProfileProps {}
+interface ProfileProps { }
 
 const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
@@ -208,9 +208,9 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                                             <>
                                                 <div
                                                     className={
-                                                        m.winnerPlayer === profile._id
+                                                        (m.whiteId?._id === currentUser._id && m.state === 1) || (m.blackId?._id === currentUser._id && m.state === -1)
                                                             ? 'match-item win'
-                                                            : 'match-item lose'
+                                                            : 'match-item lose' + (m.state === 0 ? " draw" : "")
                                                     }
                                                 >
                                                     <div className="white-profile" onClick={evt => nav(`/profile/${m.whiteId?.username}`)}>
@@ -222,7 +222,9 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                                                     </div>
                                                     <div className="winner">
                                                         <div> Tỉ số</div>
-                                                        <div>{m.winnerPlayer === m.whiteId?._id ? '1-0' : '0-1'}</div>
+                                                        {m.state === 1 && <div>1-0</div>}
+                                                        {m.state === 0 && <div>1/2-1/2</div>}
+                                                        {m.state === -1 && <div>0-1</div>}
                                                     </div>
 
                                                     <div className="black-profile" onClick={evt => nav(`/profile/${m.blackId?.username}`)}>

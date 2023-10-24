@@ -8,87 +8,79 @@ import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
 import { useNavigate } from 'react-router-dom';
 import { playerActions } from 'src/redux/reducer/player/PlayerReducer';
+import { matchActions } from 'src/redux/reducer/match/MatchReducer';
 
 export type JoinRoomClient = {
-    roomId: string | null
+    roomId: string | null | undefined
     username: string
+    avatar: string
 }
 
 export const RoomListComponent: FC<{
     match: Match[];
-    createMatchHandler: (e: React.FormEvent) => void;
-    newMatch: {
-        _id: string;
-        whiteId: User | null;
-        blackId: User | null;
-        matchName: string;
-        winnerPlayer: string;
-        mode: string;
-    };
+    newMatch: Match;
     setNewMatch: (newMatch: any) => void;
 }> = ({
     match,
-    createMatchHandler,
     newMatch,
     setNewMatch
 }) => {
         const userId = useAppSelector((state: RootState) => state.userReducer.currentUser._id);
         const username = useAppSelector((state: RootState) => state.userReducer.currentUser.username);
+        const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
         // const joinedRoom = useAppSelector((state: RootState) => state.playerReducer.joinedRoom);
-        const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
+        // const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
+        const lastestMatchId = useAppSelector((state: RootState) => state.matchReducer.lastestMatchId);
+        const avatar = useAppSelector((state: RootState) => state.userReducer.currentUser.avatar);
         const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
         const [searchRoomId, setSearchRoomId] = useState('');
+        const [isSearch, setIsSearch] = useState(false);
         const nav = useNavigate();
         const dispatch = useAppDispatch();
 
         const handleRoomClick = (match: Match) => {
-            sendRoom(match._id)
-            nav(`/game`);
-            // nav(`/game/live/${matchId}`);
-            // handleNavigateToGame(selectedRoom)
+            joinRoom(match._id);
+            updateRoom(match);
         };
-
-        const playQuick = () => {
-
-        }
 
         const handleCreateModal = () => {
             setIsCreateModalOpen(!isCreateModalOpen)
         }
 
-        const handleSearchModal = () => {
-            // setIsSearchModalOpen(!isSearchModalOpen)
+        const handleSearchRoom = () => {
+            if (!searchRoomId) {
+                setIsSearch(true);
+                dispatch(matchActions.reqGetMatch({}))
+            }
+            else {
+                setIsSearch(false);
+                dispatch(matchActions.reqGetMatchById({ matchId: searchRoomId }));
+            }
         }
 
-        const handleCreateRoom = (e: FormEvent) => {
-            e.preventDefault();
-            createMatchHandler(e);
-            sendRoom(newMatch._id);
-            // nav(`/game/live/${newMatch._id}`);
-            nav(`/game`);
-            // setNewMatch({
-            //     _id: '',
-            //     whiteId: null,
-            //     blackId: null,
-            //     matchName: '',
-            //     winnerPlayer: '',
-            //     mode: '',
-            // });
-        }
+        const handleCreateRoom = () => {
+            dispatch(matchActions.reqPostAddMatch({ match: { ...newMatch, whiteId: currentUser._id } }))
+        };
 
-        const sendRoom = async (matchId: string | null, callback?: () => void) => {
-            if (!socket) return
+        const joinRoom = (matchId: string | null | undefined) => {
+            if (!socket) return;
             dispatch(playerActions.setRoomId({ roomId: matchId }));
-            const data: JoinRoomClient = { roomId: matchId, username: `${username}#${userId}` }
-            await socket.emit(`joinRoom`, data);
-            await socket.emit(`fetchPlayers`, { roomId: matchId });
+            // dispatch(matchActions.reqPutMatchById({ matchId: matchId, match: match }));
+            const data: JoinRoomClient = { roomId: matchId, username: `${username}#${userId}`, avatar: avatar };
+            socket.emit(`joinRoom`, data);
+            socket.emit(`fetchPlayers`, { roomId: matchId });
+            nav(`/game/live/${matchId}`);
+        };
+
+        const updateRoom = (match: Match) => {
+            dispatch(matchActions.reqPutMatchById({ matchId: match._id, match: { ...match, blackId: currentUser._id } }));
         }
 
         const handleSearchRoomIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             setSearchRoomId(e.target.value);
         };
 
-        const checkCanCreateRoom = (selectedMode: string, roomName: string) => {
+        const checkCanCreateRoom = (selectedMode: string | undefined, roomName: string | undefined) => {
             if (selectedMode && roomName) {
                 return true;
             } else {
@@ -96,12 +88,18 @@ export const RoomListComponent: FC<{
             }
         };
 
+        useEffect(() => {
+            if (lastestMatchId != null) {
+                joinRoom(lastestMatchId);
+            }
+        }, [lastestMatchId])
+
         return (
             <>
                 <div className="buttons-room">
                     <div className="btn-room-left">
                         <button onClick={handleCreateModal} className="btn-form-create">Tạo Phòng</button>
-                        <button onClick={playQuick} className="btn-form-random-matches">Chơi Nhanh</button>
+                        <button className="btn-form-random-matches">Chơi Nhanh</button>
                     </div>
                     <div className="btn-room-right">
                         <input
@@ -110,31 +108,9 @@ export const RoomListComponent: FC<{
                             value={searchRoomId}
                             onChange={handleSearchRoomIdChange}
                         />
-                        <button onClick={handleSearchModal} className="btn-form-search">Tìm Kiếm Phòng</button>
+                        <button onClick={handleSearchRoom} className="btn-form-search">Tìm Kiếm Phòng</button>
                     </div>
                 </div>
-
-                {/* {isCreateModalOpen && (
-                    <div className="create-room-modal">
-                        <div className="modal-content">
-                            <h2>Tạo Phòng</h2>
-                            <label>Tên Phòng:</label>
-                            <input
-                                type="text"
-                                value={roomName}
-                                onChange={(e) => setRoomName(e.target.value)}
-                            />
-                            <label>Thời Gian Thi Đấu:</label>
-                            <input
-                                type="text"
-                                value={timeMatch}
-                                onChange={(e) => setTimeMatch(e.target.value)}
-                            />
-                            <button onClick={handleCreateModal}>Hủy</button>
-                            <button onClick={handleCreateRoom}>Tạo</button>
-                        </div>
-                    </div>
-                )} */}
 
                 {isCreateModalOpen && (
                     <div className="create-room-modal">
@@ -156,7 +132,7 @@ export const RoomListComponent: FC<{
                                     setNewMatch({ ...newMatch, mode: e.target.value })
                                 }}
                             >
-                                <option value="" disabled selected>
+                                <option value="" disabled>
                                     Chọn chế độ
                                 </option>
                                 <option value="Siêu chớp">Siêu chớp</option>
@@ -209,10 +185,13 @@ export const RoomListComponent: FC<{
                                 })}
                             </tbody>
                         </table>}
-                    {match.length === 0 && <div className="no-matches-message">
+                    {!isSearch && match.length === 0 && <div className="no-matches-message">
                         Hiện tại không có phòng nào được tạo.
                     </div>}
-                </div >
+                    {isSearch && match.length === 0 && <div className="no-matches-message">
+                        Không tìm thấy trận đấu bạn đang tìm!
+                    </div>}
+                </div>
             </>
         );
     }

@@ -11,8 +11,9 @@ const apiConstant = {
     API_LOAD_MATCH_USER: "/:_id/userapi-getmatches",
     API_GET_MATCH: "/matchapi-getmatch",
     API_ADD_MATCH: "/matchapi-addmatch",
-    API_UPDATE_MATCH: "/matchapi-updatematch",
+    API_UPDATE_MATCH_BY_ID: "/matchapi-updatematch/:matchId",
     API_DELETE_MATCH: "/matchapi-deletematch",
+    API_GET_MATCH_BY_ID: "/matchapi-getmatchbyid/:matchId",
     API_GET_LIST_USER: "/userapi-getlistuser/",
 
 

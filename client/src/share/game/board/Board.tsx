@@ -37,24 +37,23 @@ import { useSpring, animated } from '@react-spring/three';
 import { isPawn } from 'src/share/game/logic/pieces/pawn';
 import { isKing } from 'src/share/game/logic/pieces/king';
 import { isRook } from 'src/share/game/logic/pieces/rook';
-import { PieceType } from 'src/share/game/logic/pieces';
 import { OrbitControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { socket } from 'src/index';
 
-import { playerActions } from "src/redux/reducer/player/PlayerReducer";
 import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from "src/app/store";
+import { matchActions } from 'src/redux/reducer/match/MatchReducer';
 
 export type MakeMoveClient = {
     movingTo: MovingTo
-    roomId: string | null
+    roomId: string | null | undefined
 }
 
 export type CameraMove = {
     position: [number, number, number]
-    roomId: string | null
+    roomId: string | null | undefined
     color: Color
 }
 
@@ -92,6 +91,9 @@ export const BoardComponent: FC<{
         const turn = useAppSelector((state: RootState) => state.gameSettingsReducer.turn);
         const gameStarted = useAppSelector((state: RootState) => state.gameSettingsReducer.gameStarted);
         const movingTo = useAppSelector((state: RootState) => state.gameSettingsReducer.movingTo);
+        const promotePawn = useAppSelector((state: RootState) => state.gameSettingsReducer.promotePawn);
+        const isPromotePawn = useAppSelector((state: RootState) => state.gameSettingsReducer.isPromotePawn);
+        // const matchId = useParams();
         const dispatch = useAppDispatch();
 
         const [history, setHistory] = useHistoryState((state) => [
@@ -125,17 +127,6 @@ export const BoardComponent: FC<{
 
         const finishMovingPiece = (tile: Tile | null) => {
             if (!tile || !movingTo || !socket) return
-
-            setHistory({
-                board: copyBoard(board),
-                to: movingTo.move.newPosition,
-                from: movingTo.move.piece.position,
-                steps: movingTo.move.steps,
-                capture: movingTo.move.capture,
-                type: movingTo.move.type,
-                piece: movingTo.move.piece,
-            })
-
             const selectedTile = getTile(board, movingTo.move.piece.position)
             if (!(selectedTile && isPawn(selectedTile.piece) && shouldPromotePawn({ tile }))) {
                 setBoard((prev) => {
@@ -196,7 +187,9 @@ export const BoardComponent: FC<{
                 setLastSelected(null)
             } else {
                 setTile(tile);
-                setShowPromotionDialog(true);
+                if (playerColor === turn) {
+                    setShowPromotionDialog(true);
+                }
             }
         }
 
@@ -204,12 +197,24 @@ export const BoardComponent: FC<{
             const gameOverType = detectGameOver(board, turn)
             if (gameOverType) {
                 setEndGame({ type: gameOverType, winner: oppositeColor(turn) })
+                if (gameOverType === `stalemate`) {
+                    dispatch(matchActions.reqPutMatchById({ matchId: roomId, match: { state: 0 } }))
+                }
+
+                if (gameOverType === `checkmate`) {
+                    if (oppositeColor(turn) === `white`)
+                        dispatch(matchActions.reqPutMatchById({ matchId: roomId, match: { state: 1 } }))
+                    else dispatch(matchActions.reqPutMatchById({ matchId: roomId, match: { state: -1 } }))
+                }
+
+                // if (gameOverType === `checkmate`) {
+
+                // }
             }
         }, [board, turn])
 
         const startMovingPiece = (e: ThreeMouseEvent, tile: Tile, nextTile: Move) => {
             e.stopPropagation()
-            // setMovingTo({ move: nextTile, tile: tile })
             if (!socket) return
             const newMovingTo: MovingTo = {
                 move: nextTile,
@@ -236,9 +241,38 @@ export const BoardComponent: FC<{
                     roomId: roomId,
                     color: playerColor,
                 } satisfies CameraMove)
-            }, 1000)
+            }, 500)
             return () => clearInterval(interval)
         }, [camera.position, socket, roomId, playerColor])
+
+        useEffect(() => {
+            dispatch(gameSettingActions.setIsPromotePawn({ isPromotePawn: false }));
+            if (!tile || !movingTo || !socket) return
+            if (playerColor !== turn) {
+                setBoard((prev) => {
+                    const newBoard = copyBoard(prev)
+                    if (!movingTo.move.piece) return prev
+                    const selectedTile = getTile(newBoard, movingTo.move.piece.position)
+                    const tileToMoveTo = getTile(newBoard, tile.position)
+
+                    if (tileToMoveTo && selectedTile && isPawn(selectedTile.piece) && shouldPromotePawn({ tile })) {
+                        selectedTile.piece.type = promotePawn;
+                        selectedTile.piece.id = selectedTile.piece.id + 2
+                        tileToMoveTo.piece = selectedTile.piece
+                            ? { ...selectedTile.piece, position: tile.position }
+                            : null
+                        selectedTile.piece = null
+                    }
+
+                    return newBoard;
+                });
+                dispatch(gameSettingActions.setMovingTo({ movingTo: null }));
+                dispatch(gameSettingActions.setTurn());
+                setMoves([])
+                setSelected(null)
+                setLastSelected(null)
+            }
+        }, [isPromotePawn])
 
         return (
             <>

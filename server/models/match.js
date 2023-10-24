@@ -3,18 +3,18 @@ const mongoose = require("mongoose");
 
 const matchSchema = new mongoose.Schema({
     whiteId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'user',
     },
     blackId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'user',
     },
     matchName: {
         type: String
     },
-    winnerPlayer: {
-        type: String
+    state: {
+        type: Number
     },
     mode: {
         type: String

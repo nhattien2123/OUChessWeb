@@ -2,7 +2,6 @@ import { userState } from 'src/redux/reducer/user/Types';
 import { ROOT_URL, CONTENT_TYPE, COMMON, USER } from '../../config/ApiConstants';
 import * as Types from './Types';
 import Cookies from 'js-cookie';
-import { type } from 'os';
 
 export const fetchGetCurrrentUser = async (): Promise<Types.ResFetchGetCurrrentUser> => {
     const url = ROOT_URL + USER.API_CURRENT_USER.URL;
@@ -53,7 +52,6 @@ export const fetchPatchChangeAvatar = async (
     form: FormData,
 ): Promise<Types.ResFetchPatchChangeAvatar> => {
     const { URL, METHOD } = USER.API_CHANGE_AVATAR(username);
-    console.log(form);
     const url = `${ROOT_URL}${URL}`;
     const res = await fetch(url, {
         method: METHOD,
