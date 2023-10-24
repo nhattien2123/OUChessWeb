@@ -1,10 +1,10 @@
-import type { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useState } from 'react';
 
 import { BoardComponent } from 'src/share/game/board/Board';
 import { GameOverScreen } from 'src/share/game/board/GameOverScreen';
 import type { History } from 'src/share/game/board/History';
-import { Sidebar } from 'src/share/game/board/Sidebar';
+import { LeaveRoom, Sidebar } from 'src/share/game/board/Sidebar';
 // import { css } from '@emotion/react'
 import type { Board, Tile } from 'src/share/game/logic/board';
 import { createBoard } from 'src/share/game/logic/board';
@@ -26,6 +26,11 @@ import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
 import { RootState } from 'src/app/store';
 import { Chat } from 'src/share/game/board/Chat';
+import { StatusUser } from 'src/share/game/board/StatusUser';
+import { Vector, Vector3 } from 'three';
+import { matchActions } from 'src/redux/reducer/match/MatchReducer';
+import { socket } from 'src';
+import { useNavigate } from 'react-router-dom';
 
 export type ThreeMouseEvent = {
     stopPropagation: () => void
@@ -54,19 +59,23 @@ export const useHistoryState = create<{
 }))
 
 export const Game: FC = () => {
+    const playerColor = useAppSelector((state: RootState) => state.playerReducer.playerColor);
     const [board, setBoard] = useState<Board>(createBoard())
     const [showPromotionDialog, setShowPromotionDialog] = useState<boolean>(false);
     const [tile, setTile] = useState<Tile>({
         position: { x: 0, y: 0 },
         piece: null,
     });
+    const [cameraDefault, setCameraDefault] = useState(new Vector3(0, 0, 0));
     const [selected, setSelected] = useState<Piece | null>(null)
     const [moves, setMoves] = useState<Move[]>([])
     const [endGame, setEndGame] = useState<EndGame | null>(null)
     const resetHistory = useHistoryState((state) => state.reset)
     const [turn, setTurn] = useState<Color>(`white`)
     const [lastSelected, setLastSelected] = useState<Tile | null>(null)
+    const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
     const dispatch = useAppDispatch();
+    const nav = useNavigate();
 
     const resetTurn = () => {
         dispatch(gameSettingActions.resetTurn());
@@ -85,6 +94,19 @@ export const Game: FC = () => {
 
     useSockets({ reset });
 
+    useEffect(() => {
+        if (playerColor === "white") {
+            setCameraDefault(new Vector3(0, 10, 6))
+        } else {
+            setCameraDefault(new Vector3(0, 10, -6))
+        }
+    }, [playerColor])
+
+    useEffect(() => {
+        // console.log("Test")
+        dispatch(matchActions.resetLastedMatchId());
+    }, [])
+
     return (
         <div
             className="container-chess"
@@ -98,10 +120,10 @@ export const Game: FC = () => {
                 setTurn={setTurn}
             />
             {joinedRoom && <Chat />}
-            {/* {joinedRoom && <Chat />} */}
             <StatusBar />
             <GameOverScreen endGame={endGame} />
             <Loader />
+            <StatusUser />
             <PromoteDialog
                 showPromotionDialog={showPromotionDialog}
                 setShowPromotionDialog={setShowPromotionDialog}
@@ -114,8 +136,8 @@ export const Game: FC = () => {
                 setLastSelected={setLastSelected}
                 setMoves={setMoves}
             />
-            <Canvas shadows camera={{ position: [0, 10, 6], fov: 50 }}>
-                <Environment files="dawn.hdr" />
+            <Canvas shadows camera={{ position: cameraDefault, fov: 70 }}>
+                <Environment files="/dawn.hdr" />
                 <Opponent />
                 <BoardModel />
                 <BoardComponent

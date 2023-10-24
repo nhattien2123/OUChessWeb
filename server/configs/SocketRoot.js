@@ -22,7 +22,7 @@ const rootSocket = (io) => {
 
     io.on('connection', (socket) => {
         user += 1;
-        console.log("connection - (con): ",userConnected);
+        console.log("connection - (con): ", userConnected);
 
         // socket.use(([event, ...arg], next) => {
         //     if (socket.token) {
@@ -32,7 +32,7 @@ const rootSocket = (io) => {
 
         socket.on('disconnect', () => {
             user -= 1;
-            console.log("connection (dis): ",userConnected);
+            console.log("connection (dis): ", userConnected);
             if (socket.userId) {
                 delete userConnected[socket.userId];
             }
@@ -44,16 +44,18 @@ const rootSocket = (io) => {
 
         require('../services/friendService').friendSocket(socket, io, userConnected);
         socket.on(`existingPlayer`, (data) => {
-            io.sockets.in(data.roomId).emit(`clientExistingPlayer`, data.name)
+            io.sockets.in(data.roomId).emit(`clientExistingPlayer`, data)
         })
 
         require("../services/gameService").cameraMove(socket, io);
         require("../services/gameService").disconnect(socket, io);
+        require("../services/gameService").leaveRoom(socket, io);
         require("../services/gameService").fetchPlayers(socket, io);
         require("../services/gameService").joinRoom(socket, io);
         require("../services/gameService").makeMove(socket, io);
         require("../services/gameService").resetGame(socket, io);
         require("../services/gameService").sendMessage(socket, io);
+        require("../services/gameService").promotePawn(socket, io);
     });
 };
 

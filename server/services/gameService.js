@@ -11,9 +11,30 @@ const disconnect = (socket, io) => {
     })
 }
 
+const leaveRoom = (socket, io) => {
+    socket.on(`leaveRoom`, (data) => {
+        console.log('test leave room')
+        const playerCount = io.sockets.adapter.rooms.get(data.roomId)?.size || 0;
+        if (playerCount === 2) {
+            io.sockets.in(data.roomId).emit(`leftRoom`, data.roomId)
+            socket.leave(data.roomId);
+        }
+
+        if (playerCount === 1) {
+            io.sockets.in(data.roomId).emit(`leftRoom`, data.roomId)
+            socket.leave(data.roomId);
+        }
+    })
+}
+
+const setJoinedRoom = (socket, io) => {
+    socket.on(`setLeavedRoom`, (data) => {
+        io.sockets.in(data.roomId).emit(`leftRoom`, data.roomId)
+    })
+}
+
 const fetchPlayers = (socket, io) => {
     socket.on(`fetchPlayers`, (data) => {
-        console.log(data);
         const players = io.sockets.adapter.rooms.get(data.roomId)?.size || 0
         io.sockets.in(data.roomId).emit(`playersInRoom`, players)
     })
@@ -21,7 +42,7 @@ const fetchPlayers = (socket, io) => {
 
 const joinRoom = (socket, io) => {
     socket.on(`joinRoom`, (data) => {
-        const { roomId, username } = data
+        const { roomId, username, avatar } = data
 
         const playerCount = io.sockets.adapter.rooms.get(data.roomId)?.size || 0
         if (playerCount === 2) {
@@ -29,16 +50,13 @@ const joinRoom = (socket, io) => {
             return
         }
         socket.join(roomId)
-        const color = playerCount === 1 ? `black` : `white`
-        const props = { roomId, username, color, playerCount }
-        console.log(props);
+        const props = { roomId, username, playerCount, avatar }
         io.sockets.in(roomId).emit(`playerJoined`, props)
     })
 }
 
 const makeMove = (socket, io) => {
     socket.on(`makeMove`, (data) => {
-        console.log(data)
         io.sockets.in(data.roomId).emit(`moveMade`, data.movingTo)
     })
 }
@@ -56,4 +74,20 @@ const sendMessage = (socket, io) => {
     })
 }
 
-module.exports = { cameraMove, disconnect, fetchPlayers, joinRoom, makeMove, resetGame, sendMessage };
+const promotePawn = (socket, io) => {
+    socket.on(`promotePawn`, (data) => {
+        io.sockets.in(data.roomId).emit(`promotedPawn`, data.pieceType)
+    })
+}
+
+module.exports = {
+    cameraMove,
+    disconnect,
+    leaveRoom,
+    fetchPlayers,
+    joinRoom,
+    makeMove,
+    resetGame,
+    sendMessage,
+    promotePawn
+};

@@ -4,6 +4,7 @@ import * as Types from './Types';
 const initialState: Types.matchState = {
     match: [],
     isLoading: false,
+    lastestMatchId: null,
 }
 
 const matchSlice = createSlice({
@@ -23,10 +24,28 @@ const matchSlice = createSlice({
         },
         resPostAddMatch: (state, action: Types.ActionResPostAddMatch) => {
             const { match } = action.payload;
-            console.log(match);
             state.match.push(match);
+            state.lastestMatchId = match._id;
             state.isLoading = false;
         },
+        reqGetMatchById: (state, action: Types.ActionReqGetMatchById) => {
+            state.isLoading = true;
+        },
+        resGetMatchById: (state, action: Types.ActionResGetMatchById) => {
+            const { matches } = action.payload;
+            state.match = matches;
+            state.isLoading = false;
+        },
+        reqPutMatchById: (state, action: Types.ActionReqPutMatchById) => {
+            state.isLoading = true;
+        },
+        resPutMatchById: (state, action: Types.ActionResPutMatchById) => {
+            const { match } = action.payload;
+            state.isLoading = false;
+        },
+        resetLastedMatchId: (state) => {
+            state.lastestMatchId = null
+        }
     }
 });
 

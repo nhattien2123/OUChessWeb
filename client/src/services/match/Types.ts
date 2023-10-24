@@ -11,3 +11,13 @@ export type ResFetchPostAddMatch = Response<{
     match: Match;
     errorMsg: CommonState["errorMsg"];
 }>;
+
+export type ResFetchGetMatchById = Response<{
+    matches: matchState["match"];
+    errorMsg: CommonState["errorMsg"];
+}>
+
+export type ResFetchPutMatchById = Response<{
+    match: Match;
+    errorMsg: CommonState["errorMsg"];
+}>

@@ -77,9 +77,21 @@ export const MATCH = {
     },
     API_ADD_MATCH: {
         URL: '/match/matchapi-addmatch',
-        METHOD: 'POST',
+        METHOD: 'POST'
     },
-};
+    API_PUT_MATCH_BY_ID: (matchId: string) => {
+        return {
+            URL: `/match/matchapi-updatematch/${matchId}`,
+            METHOD: 'PATCH'
+        }
+    },
+    API_GET_MATCH_BY_ID: (matchId: string) => {
+        return {
+            URL: `/match/matchapi-getmatchbyid/${matchId}`,
+            METHOD: 'GET'
+        }
+    }
+}
 
 export const PROFILE = {
     API_GET_PROFILE: (username: string) => {

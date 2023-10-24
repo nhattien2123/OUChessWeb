@@ -46,9 +46,10 @@ const matchController = {
     updateMatch: async (req, res) => {
         try {
             const matchId = req.params.matchId;
-            const updatedMatchData = req.body;
+            const match = req.body.match;
+            console.log(matchId + " " +  match);
 
-            const updatedMatch = await matchService.updateMatch(matchId, updatedMatchData);
+            const updatedMatch = await matchService.updateMatch(matchId, match);
 
             if (!updatedMatch) {
                 httpHandler.Fail(res, {}, 'Cập nhật trận đấu không thành công');
@@ -73,6 +74,18 @@ const matchController = {
             httpHandler.Servererror(res, error.message, 'Đã xảy ra lỗi !!!');
         }
     },
+    getMatchById: async (req, res) => {
+        try {
+            const matchId = req.params.matchId;
+            const matches = await matchService.getMatchById(matchId);
+            if (!matches) httpHandler.Fail(res, {}, 'Không tìm thấy thông tin trận đấu');
+            else {
+                httpHandler.Success(res, { matches }, 'Tìm thấy thông tin trận đấu');
+            }
+        } catch (error) {
+            httpHandler.Servererror(res, error.message, 'Đã xảy ra lỗi !!!');
+        }
+    }
 };
 
 module.exports = matchController;

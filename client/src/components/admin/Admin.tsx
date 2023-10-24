@@ -153,7 +153,7 @@ const Admin = (props: Props) => {
                     </div>
                 </div>
                 <div className="content-body">
-                    <div style={{ overflow: 'auto', height: '350px', display: 'inline-block' }}>
+                    <div style={{ overflow: 'auto', height: '600px', display: 'inline-block' }}>
                         <table className="table-content">
                             <thead className="table-header">
                                 <tr>

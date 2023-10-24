@@ -1,4 +1,4 @@
-import { Color } from 'src/share/game/logic/pieces';
+import { Color, PieceType } from 'src/share/game/logic/pieces';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { MovingTo } from 'src/components/game/Game';
 
@@ -7,15 +7,13 @@ export type GameSettingsState = {
     turn: Color;
     gameStarted: boolean;
     movingTo: MovingTo | null;
+    promotePawn: PieceType;
+    isPromotePawn: boolean;
 }
 
 export type ActionSetGameType = PayloadAction<{
     gameType: GameSettingsState['gameType'];
 }>
-
-// export type ActionSetTurn = PayloadAction<{
-//     turn: GameSettingsState['turn'];
-// }>
 
 export type ActionSetGameStarted = PayloadAction<{
     gameStarted: GameSettingsState['gameStarted'];
@@ -23,4 +21,12 @@ export type ActionSetGameStarted = PayloadAction<{
 
 export type ActionSetMovingTo = PayloadAction<{
     movingTo: GameSettingsState['movingTo'];
+}>
+
+export type ActionSetPromotePawn = PayloadAction<{
+    promotePawn: GameSettingsState['promotePawn'];
+}>
+
+export type ActionSetIsPromotePawn = PayloadAction<{
+    isPromotePawn: GameSettingsState['isPromotePawn'];
 }>

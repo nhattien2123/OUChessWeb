@@ -6,6 +6,12 @@ import { MovingTo } from 'src/components/game/Game';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
 import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
+import { socket } from 'src/index';
+
+export type PromotePawn = {
+    pieceType: PieceType
+    roomId?: string | null
+}
 
 const PromoteDialog: FC<{
     showPromotionDialog: boolean;
@@ -39,12 +45,13 @@ const PromoteDialog: FC<{
         const turn = useAppSelector((state: RootState) => state.gameSettingsReducer.turn);
         const gameStarted = useAppSelector((state: RootState) => state.gameSettingsReducer.gameStarted);
         const movingTo = useAppSelector((state: RootState) => state.gameSettingsReducer.movingTo);
+        const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
         const dispatch = useAppDispatch();
 
         const handleSelectPieceType = (pieceType: PieceType) => {
+            if (!tile || !movingTo || !socket) return
             setBoard((prev) => {
                 const newBoard = copyBoard(prev)
-                console.log(newBoard);
                 const selectedTile = selected ? getTile(newBoard, selected.position) : null;
                 const tileToMoveTo = getTile(newBoard, tile.position)
                 if (tileToMoveTo && selectedTile && isPawn(selectedTile.piece) && shouldPromotePawn({ tile })) {
@@ -65,6 +72,12 @@ const PromoteDialog: FC<{
             setMoves([])
             setSelected(null)
             setLastSelected(null)
+
+            const promotePawn: PromotePawn = {
+                pieceType: pieceType,
+                roomId: roomId,
+            }
+            socket.emit(`promotePawn`, promotePawn);
         };
 
         return (
@@ -78,7 +91,7 @@ const PromoteDialog: FC<{
                             <div className="piece-buttons">
                                 <button onClick={() => handleSelectPieceType('queen')}>
                                     <img src="path/to/queen.png" alt="Queen" />
-                                    Hoa hậu (Queen)
+                                    Hậu (Queen)
                                 </button>
                                 <button onClick={() => handleSelectPieceType('rook')}>
                                     <img src="path/to/rook.png" alt="Rook" />

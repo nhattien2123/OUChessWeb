@@ -9,17 +9,7 @@ router.get(apiConstants.API_GET_MATCH, matchController.getMatches);
 
 router.post(apiConstants.API_ADD_MATCH, matchController.addMatch);
 
-router.patch(apiConstants.API_UPDATE_MATCH, async (req, res) => {
-    try {
-        const { matchId, updatedMatchData } = req.body;
-
-        const updatedMatch = await matchRepository.updateMatch(matchId, updatedMatchData);
-
-        res.json(updatedMatch);
-    } catch (error) {
-        res.status(500).json({ error: "Lỗi trong quá trình cập nhật trận đấu." });
-    }
-});
+router.patch(apiConstants.API_UPDATE_MATCH_BY_ID, matchController.updateMatch);
 
 router.delete(apiConstants.API_DELETE_MATCH, async (req, res) => {
     try {
@@ -32,6 +22,6 @@ router.delete(apiConstants.API_DELETE_MATCH, async (req, res) => {
         res.status(500).json({ error: "Lỗi trong quá trình xoá trận đấu." });
     }
 });
-
+router.get(apiConstants.API_GET_MATCH_BY_ID, matchController.getMatchById);
 
 module.exports = router;

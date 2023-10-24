@@ -9,6 +9,14 @@ import { BsReverseLayoutSidebarInsetReverse } from 'react-icons/bs'
 
 import { HistoryPanel } from './History'
 import { MiniMap } from './MiniMap'
+import { socket } from 'src/index'
+import { RootState } from 'src/app/store'
+import { useAppSelector } from 'src/app/hooks'
+import { useNavigate } from 'react-router-dom'
+
+export type LeaveRoom = {
+    roomId?: string | null,
+}
 
 export const Sidebar: FC<{
     board: Board
@@ -18,19 +26,24 @@ export const Sidebar: FC<{
     setBoard: (board: Board) => void
     reset: () => void
 }> = ({ board, moves, selected, reset, setBoard, setTurn }) => {
+    const userId = useAppSelector((state: RootState) => state.userReducer.currentUser._id);
     const [show, setShow] = React.useState<boolean>(false)
+    const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId)
     const [history, undoHistory] = useHistoryState((state) => [
         state.history,
         state.undo,
     ])
-    const undo = () => {
-        if (history.length > 0) {
-            const last = history[history.length - 1]
-            setBoard(last.board)
-            setTurn((prev) => (prev === `white` ? `black` : `white`))
-            undoHistory()
+    const nav = useNavigate();
+
+    const handleLeaveRoom = () => {
+        const data: LeaveRoom = {
+            roomId: roomId,
         }
+        socket.emit(`setJoinedRoom`, data);
+        socket.emit(`leaveRoom`, data);
+        nav('/play/online')
     }
+
     return (
         <>
             {!show && (
@@ -46,8 +59,10 @@ export const Sidebar: FC<{
                         <MiniMap board={board} selected={selected} moves={moves} />
                         <HistoryPanel />
                         <div className='container-sidebar-button'>
-                            <button onClick={reset}>Reset</button>
-                            <button onClick={() => undo()}>Undo</button>
+                            {/* <button onClick={reset}>Reset</button>
+                            <button onClick={() => undo()}>Undo</button> */}
+                            <button onClick={handleLeaveRoom}>Thoát</button>
+                            <button onClick={() => { }}>Hoà cờ</button>
                         </div>
                     </>
                 )}

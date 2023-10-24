@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeLatest } from 'redux-saga/effects';
 import httpHandler from 'src/util/HttpHandler';
 import { commonAction } from 'src/redux/reducer/common/CommonReducer';
 import { matchActions } from 'src/redux/reducer/match/MatchReducer';
@@ -8,6 +8,7 @@ import * as TypesFetch from 'src/services/match/Types';
 
 interface Payload {
     match: TypesAction.Match;
+    matchId: string;
 }
 
 function* getMatch(action: TypesAction.ActionReqGetMatch) {
@@ -52,7 +53,6 @@ function* postAddMatch(action: TypesAction.ActionReqPostAddMatch) {
         switch (statusCode) {
             case httpHandler.SUCCESS: {
                 const { match } = response.data;
-                console.log(match);
                 yield put(matchActions.resPostAddMatch({ match }));
                 break;
             }
@@ -77,7 +77,84 @@ function* postAddMatch(action: TypesAction.ActionReqPostAddMatch) {
     }
 }
 
+function* getMatchById(action: TypesAction.ActionReqGetMatchById) {
+    try {
+        const { matchId } = action.payload as Payload;
+        const response: TypesFetch.ResFetchGetMatchById = yield call(
+            MatchService.fetchGetMatchById,
+            matchId
+        );
+        const statusCode = response.code;
+        switch (statusCode) {
+            case httpHandler.SUCCESS: {
+                const { matches } = response.data;
+                yield put(matchActions.resGetMatchById({ matches }));
+                break;
+            }
+            case httpHandler.FAIL: {
+                yield all([
+                    put(matchActions.resGetMatchById({ matches: [] })),
+                    put(commonAction.displayError({ errorMsg: response.message }))
+                ]);
+                break;
+            }
+            case httpHandler.UNAUTHORIZED: {
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+            }
+            case httpHandler.SERVER_ERROR: {
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+            }
+            default:
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+        }
+    } catch (error) {
+        yield put(commonAction.displayError({ errorMsg: (error as Error).message }));
+    }
+}
+
+function* putMatchById(action: TypesAction.ActionReqGetMatchById) {
+    try {
+        const { matchId, match } = action.payload as Payload;
+        const response: TypesFetch.ResFetchPutMatchById = yield call(
+            MatchService.fetchPutMatchById,
+            matchId,
+            match
+        );
+        const statusCode = response.code;
+        switch (statusCode) {
+            case httpHandler.SUCCESS: {
+                const { match } = response.data;
+                yield put(matchActions.resPutMatchById({ match }));
+                break;
+            }
+            case httpHandler.FAIL: {
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+            }
+            case httpHandler.UNAUTHORIZED: {
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+            }
+            case httpHandler.SERVER_ERROR: {
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+            }
+            default:
+                yield put(commonAction.displayError({ errorMsg: response.message }));
+                break;
+        }
+    } catch (error) {
+        yield put(commonAction.displayError({ errorMsg: (error as Error).message }));
+    }
+}
+
+
 export function* watchMatchFunction() {
     yield takeLatest(matchActions.reqGetMatch.type, getMatch);
     yield takeLatest(matchActions.reqPostAddMatch.type, postAddMatch);
+    yield takeLatest(matchActions.reqGetMatchById.type, getMatchById);
+    yield takeLatest(matchActions.reqPutMatchById.type, putMatchById);
 }

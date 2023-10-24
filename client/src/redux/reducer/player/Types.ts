@@ -6,7 +6,7 @@ export type PlayerState = {
     playerColor: Color,
     mode: string,
     joinedRoom: boolean,
-    roomId: string | null,
+    roomId?: string | null,
 }
 
 export type ActionSetUserId = PayloadAction<{
