@@ -107,7 +107,7 @@ const Verify: React.FC<verifyProps> = ({
                         setNextStep((prev) => prev - 1)
                     }}
                 >
-                    back
+                    Trở về
                 </div>
             </div>
         </>

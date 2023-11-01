@@ -34,17 +34,17 @@ const Sidebar = (props: Props) => {
                     <Link to={'/'}>Chess Realm</Link>
                 </li>
                 <li className="sidebar-item">
-                    <Link to={'/play/online'}>Play</Link>
+                    <Link to={'/play/online'}>Chơi game</Link>
                 </li>
                 <li className="sidebar-item">
                     <Link to={`/profile/${currentUser.username}`}>Thông tin</Link>
                 </li>
                 <li className="sidebar-item">
-                    <Link to={'/messages'}>Tin nhắn</Link>
+                    <Link to={'/messages'}>Nhắn tin</Link>
                 </li>
                 {currentUser.role === 'ADMIN' && (
                     <li className="sidebar-item">
-                        <Link to={'/admin'}>Admin</Link>
+                        <Link to={'/admin'}>Quản trị</Link>
                     </li>
                 )}
                 <li className="sidebar-input">
