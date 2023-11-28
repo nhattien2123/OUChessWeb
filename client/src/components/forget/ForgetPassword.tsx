@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
-import register, { registerActions } from 'src/redux/reducer/register/register';
+import { registerActions } from 'src/redux/reducer/register/Register';
 import ChangePasswordForm from 'src/share/form/ChangePasswordForm';
-import Verify from 'src/share/verify/verify';
+import Verify from 'src/share/verify/Verify';
 import 'src/components/forget/ForgetPassword.scss';
 
 
@@ -13,7 +13,6 @@ interface ForgetPasswordProps {}
 const ForgetPassword: React.FC<ForgetPasswordProps> = () => {
     const [nextStep, setNextStep] = useState<number>(1);
     const [email, setEmail] = useState('');
-    const [error, setError] = useState<string>('');
     const [newPassword, setNewPassword] = useState();
     const verifyToken = useAppSelector((state: RootState) => state.registerReducer.verifyToken);
     const dispatch = useAppDispatch();

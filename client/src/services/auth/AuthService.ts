@@ -1,5 +1,5 @@
-import { ROOT_URL, CONTENT_TYPE, COMMON } from '../../config/ApiConstants';
-import * as Types from './Types';
+import { ROOT_URL, CONTENT_TYPE, COMMON } from 'src/config/ApiConstants';
+import * as Types from 'src/services/auth/Types';
 
 export const fetchLogin = async (username: string, password: string): Promise<Types.ResFetchGetDataLogin> => {
     const url = ROOT_URL + COMMON.API_LOGIN.URL;

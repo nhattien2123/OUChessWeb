@@ -1,10 +1,8 @@
-import React, { SetStateAction, useEffect, useState } from 'react';
+import React from 'react';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ErrorMessage } from '@hookform/error-message';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
 import { userDataForm } from 'src/redux/reducer/admin/Types';
 
 type Props = {
@@ -15,8 +13,6 @@ type Props = {
 
 const AdminAddUserForm = (props: Props) => {
     const { newUser, onSubmit, closeModel } = props;
-    const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
-    const [preview, setPreview] = useState<object>();
 
     const schema = yup.object<Props['newUser']>().shape({
         username: yup.string().required('Vui lòng nhập tên tài khoản').optional(),

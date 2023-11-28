@@ -1,5 +1,5 @@
 import { ROOT_URL, CONTENT_TYPE, PROFILE } from 'src/config/ApiConstants';
-import * as Types from './Types';
+import * as Types from 'src/services/profile/Types';
 
 export const fetchProfile = async (username: string): Promise<Types.ResFetchGetProfile> => {
     const url = ROOT_URL + PROFILE.API_GET_PROFILE(username).URL;

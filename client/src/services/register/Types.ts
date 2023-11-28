@@ -1,5 +1,5 @@
-import type { Response } from "../../config/Constants"
-import { registerState } from "../../redux/reducer/register/Types"
+import type { Response } from "src/config/Constants"
+import { registerState } from "src/redux/reducer/register/Types"
 
 export type ResFetchSendDataVerify = Response<{
     verifyToken: registerState["verifyToken"];

@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { RootState } from '../../app/store';
-import { registerActions } from '../../redux/reducer/register/register';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import Verify from '../../share/verify/verify';
-
-import '../register/Register.scss';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import { registerActions } from 'src/redux/reducer/register/Register';
 import RegisterForm, { registerData } from 'src/share/form/RegisterForm';
+import Verify from 'src/share/verify/Verify';
+import 'src/components/register/Register.scss';
 
 interface RegisterProps {}
 

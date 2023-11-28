@@ -1,12 +1,12 @@
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { registerActions } from 'src/redux/reducer/register/register';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect } from 'react';
 import * as yup from 'yup';
-import { ErrorMessage } from '@hookform/error-message';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { ErrorMessage } from '@hookform/error-message';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { registerActions } from 'src/redux/reducer/register/Register';
+import { RootState } from 'src/app/store';
 
 export type registerData = {
     username: string;

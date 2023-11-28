@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import moment from 'moment';
-import { userState } from 'src/redux/reducer/user/Types';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ErrorMessage } from '@hookform/error-message';
+import { userState } from 'src/redux/reducer/user/Types';
 import { useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
 

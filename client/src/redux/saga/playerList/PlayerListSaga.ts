@@ -1,6 +1,5 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import httpHandler from 'src/util/HttpHandler';
-import { commonAction } from 'src/redux/reducer/common/CommonReducer';
 import { playerListActions } from 'src/redux/reducer/playersList/PlayerList';
 import * as ProfileServices from 'src/services/profile/ProfileServices';
 import * as TypesAction from 'src/redux/reducer/playersList/Types';
@@ -20,24 +19,24 @@ function* getListUser(action: TypesAction.ActionReqGetListUser) {
             case httpHandler.SUCCESS: {
                 const { list } = response.data;
                 console.log(list);
-                yield put(playerListActions.ResGetListUser({ list }));
+                yield put(playerListActions.resGetListUser({ list }));
                 break;
             }
             case httpHandler.FAIL:
-                yield put(playerListActions.ReqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(playerListActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
                 break;
             case httpHandler.SERVER_ERROR:
-                yield put(playerListActions.ReqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(playerListActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
                 break;
             default:
-                yield put(playerListActions.ReqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(playerListActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
                 break;
         }
     } catch (error) {
-        yield put(playerListActions.ReqSetNotify({ notify: { msg: 'Đã có lỗi xảy ra', type: 'error' } }));
+        yield put(playerListActions.reqSetNotify({ notify: { msg: 'Đã có lỗi xảy ra', type: 'error' } }));
     }
 }
 
 export function* watchPlayerList() {
-    yield takeLatest(playerListActions.ReqGetListUser.type, getListUser);
+    yield takeLatest(playerListActions.reqGetListUser.type, getListUser);
 }

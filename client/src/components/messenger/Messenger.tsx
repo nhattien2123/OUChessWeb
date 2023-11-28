@@ -1,20 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import { useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
 import uploadImage from 'src/config/ImageUpload';
-import useDocument from 'src/share/firestore/DocumentHook';
 import ChatList from 'src/share/message/ChatList';
 import MessageService from 'src/services/message/MessageService';
-import { collection, doc, getDoc, onSnapshot, orderBy, serverTimestamp, updateDoc } from 'firebase/firestore';
-// import useDocuments from '@share/firestore/DocumentsHook';
-import useDocuments from '../../share/firestore/DocumentsHook';
+import useDocuments from 'src/share/firestore/DocumentsHook';
 import 'src/components/messenger/Messenger.scss';
-import { useNavigate, useParams } from 'react-router-dom';
-import Header from 'src/share/header/Header';
-import Sidebar from 'src/share/sidebar/Sidebar';
 
 interface Props {}
 
@@ -25,7 +19,6 @@ const Messenger = (props: Props) => {
     const [message, setMessage] = useState('');
     const [showEmoji, setShowEmoji] = useState(false);
     const [limit, setLimit] = useState<number>(100);
-    const nav = useNavigate();
     const ref = useRef(null);
 
     const _condition = useMemo(() => {
@@ -45,8 +38,6 @@ const Messenger = (props: Props) => {
             asc: 'asc',
         },
     });
-
-    console.log(list);
 
     const emojiHandler = (emoji: any) => {
         setMessage((current) => current + emoji['native']);
@@ -76,7 +67,6 @@ const Messenger = (props: Props) => {
         };
 
         MessageService.add('messages', newMessage);
-        // MessageService.update('messages', selectedChat, { [messID]: newMessage });
         MessageService.update('chat', selectedChat, { lastMessage: 'Đã gửi một ảnh' });
         MessageService.update('userCharts', selectedUser._id, {
             [selectedChat]: {
@@ -105,7 +95,6 @@ const Messenger = (props: Props) => {
         };
 
         MessageService.add('messages', newMessage);
-        // MessageService.update('messages', selectedChat, { [messID]: newMessage });
         MessageService.update('chat', selectedChat, { lastMessage: message });
         MessageService.update('userCharts', selectedUser._id, {
             [selectedChat]: {
@@ -117,8 +106,6 @@ const Messenger = (props: Props) => {
                 sent: false,
             },
         });
-
-        // SetMessages((prevMessages) => [...prevMessages, message]);
         setMessage('');
     };
 
@@ -130,8 +117,6 @@ const Messenger = (props: Props) => {
 
     return (
         <>
-            {/* <Header />
-            <Sidebar /> */}
             <div className="chat-container">
                 <ChatList />
                 <div className="chat-field">
@@ -197,30 +182,6 @@ const Messenger = (props: Props) => {
                                             </>
                                         );
                                     })}
-                                    {/* <div className="received-box">
-                                        <div className="received-box-img">
-                                            <img
-                                                // className="header-image"
-                                                src="https://res.cloudinary.com/de0pt2lzw/image/upload/v1695581895/g0owu4lsrk7jsagvtaxp.jpg"
-                                                alt="avatar"
-                                            />
-                                        </div>
-                                        <div className="received-box-msg">
-                                            <div className="received-msg">Đây là tin nhắn </div>
-                                        </div>
-                                    </div>
-                                    <div className="sended-box">
-                                        <div className="sended-box-img">
-                                            <img
-                                                // className="header-image"
-                                                src="https://res.cloudinary.com/de0pt2lzw/image/upload/v1695581895/g0owu4lsrk7jsagvtaxp.jpg"
-                                                alt="avatar"
-                                            />
-                                        </div>
-                                        <div className="sended-box-msg">
-                                            <div className="sended-msg">Đây cũng là tin nhắn</div>
-                                        </div>
-                                    </div> */}
                                 </div>
                             </div>
                         </div>

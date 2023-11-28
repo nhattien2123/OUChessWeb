@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { db } from '../../config/FirebaseConfig';
 import { collection, query, where, doc, getDoc, orderBy, onSnapshot } from 'firebase/firestore';
+import { db } from 'src/config/FirebaseConfig';
 
 type Props = {
     _collection: string;

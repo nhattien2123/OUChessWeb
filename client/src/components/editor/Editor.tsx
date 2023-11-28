@@ -1,31 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import moment from 'moment';
-import { userActions } from '../../redux/reducer/user/userReducer';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { RootState } from '../../app/store';
-import Sidebar from '../../share/sidebar/Sidebar';
-import './Editor.scss';
+import { useNavigate, useParams } from 'react-router-dom';
+import { userActions } from 'src/redux/reducer/user/UserReducer';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
 import ProfileForm from 'src/share/form/ProfileForm';
 import ChangePasswordForm from 'src/share/form/ChangePasswordForm';
+import './Editor.scss';
 
 interface EditorProps {}
 
 const Editor: React.FC<EditorProps> = () => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const isLoading = useAppSelector((state: RootState) => state.userReducer.isLoading);
-    const errorMsg = useAppSelector((state: RootState) => state.commonReducer.errorMsg);
     const dispatch = useAppDispatch();
     const param = useParams();
     const nav = useNavigate();
 
-    const [selectedImage, setSelectedImage] = useState('');
     const [profile, setProfile] = useState(currentUser);
-    const [psw, setPsw] = useState({
-        newPassword: '',
-        confirmPassword: '',
-    });
 
     useEffect(() => {
         const usernameProfile = param['username'];

@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import * as Type from '../register/Types';
-import { stat } from 'fs';
+import * as Type from 'src/redux/reducer/register/Types';
 
 const initialState: Type.registerState = {
     isLoading: false,
