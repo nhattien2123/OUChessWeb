@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import useDocument from 'src/share/firestore/DocumentHook';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import { userActions } from 'src/redux/reducer/user/userReducer';
-import { Friend } from 'src/redux/reducer/profile/Types';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import { userActions } from 'src/redux/reducer/user/UserReducer';
+import { Friend } from 'src/redux/reducer/profile/Types';
 import { socket } from 'src/index';
+import useDocument from 'src/share/firestore/DocumentHook';
 import 'src/share/header/Header.scss';
 
 type Props = object;

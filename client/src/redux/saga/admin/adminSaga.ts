@@ -1,10 +1,9 @@
-import { all, call, put, takeLatest } from 'redux-saga/effects';
 import httpHandler from 'src/util/HttpHandler';
-import { adminActions } from 'src/redux/reducer/admin/adminReducer';
-import * as adminService from 'src/services/admin/adminService';
+import { all, call, put, takeLatest } from 'redux-saga/effects';
+import { adminActions } from 'src/redux/reducer/admin/AdminReducer';
+import * as AdminService from 'src/services/admin/AdminService';
 import * as TypesAction from 'src/redux/reducer/admin/Types';
 import * as TypesFetch from 'src/services/admin/Types';
-import { userDataForm } from 'src/redux/reducer/admin/Types';
 
 interface Payload {
     kw: string;
@@ -15,7 +14,7 @@ interface Payload {
 function* getListUser(action: TypesAction.ActionReqGetListUser) {
     try {
         const { kw } = action.payload as Payload;
-        const response: TypesFetch.resFetchGetListUserFromAdmin = yield call(adminService.fetchGetListUser, kw);
+        const response: TypesFetch.resFetchGetListUserFromAdmin = yield call(AdminService.fetchGetListUser, kw);
         const statusCode = response.code;
         switch (statusCode) {
             case httpHandler.SUCCESS: {
@@ -41,7 +40,7 @@ function* getListUser(action: TypesAction.ActionReqGetListUser) {
 function* addUser(action: TypesAction.ActionReqAddUser) {
     try {
         const { user } = action.payload as Payload;
-        const response: TypesFetch.resAddUserFromAdmin = yield call(adminService.fetchAddUser, user);
+        const response: TypesFetch.resAddUserFromAdmin = yield call(AdminService.fetchAddUser, user);
         const statusCode = response.code;
         console.log(statusCode);
         switch (statusCode) {
@@ -71,7 +70,7 @@ function* addUser(action: TypesAction.ActionReqAddUser) {
 function* updateUser(action: TypesAction.ActionReqUpdateUser) {
     try {
         const { user } = action.payload as Payload;
-        const response: TypesFetch.resUpdateUserFromAdmin = yield call(adminService.fetchUpdateUser, user);
+        const response: TypesFetch.resUpdateUserFromAdmin = yield call(AdminService.fetchUpdateUser, user);
         const statusCode = response.code;
         switch (statusCode) {
             case httpHandler.SUCCESS: {
@@ -101,7 +100,7 @@ function* updateUser(action: TypesAction.ActionReqUpdateUser) {
 function* deleteUser(action: TypesAction.ActionReqDeleteUser) {
     try {
         const { username } = action.payload as Payload;
-        const response: TypesFetch.resDeletedUserFromAdmin = yield call(adminService.fetchDeletedUser, username);
+        const response: TypesFetch.resDeletedUserFromAdmin = yield call(AdminService.fetchDeletedUser, username);
         const statusCode = response.code;
         switch (statusCode) {
             case httpHandler.SUCCESS: {

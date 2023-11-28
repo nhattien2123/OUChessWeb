@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import PrivateRouter from './PrivateRoute';
 import Login from 'src/components/login/Login';
-import Home from '../components/home/Home';
+import Home from 'src/components/home/Home';
 import Register from 'src/components/register/Register';
-import Game from '../components/game/Game';
+import Game from 'src/components/game/Game';
 import Matches from 'src/components/matches/Matches';
 import ForgetPassword from 'src/components/forget/ForgetPassword';
 import Editor from 'src/components/editor/Editor';
@@ -13,7 +13,6 @@ import Messenger from 'src/components/messenger/Messenger';
 import Base from 'src/share/base/Base';
 import Players from 'src/components/players/Players';
 import Admin from 'src/components/admin/Admin';
-import AdminRouter from './AdminRoute';
 
 interface RouterProps { }
 

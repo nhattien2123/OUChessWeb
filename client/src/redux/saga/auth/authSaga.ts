@@ -1,10 +1,10 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import httpHandler from '../../../util/HttpHandler';
-import { commonAction } from '../../reducer/common/CommonReducer';
-import { authActions } from '../../reducer/auth/authReducer';
-import * as LoginService from '../../../services/auth/authService';
-import * as TypesAction from '../../reducer/auth/Types';
-import * as TypesFetch from '../../../services/auth/Types';
+import httpHandler from 'src/util/HttpHandler';
+import { commonAction } from 'src/redux/reducer/common/CommonReducer';
+import { authActions } from 'src/redux/reducer/auth/AuthReducer';
+import * as LoginService from 'src/services/auth/AuthService';
+import * as TypesAction from 'src/redux/reducer/auth/Types';
+import * as TypesFetch from 'src/services/auth/Types';
 
 /**
  * Get data sample

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
 import useDocument from 'src/share/firestore/DocumentHook';
 import { ROOT_URL } from 'src/config/ApiConstants';
-import { messageAction } from 'src/redux/reducer/messages/messages';
+import { messageAction } from 'src/redux/reducer/messages/Messages';
 import { messageState } from 'src/redux/reducer/messages/Types';
 import 'src/components/messenger/Messenger.scss';
-import { useNavigate, useParams } from 'react-router-dom';
 
 type Props = {
     chat: { [key: string]: any };

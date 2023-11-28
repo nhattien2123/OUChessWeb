@@ -1,6 +1,6 @@
 import React from 'react';
-import { db, app } from '../../config/FirebaseConfig';
 import { doc, setDoc, updateDoc, serverTimestamp, collection, getDoc } from 'firebase/firestore';
+import { db } from 'src/config/FirebaseConfig';
 
 export const MessageService = {
     get: async (_collection: string, _id: string) => {
@@ -38,7 +38,6 @@ export const MessageService = {
 
             return true;
         } catch (error) {
-            console.log(error);
             return false;
         }
     },

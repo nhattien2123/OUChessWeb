@@ -1,5 +1,4 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { userState } from "../user/Types";
 
 export type messageState = {
     isLoading: boolean,

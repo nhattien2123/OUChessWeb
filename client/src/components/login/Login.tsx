@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { RootState } from '../../app/store';
-import { authActions } from '../../redux/reducer/auth/authReducer';
-import { userActions } from '../../redux/reducer/user/userReducer';
-import '../login/Login.scss';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import { authActions } from 'src/redux/reducer/auth/AuthReducer';
+import { userActions } from 'src/redux/reducer/user/UserReducer';
 import LoginForm from 'src/share/form/LoginForm';
 import { socket } from 'src/index';
-import { toast } from 'react-toastify';
+import 'src/components/login/Login.scss';
 interface LoginProps {}
 
 const Login = () => {
     const isLoggIn = useAppSelector((state: RootState) => state.authReducer.isLoggedIn);
     const token = useAppSelector((state: RootState) => state.authReducer.token);
-    const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const dispatch = useAppDispatch();
     const nav = useNavigate();
     const defaultData = {

@@ -1,11 +1,10 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { socket } from 'src/index';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
-import { profileActions } from 'src/redux/reducer/profile/profile';
-import { CommentInfo, profileState } from 'src/redux/reducer/profile/Types';
-import CommentInfoItem from './CommentInfoItem';
-import './Comment.scss';
+import { profileActions } from 'src/redux/reducer/profile/Profile';
+import CommentInfoItem from 'src/share/comment/CommentInfoItem';
+import 'src/share/comment/Comment.scss';
 
 type Props = object;
 

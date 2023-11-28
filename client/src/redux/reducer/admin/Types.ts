@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { Friend, Profile } from 'src/redux/reducer/profile/Types';
+import { Friend } from 'src/redux/reducer/profile/Types';
 
 export type userDataForm = {
     _id?: string;

@@ -9,7 +9,7 @@ type AdminRouterProps = {
 };
 
 const AdminRouter: React.FC<AdminRouterProps> = ({ component: Component }) => {
-    const currentuser = useAppSelector((state: RootState) => state.userReducer.currentUser);
+    const currentuser = useAppSelector((state: RootState) => state.userReducer);
     const token = Cookies.get('token');
     if (!token) {
         return <Navigate to={'/login'} />;

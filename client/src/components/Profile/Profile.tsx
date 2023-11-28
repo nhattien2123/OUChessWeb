@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { serverTimestamp } from 'firebase/firestore';
+import { toast } from 'react-toastify';
+import moment from 'moment';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
 import { Friend, Profile as ProfileStyle } from 'src/redux/reducer/profile/Types';
-import { profileActions } from 'src/redux/reducer/profile/profile';
-import CommentInfoList from 'src/share/comment/CommentInfoList';
-import { toast } from 'react-toastify';
-import MessageService from 'src/services/message/MessageService';
-import { serverTimestamp } from 'firebase/firestore';
+import { profileActions } from 'src/redux/reducer/profile/Profile';
+import { Match } from 'src/redux/reducer/match/Types';
 import { socket } from 'src/index';
-import '../profile/Profile.scss';
-import moment from 'moment';
+import CommentInfoList from 'src/share/comment/CommentInfoList';
+import MessageService from 'src/services/message/MessageService';
+import 'src/components/profile/Profile.scss';
 
 interface ProfileProps { }
 
@@ -71,7 +72,6 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
     }
 
     const requestHandle = () => {
-        console.log(profile._id);
         if (isFriend === 3) {
             socket.emit('addFriend', currentUser._id, profile._id, (succcess: boolean) => {
                 if (succcess) {
@@ -92,7 +92,6 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
         }
 
         const doc = await MessageService.get('chat', combineId);
-        console.log(doc);
         if (doc?.exists()) {
             nav(`/messages/${combineId}`);
         } else {
@@ -105,7 +104,6 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
 
             try {
                 const isSuc = await MessageService.addWithId('chat', combineId, _data);
-                console.log(isSuc);
                 if (isSuc) {
                     const _chat = {
                         [combineId]: {
@@ -203,7 +201,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                                 <div>Không có bất kỳ trận đấu nào</div>
                             ) : (
                                 <div className="matches-list">
-                                    {matches.map((m) => {
+                                    {matches.map((m: Match) => {
                                         return (
                                             <>
                                                 <div

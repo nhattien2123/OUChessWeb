@@ -1,7 +1,6 @@
-import { ROOT_URL, CONTENT_TYPE, ADMIN } from 'src/config/ApiConstants';
-import * as Types from './Types';
 import Cookies from 'js-cookie';
-import { userDataForm } from 'src/redux/reducer/admin/Types';
+import { ROOT_URL, CONTENT_TYPE, ADMIN } from 'src/config/ApiConstants';
+import * as Types from 'src/services/admin/Types';
 
 export const fetchGetListUser = async (kw: string): Promise<Types.resFetchGetListUserFromAdmin> => {
     const { URL, METHOD } = ADMIN.API_GET_LIST_USER;

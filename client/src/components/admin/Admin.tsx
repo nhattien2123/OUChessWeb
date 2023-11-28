@@ -5,12 +5,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
-import 'src/components/admin/Admin.scss';
 import { userDataForm } from 'src/redux/reducer/admin/Types';
-import { adminActions } from 'src/redux/reducer/admin/adminReducer';
+import { adminActions } from 'src/redux/reducer/admin/AdminReducer';
 import { registerState } from 'src/redux/reducer/register/Types';
 import AdminAddUserForm from 'src/share/form/AdminAddUserForm';
 import { registerData } from 'src/share/form/RegisterForm';
+import 'src/components/admin/Admin.scss';
 type Props = object;
 
 const defaultUser: userDataForm = {
@@ -96,7 +96,6 @@ const Admin = (props: Props) => {
     );
 
     useEffect(() => {
-        console.log(notify);
         switch (notify.type) {
             case 'success': {
                 toast.success(notify.msg);
@@ -109,10 +108,6 @@ const Admin = (props: Props) => {
             }
         }
     }, [notify]);
-
-    useEffect(() => {
-        console.log(userList);
-    }, [userList]);
 
     return (
         <>

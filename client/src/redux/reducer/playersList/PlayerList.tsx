@@ -10,21 +10,21 @@ const initialState: Types.PlayerListState = {
     },
 };
 
-const PlayerListSlice = createSlice({
+const playerListSlice = createSlice({
     name: 'playerList',
     initialState,
     reducers: {
-        ReqGetListUser: (state, action: Types.ActionReqGetListUser) => {
+        reqGetListUser: (state, action: Types.ActionReqGetListUser) => {
             state.isLoadding = true;
             state.players = initialState.players;
             state.notify = initialState.notify;
         },
-        ResGetListUser: (state, action: Types.ActionResGetListUser) => {
+        resGetListUser: (state, action: Types.ActionResGetListUser) => {
             const { list } = action.payload;
             state.players = list;
             state.isLoadding = false;
         },
-        ReqSetNotify: (state, action: Types.ActionReqSetNotify) => {
+        reqSetNotify: (state, action: Types.ActionReqSetNotify) => {
             const { notify } = action.payload;
             state.isLoadding = false;
             state.notify = notify;
@@ -32,6 +32,6 @@ const PlayerListSlice = createSlice({
     },
 });
 
-export const playerListActions = PlayerListSlice.actions;
-export default PlayerListSlice.reducer;
+export const playerListActions = playerListSlice.actions;
+export default playerListSlice.reducer;
 

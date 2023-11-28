@@ -1,5 +1,5 @@
 import { userState } from 'src/redux/reducer/user/Types';
-import { ROOT_URL, CONTENT_TYPE, COMMON, USER } from '../../config/ApiConstants';
+import { ROOT_URL, CONTENT_TYPE, USER } from '../../config/ApiConstants';
 import * as Types from './Types';
 import Cookies from 'js-cookie';
 

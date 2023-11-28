@@ -1,5 +1,5 @@
-import { ROOT_URL, CONTENT_TYPE, COMMON } from '../../config/ApiConstants';
-import * as Type from './Types';
+import { ROOT_URL, CONTENT_TYPE, COMMON } from 'src/config/ApiConstants';
+import * as Type from 'src/services/register/Types';
 
 export const checkExist = async (username: string, email: string, phone: number): Promise<Type.ResCheckExist> => {
     const url = ROOT_URL + COMMON.API_CHECK_EXIST.URL;

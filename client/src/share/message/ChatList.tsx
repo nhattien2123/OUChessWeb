@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { RootState } from '../../app/store';
-import useDocument from 'src/share/firestore/DocumentHook';
-import ChatItem from './ChatItem';
-import 'src/components/messenger/Messenger.scss';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { messageAction } from 'src/redux/reducer/messages/messages';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import useDocument from 'src/share/firestore/DocumentHook';
+import ChatItem from 'src/share/message/ChatItem';
+import 'src/components/messenger/Messenger.scss';
 
 interface Props {}
 

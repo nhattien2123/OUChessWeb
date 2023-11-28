@@ -1,10 +1,10 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import httpHandler from '../../../util/HttpHandler';
-import { commonAction } from '../../reducer/common/CommonReducer';
-import { registerActions } from '../../reducer/register/register';
-import * as registerService from '../../../services/register/registerServices';
-import * as TypesAction from '../../reducer/register/Types';
-import * as TypesFetch from '../../../services/register/Types';
+import httpHandler from 'src/util/HttpHandler';
+import { commonAction } from 'src/redux/reducer/common/CommonReducer';
+import { registerActions } from 'src/redux/reducer/register/Register';
+import * as RegisterService from 'src/services/register/registerServices';
+import * as TypesAction from 'src/redux/reducer/register/Types';
+import * as TypesFetch from 'src/services/register/Types';
 
 interface PayLoad {
     information: {
@@ -33,7 +33,7 @@ function* checkExist(action: TypesAction.ActionReqCheckExist) {
         const { fieldCheck } = action.payload as PayLoad;
         console.log(fieldCheck);
         const { username, email, phone } = fieldCheck;
-        const response: TypesFetch.ResCheckExist = yield call(registerService.checkExist, username, email, phone);
+        const response: TypesFetch.ResCheckExist = yield call(RegisterService.checkExist, username, email, phone);
         const statusCode = response.code;
         switch (statusCode) {
             case httpHandler.SUCCESS: {
@@ -56,7 +56,7 @@ function* checkExist(action: TypesAction.ActionReqCheckExist) {
 function* sendVerify(action: TypesAction.ActionReqSendDataVerify) {
     try {
         const { emailVerify } = action.payload as PayLoad;
-        const response: TypesFetch.ResFetchSendDataVerify = yield call(registerService.sendVerify, emailVerify);
+        const response: TypesFetch.ResFetchSendDataVerify = yield call(RegisterService.sendVerify, emailVerify);
         switch (response.code) {
             case httpHandler.SUCCESS: {
                 const { verifyToken } = response.data;
@@ -81,7 +81,7 @@ function* setDataRegister(action: TypesAction.ActionReqSetDataRegister) {
     try {
         const { information } = action.payload as PayLoad;
         // console.log(info)
-        const response: TypesFetch.ResFetchSendDataRegister = yield call(registerService.sendDataRegister, {
+        const response: TypesFetch.ResFetchSendDataRegister = yield call(RegisterService.sendDataRegister, {
             information: information,
         });
 
@@ -111,7 +111,7 @@ function* resetPassword(action: TypesAction.ActionReqChangePassword) {
     try {
         const { emailReset, passwordReset } = action.payload as PayLoad;
         const response: TypesFetch.ResFetchChangePassword = yield call(
-            registerService.resetPassword,
+            RegisterService.resetPassword,
             emailReset,
             passwordReset,
         );

@@ -1,12 +1,13 @@
 import React from 'react';
-import { useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
+import * as yup from 'yup';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import 'src/components/login/Login.scss';
 import { ErrorMessage } from '@hookform/error-message';
+import { useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import 'src/components/login/Login.scss';
+
 
 type Props = {
     defaultData: {
@@ -36,7 +37,6 @@ const LoginForm = (props: Props) => {
 
     return (
         <>
-            {' '}
             <div className="container">
                 <div className="main">
                     <div className="login-title">ĐĂNG NHẬP</div>

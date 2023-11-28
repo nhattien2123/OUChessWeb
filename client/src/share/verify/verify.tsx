@@ -1,14 +1,11 @@
 import React, { Dispatch, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
-import { RootState } from '../../app/store';
-import { useDispatch } from 'react-redux';
-import { registerActions } from '../../redux/reducer/register/register';
-import Counter from '../counter/Counter';
-import '../verify/Verify.scss';
-import '../../components/login/Login.scss';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
+import Counter from 'src/share/counter/Counter';
+import 'src/share/verify/Verify.scss';
+import 'src/components/login/Login.scss';
 interface verifyProps {
     email: string;
     verifyToken?: string;

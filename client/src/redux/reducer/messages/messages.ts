@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import * as Type from '../messages/Types';
+import * as Type from 'src/redux/reducer/messages/Types';
 
 const initialState = {
     isLoading: false,

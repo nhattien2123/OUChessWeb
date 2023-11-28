@@ -1,8 +1,7 @@
-import Cookies from 'js-cookie';
-import { useAppSelector } from '../../app/hooks';
-import { RootState } from '../../app/store';
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import { useAppSelector } from 'src/app/hooks';
+import { RootState } from 'src/app/store';
 import Sidebar from 'src/share/sidebar/Sidebar';
 import Header from 'src/share/header/Header';
 

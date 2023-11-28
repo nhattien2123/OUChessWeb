@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import '../sidebar/Sidebar.scss';
+import Cookies from 'js-cookie';
 import { Link, useNavigate } from 'react-router-dom';
+import { authActions } from 'src/redux/reducer/auth/AuthReducer';
+import { userActions } from 'src/redux/reducer/user/UserReducer';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { RootState } from 'src/app/store';
-import Cookies from 'js-cookie';
-import { authActions } from 'src/redux/reducer/auth/authReducer';
-import { userActions } from 'src/redux/reducer/user/userReducer';
 import { socket } from 'src/index';
+import 'src/share/sidebar/Sidebar.scss';
 interface Props {}
 
 const Sidebar = (props: Props) => {

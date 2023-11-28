@@ -1,10 +1,10 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import httpHandler from '../../../util/HttpHandler';
-import { commonAction } from '../../reducer/common/CommonReducer';
-import { userActions } from '../../reducer/user/userReducer';
-import * as UserService from '../../../services/user/userService';
-import * as TypesAction from '../../reducer/user/Types';
-import * as TypesFetch from '../../../services/user/Types';
+import httpHandler from 'src/util/HttpHandler';
+import { commonAction } from 'src/redux/reducer/common/CommonReducer';
+import { userActions } from 'src/redux/reducer/user/UserReducer';
+import * as UserService from 'src/services/user/UserService';
+import * as TypesAction from 'src/redux/reducer/user/Types';
+import * as TypesFetch from 'src/services/user/Types';
 
 interface PayLoad {
     changedUser: TypesAction.userState['currentUser'];
