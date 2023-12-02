@@ -1,7 +1,7 @@
-import type { Piece, PieceArgs } from 'src/share/game/logic/pieces';
-import { createPiece } from 'src/share/game/logic/pieces';
-import type { Pawn } from 'src/share/game/logic/pieces/pawn';
-import type { Rook } from 'src/share/game/logic/pieces/rook';
+import type { Piece, PieceArgs } from "src/share/game/logic/pieces";
+import { createPiece } from "src/share/game/logic/pieces";
+import type { Pawn } from "src/share/game/logic/pieces/Pawn";
+import type { Rook } from "src/share/game/logic/pieces/Rook";
 
 export type Position = { x: number; y: number }
 

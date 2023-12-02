@@ -1,5 +1,5 @@
-import type { MoveFunction, Piece, PieceFactory } from 'src/share/game/logic/pieces'
-import { getFarMoves, getBasePiece } from 'src/share/game/logic/pieces'
+import type { MoveFunction, Piece, PieceFactory } from "src/share/game/logic/pieces"
+import { getFarMoves, getBasePiece } from "src/share/game/logic/pieces"
 
 export function isQueen(value: Piece | Queen | null): value is Queen {
     return value?.type === `queen`

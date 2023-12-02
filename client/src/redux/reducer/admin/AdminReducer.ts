@@ -1,23 +1,23 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Types from 'src/redux/reducer/admin/Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Types from "src/redux/reducer/admin/Types";
 
 const initialState: Types.adminState = {
     userList: [],
     isLoading: false,
     notify: {
-        msg: '',
-        type: '',
+        msg: "",
+        type: "",
     },
 };
 
 const adminSlice = createSlice({
-    name: 'admin',
+    name: "admin",
     initialState,
     reducers: {
         reqGetListUser: (state, action: Types.ActionReqGetListUser) => {
             state.userList = [];
             state.isLoading = true;
-            state.notify = initialState['notify'];
+            state.notify = initialState["notify"];
         },
         resGetListUser: (state, action: Types.ActionResGetListUser) => {
             const { list } = action.payload;
@@ -26,7 +26,7 @@ const adminSlice = createSlice({
         },
         reqAddUser: (state, action: Types.ActionReqAddUser) => {
             state.isLoading = true;
-            state.notify = initialState['notify'];
+            state.notify = initialState["notify"];
         },
         resAddUser: (state, action: Types.ActionResAddUser) => {
             const { newUser } = action.payload;
@@ -35,7 +35,7 @@ const adminSlice = createSlice({
         },
         reqUpdateUser: (state, action: Types.ActionReqUpdateUser) => {
             state.isLoading = true;
-            state.notify = initialState['notify'];
+            state.notify = initialState["notify"];
         },
         resUpdateUser: (state, action: Types.ActionResUpdateUser) => {
             const { updatedUser } = action.payload;
@@ -45,7 +45,7 @@ const adminSlice = createSlice({
         },
         reqDeletedUser: (state, action: Types.ActionReqDeleteUser) => {
             state.isLoading = true;
-            state.notify = initialState['notify'];
+            state.notify = initialState["notify"];
         },
         resDeletedUser: (state, action: Types.ActionResDeleteUser) => {
             const { deletedUser } = action.payload;

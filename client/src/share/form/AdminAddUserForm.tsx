@@ -1,24 +1,24 @@
-import React from 'react';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ErrorMessage } from '@hookform/error-message';
-import { userDataForm } from 'src/redux/reducer/admin/Types';
+import React from "react";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ErrorMessage } from "@hookform/error-message";
+import { userDataForm } from "src/redux/reducer/admin/Types";
 
 type Props = {
     newUser: userDataForm;
-    onSubmit: (data: Props['newUser']) => void;
+    onSubmit: (data: Props["newUser"]) => void;
     closeModel: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const AdminAddUserForm = (props: Props) => {
     const { newUser, onSubmit, closeModel } = props;
 
-    const schema = yup.object<Props['newUser']>().shape({
-        username: yup.string().required('Vui lòng nhập tên tài khoản').optional(),
-        password: yup.string().required('Vui lòng nhập mật khẩu').optional(),
-        email: yup.string().email('Email không hợp lệ').required('Vui lòng nhập email').optional(),
-        phone: yup.string().required('Vui lòng nhập số điện thoại').optional(),
+    const schema = yup.object<Props["newUser"]>().shape({
+        username: yup.string().required("Vui lòng nhập tên tài khoản").optional(),
+        password: yup.string().required("Vui lòng nhập mật khẩu").optional(),
+        email: yup.string().email("Email không hợp lệ").required("Vui lòng nhập email").optional(),
+        phone: yup.string().required("Vui lòng nhập số điện thoại").optional(),
         firstname: yup.string().optional(),
         lastName: yup.string().optional(),
         nation: yup.string().optional(),
@@ -31,7 +31,7 @@ const AdminAddUserForm = (props: Props) => {
         resolver: yupResolver(schema),
     });
 
-    const submitHandler = (data: Props['newUser']) => {
+    const submitHandler = (data: Props["newUser"]) => {
         onSubmit(data);
     };
 
@@ -53,7 +53,7 @@ const AdminAddUserForm = (props: Props) => {
                                 id="firstName"
                                 type="text"
                                 placeholder="Họ và tên đệm"
-                                {...form.register('firstName')}
+                                {...form.register("firstName")}
                             />
                             <ErrorMessage
                                 name="firstName"
@@ -68,7 +68,7 @@ const AdminAddUserForm = (props: Props) => {
                                 id="lastName"
                                 type="text"
                                 placeholder="Tên"
-                                {...form.register('lastName')}
+                                {...form.register("lastName")}
                             />
                             <ErrorMessage
                                 name="lastName"
@@ -85,7 +85,7 @@ const AdminAddUserForm = (props: Props) => {
                                 id="email"
                                 type="text"
                                 placeholder="email"
-                                {...form.register('email')}
+                                {...form.register("email")}
                             />
                             <ErrorMessage
                                 name="email"
@@ -100,7 +100,7 @@ const AdminAddUserForm = (props: Props) => {
                                 id="phone"
                                 type="text"
                                 placeholder="Số điện thoại"
-                                {...form.register('phone')}
+                                {...form.register("phone")}
                             />
                             <ErrorMessage
                                 name="phone"
@@ -118,7 +118,7 @@ const AdminAddUserForm = (props: Props) => {
                                 type="text"
                                 placeholder="Tên tài khoản"
                                 disabled={newUser._id ? true : false}
-                                {...form.register('username')}
+                                {...form.register("username")}
                             />
                             <ErrorMessage
                                 name="username"
@@ -135,7 +135,7 @@ const AdminAddUserForm = (props: Props) => {
                                 type="password"
                                 placeholder="Mật khẩu"
                                 disabled={newUser._id ? true : false}
-                                {...form.register('password')}
+                                {...form.register("password")}
                             />
                             <ErrorMessage
                                 name="password"
@@ -152,7 +152,7 @@ const AdminAddUserForm = (props: Props) => {
                                 id="nation"
                                 type="text"
                                 placeholder="Quốc tịch"
-                                {...form.register('nation')}
+                                {...form.register("nation")}
                             />
                             <ErrorMessage
                                 name="nation"
@@ -168,7 +168,7 @@ const AdminAddUserForm = (props: Props) => {
                                 id="elo"
                                 type="number"
                                 placeholder="Elo"
-                                {...form.register('elo')}
+                                {...form.register("elo")}
                             />
                             <ErrorMessage
                                 name="elo"
@@ -178,12 +178,12 @@ const AdminAddUserForm = (props: Props) => {
                         </div>
                     </div>
                     <div className="admin-form-control">
-                        <input type="file" {...form.register('file')} multiple={false} />
+                        <input type="file" {...form.register("file")} multiple={false} />
                     </div>
 
                     <div>
                         <button type="submit" className="btn-form btn-form-save">
-                            {newUser._id ? 'Cập nhật' : 'Thêm'}
+                            {newUser._id ? "Cập nhật" : "Thêm"}
                         </button>
                     </div>
                 </form>

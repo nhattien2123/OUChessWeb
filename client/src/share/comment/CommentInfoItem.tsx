@@ -1,5 +1,4 @@
-import React from 'react';
-import { CommentInfo } from 'src/redux/reducer/profile/Types';
+import { CommentInfo } from "src/redux/reducer/profile/Types";
 
 type Props = {
     comment: CommentInfo;

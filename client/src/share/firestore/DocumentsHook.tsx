@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { collection, query, where, doc, getDoc, orderBy, onSnapshot, limit, limitToLast } from 'firebase/firestore';
-import { db } from 'src/config/FirebaseConfig';
+import React, { useState } from "react";
+import { collection, query, where, doc, getDoc, orderBy, onSnapshot, limit, limitToLast } from "firebase/firestore";
+import { db } from "src/config/FirebaseConfig";
 
 type Props = {
     _collection: string;
@@ -8,7 +8,7 @@ type Props = {
     _limit: number;
     _orderBy: {
         by: string;
-        asc: 'asc' | 'desc';
+        asc: "asc" | "desc";
     };
 };
 

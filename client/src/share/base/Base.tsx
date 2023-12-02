@@ -1,9 +1,9 @@
-import React from 'react';
-import Header from 'src/share/header/Header';
-import Sidebar from 'src/share/sidebar/Sidebar';
-import { useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import 'src/share/base/Base.scss';
+import React from "react";
+import Header from "src/share/header/Header";
+import Sidebar from "src/share/sidebar/Sidebar";
+import { useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import "src/share/base/Base.scss";
 
 type Props = {
     component: any;

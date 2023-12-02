@@ -1,16 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Types from './Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Types from "./Types";
 
 const initialState: Types.PlayerState = {
-    userId: '',
-    playerColor: 'white',
-    mode: '',
+    userId: "",
+    playerColor: "white",
+    mode: "",
     joinedRoom: false,
     roomId: null,
 }
 
 const playerSlice = createSlice({
-    name: 'player',
+    name: "player",
     initialState,
     reducers: {
         setUserId: (state, action: Types.ActionSetUserId) => {

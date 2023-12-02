@@ -1,8 +1,8 @@
-const router = require('express').Router();
-const apiConstants = require('../configs/ApiConstant');
-const middlewareController = require('../controllers/middlewareController');
-const adminController = require('../controllers/adminController');
-const cloudinaryConfig = require('../configs/CloundinaryConfig');
+const router = require("express").Router();
+const apiConstants = require("../configs/ApiConstant");
+const middlewareController = require("../controllers/MiddlewareController");
+const adminController = require("../controllers/AdminController");
+const cloudinaryConfig = require("../configs/CloundinaryConfig");
 
 router.get(apiConstants.API_ADMIN_GET_LIST_USER, middlewareController.verifyAdminToken, adminController.getListUser);
 router.post(

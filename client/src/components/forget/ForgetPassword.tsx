@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import { registerActions } from 'src/redux/reducer/register/Register';
-import ChangePasswordForm from 'src/share/form/ChangePasswordForm';
-import Verify from 'src/share/verify/Verify';
-import 'src/components/forget/ForgetPassword.scss';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import { registerActions } from "src/redux/reducer/register/Register";
+import ChangePasswordForm from "src/share/form/ChangePasswordForm";
+import Verify from "src/share/verify/Verify";
+import "src/components/forget/ForgetPassword.scss";
 
 
 interface ForgetPasswordProps {}
 
 const ForgetPassword: React.FC<ForgetPasswordProps> = () => {
     const [nextStep, setNextStep] = useState<number>(1);
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState("");
     const [newPassword, setNewPassword] = useState();
     const verifyToken = useAppSelector((state: RootState) => state.registerReducer.verifyToken);
     const dispatch = useAppDispatch();
@@ -41,7 +41,7 @@ const ForgetPassword: React.FC<ForgetPasswordProps> = () => {
     }, [nextStep]);
 
     useEffect(() => {
-        const num = params.get('step');
+        const num = params.get("step");
         if (num !== null) {
             const step = Number(num);
             if (!isNaN(step)) setNextStep(step);

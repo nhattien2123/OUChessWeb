@@ -1,17 +1,17 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Types from 'src/redux/reducer/playersList/Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Types from "src/redux/reducer/playersList/Types";
 
 const initialState: Types.PlayerListState = {
     players: [],
     isLoadding: false,
     notify: {
-        msg: '',
-        type: '',
+        msg: "",
+        type: "",
     },
 };
 
 const playerListSlice = createSlice({
-    name: 'playerList',
+    name: "playerList",
     initialState,
     reducers: {
         reqGetListUser: (state, action: Types.ActionReqGetListUser) => {

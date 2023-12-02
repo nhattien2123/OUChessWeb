@@ -1,15 +1,15 @@
-import type { Board, Position, Tile } from 'src/share/game/logic/board';
-import { copyBoard } from 'src/share/game/logic/board'
+import type { Board, Position, Tile } from "src/share/game/logic/Board";
+import { copyBoard } from "src/share/game/logic/Board"
 
-import { createKing, isKing, kingMoves } from 'src/share/game/logic/pieces/king';
-import { createQueen, isQueen, queenMoves } from 'src/share/game/logic/pieces/queen';
-import { createKnight, isKnight, knightMoves } from 'src/share/game/logic/pieces/knight';
-import { createBishop, isBishop, bishopMoves } from 'src/share/game/logic/pieces/bishop';
-import { createRook, isRook, rookMoves } from 'src/share/game/logic/pieces/rook';
-import { createPawn, isPawn, pawnMoves } from 'src/share/game/logic/pieces/pawn';
+import { createKing, isKing, kingMoves } from "src/share/game/logic/pieces/King";
+import { createQueen, isQueen, queenMoves } from "src/share/game/logic/pieces/Queen";
+import { createKnight, isKnight, knightMoves } from "src/share/game/logic/pieces/Knight";
+import { createBishop, isBishop, bishopMoves } from "src/share/game/logic/pieces/Bishop";
+import { createRook, isRook, rookMoves } from "src/share/game/logic/pieces/Rook";
+import { createPawn, isPawn, pawnMoves } from "src/share/game/logic/pieces/Pawn";
 
-import type { Pawn } from 'src/share/game/logic/pieces/pawn'
-import type { King } from 'src/share/game/logic/pieces/king'
+import type { Pawn } from "src/share/game/logic/pieces/Pawn"
+import type { King } from "src/share/game/logic/pieces/King"
 
 export type Piece = {
     type: PieceType
@@ -149,7 +149,7 @@ export const willBeInCheck = (
     if (!tile || !newTile) return false
     newTile.piece = piece
     tile.piece = null
-    
+
     for (const tile of newBoard.flat()) {
         if (tile.piece?.color === oppositeColor(piece.color)) {
             const moves = movesForPiece({

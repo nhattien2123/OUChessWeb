@@ -1,6 +1,6 @@
-import type { Response } from 'src/config/Constants';
-import { Match, matchState } from 'src/redux/reducer/match/Types';
-import { CommonState } from 'src/redux/reducer/common/Types';
+import type { Response } from "src/config/Constants";
+import { Match, matchState } from "src/redux/reducer/match/Types";
+import { CommonState } from "src/redux/reducer/common/Types";
 
 export type ResFetchGetMatch = Response<{
     matches: matchState["match"];

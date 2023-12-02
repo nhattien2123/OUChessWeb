@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Types from 'src/redux/reducer/auth/Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Types from "src/redux/reducer/auth/Types";
 
 const initialState: Types.authState = {
     isLoading: false,
@@ -7,15 +7,15 @@ const initialState: Types.authState = {
     isLoggedIn: false,
     isLoggedOut: false,
     payload: {
-        username: '',
-        password: '',
+        username: "",
+        password: "",
     },
-    token: '',
-    refreshToken: '',
-    msg: '',
+    token: "",
+    refreshToken: "",
+    msg: "",
 };
 const authSlice = createSlice({
-    name: 'auth',
+    name: "auth",
     initialState,
     reducers: {
         reqGetDataLogin: (state, action: Types.ActionReqGetDataLogin) => {

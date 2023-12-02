@@ -1,10 +1,10 @@
-import { all, call, put, takeLatest } from 'redux-saga/effects';
-import httpHandler from 'src/util/HttpHandler';
-import { commonAction } from 'src/redux/reducer/common/CommonReducer';
-import { matchActions } from 'src/redux/reducer/match/MatchReducer';
-import * as MatchService from 'src/services/match/MatchServices';
-import * as TypesAction from 'src/redux/reducer/match/Types';
-import * as TypesFetch from 'src/services/match/Types';
+import { all, call, put, takeLatest } from "redux-saga/effects";
+import httpHandler from "src/util/HttpHandler";
+import { commonAction } from "src/redux/reducer/common/CommonReducer";
+import { matchActions } from "src/redux/reducer/match/MatchReducer";
+import * as MatchService from "src/services/match/MatchServices";
+import * as TypesAction from "src/redux/reducer/match/Types";
+import * as TypesFetch from "src/services/match/Types";
 
 interface Payload {
     match: TypesAction.Match;

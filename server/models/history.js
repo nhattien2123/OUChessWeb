@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const historySchema = new mongoose.Schema({
     matchId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'match',
+        ref: "match",
     },
     playerId: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
+        ref: "user",
     },
     historyMoves: {
         type: Array

@@ -1,10 +1,10 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
-import httpHandler from 'src/util/HttpHandler';
-import { commonAction } from 'src/redux/reducer/common/CommonReducer';
-import { registerActions } from 'src/redux/reducer/register/Register';
-import * as RegisterService from 'src/services/register/registerServices';
-import * as TypesAction from 'src/redux/reducer/register/Types';
-import * as TypesFetch from 'src/services/register/Types';
+import { call, put, takeLatest } from "redux-saga/effects";
+import httpHandler from "src/util/HttpHandler";
+import { commonAction } from "src/redux/reducer/common/CommonReducer";
+import { registerActions } from "src/redux/reducer/register/Register";
+import * as RegisterService from "src/services/register/RegisterServices";
+import * as TypesAction from "src/redux/reducer/register/Types";
+import * as TypesFetch from "src/services/register/Types";
 
 interface PayLoad {
     information: {

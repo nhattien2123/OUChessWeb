@@ -1,5 +1,5 @@
-const user = require('../models/user');
-const bcrypt = require('bcrypt');
+const user = require("../models/User");
+const bcrypt = require("bcrypt");
 
 const userReposity = {
     getUserByID: async (_id) => {
@@ -25,17 +25,17 @@ const userReposity = {
                     $or: searchParams,
                 })
                 .populate({
-                    path: 'friends',
+                    path: "friends",
                     populate: [
                         {
-                            path: 'requester',
-                            model: 'user',
-                            select: '_id username avatar',
+                            path: "requester",
+                            model: "user",
+                            select: "_id username avatar",
                         },
                         {
-                            path: 'recipient',
-                            model: 'user',
-                            select: '_id username avatar',
+                            path: "recipient",
+                            model: "user",
+                            select: "_id username avatar",
                         },
                     ],
                 });
@@ -50,20 +50,20 @@ const userReposity = {
             let searchParams = {};
             console.log(params);
             const email = params.email || null;
-            if (email !== null && email !== '') {
+            if (email !== null && email !== "") {
                 searchParams.email = email;
             }
             const username = params.username || null;
-            if (username !== null && username !== '') {
-                searchParams.username = { $regex: username, $options: 'i' };
+            if (username !== null && username !== "") {
+                searchParams.username = { $regex: username, $options: "i" };
             }
             const phone = params.phone || null;
-            if (phone !== null && phone !== '') {
+            if (phone !== null && phone !== "") {
                 searchParams.phone = phone;
             }
 
             const list = await user
-                .find(searchParams, '_id username firstName lastName avatar elo nation dateOfBirth createdAt')
+                .find(searchParams, "_id username firstName lastName avatar elo nation dateOfBirth createdAt")
                 .exec();
 
             return list;
@@ -84,7 +84,7 @@ const userReposity = {
                     username: { $ne: username },
                     $or: searchParams,
                 })
-                .populate('friends');
+                .populate("friends");
             return User;
         } catch (error) {
             console.log(error);
@@ -110,7 +110,7 @@ const userReposity = {
             return null;
         }
     },
-    deleteUser: async (username) => {},
+    deleteUser: async (username) => { },
     countUsser: async (field, data) => {
         const count = await user.countDocuments({ [field]: data });
         return count;
@@ -145,15 +145,15 @@ const userReposity = {
     },
     getListUserByUsername: async (kw) => {
         const list = await user.find(
-            { username: { $regex: kw, $options: 'i' } },
-            '_id firstName lastName username elo nation avatar',
+            { username: { $regex: kw, $options: "i" } },
+            "_id firstName lastName username elo nation avatar",
         );
 
         return list;
     },
     getListUserFromAdmin: async (params) => {
         const list = await user
-            .find({ username: { $regex: params.username, $options: 'i' } })
+            .find({ username: { $regex: params.username, $options: "i" } })
             .sort({ role: 1, createdAt: -1 });
 
         return list;

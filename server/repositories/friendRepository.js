@@ -1,18 +1,18 @@
-const friend = require('../models/friend');
+const friend = require("../models/Friend");
 
 const friendRepository = {
     addFriend: async (friend) => {
         const newFriend = await friend.save();
         return newFriend.populate([
             {
-                path: 'requester',
-                model: 'user',
-                select: '_id username avatar',
+                path: "requester",
+                model: "user",
+                select: "_id username avatar",
             },
             {
-                path: 'recipient',
-                model: 'user',
-                select: '_id username avatar',
+                path: "recipient",
+                model: "user",
+                select: "_id username avatar",
             },
         ]);
     },
@@ -28,14 +28,14 @@ const friendRepository = {
             )
             .populate([
                 {
-                    path: 'requester',
-                    model: 'user',
-                    select: '_id username avatar',
+                    path: "requester",
+                    model: "user",
+                    select: "_id username avatar",
                 },
                 {
-                    path: 'recipient',
-                    model: 'user',
-                    select: '_id username avatar',
+                    path: "recipient",
+                    model: "user",
+                    select: "_id username avatar",
                 },
             ]);
         return updated;
@@ -44,14 +44,14 @@ const friendRepository = {
         const removed = await friend.findOneAndRemove({ requester: requester, recipient: recipient });
         return removed.populate([
             {
-                path: 'requester',
-                model: 'user',
-                select: '_id username avatar',
+                path: "requester",
+                model: "user",
+                select: "_id username avatar",
             },
             {
-                path: 'recipient',
-                model: 'user',
-                select: '_id username avatar',
+                path: "recipient",
+                model: "user",
+                select: "_id username avatar",
             },
         ]);
     },

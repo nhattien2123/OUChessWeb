@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Types from './Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Types from "src/redux/reducer/match/Types";
 
 const initialState: Types.matchState = {
     match: [],
@@ -8,7 +8,7 @@ const initialState: Types.matchState = {
 }
 
 const matchSlice = createSlice({
-    name: 'match',
+    name: "match",
     initialState,
     reducers: {
         reqGetMatch: (state, action: Types.ActionReqGetMatch) => {

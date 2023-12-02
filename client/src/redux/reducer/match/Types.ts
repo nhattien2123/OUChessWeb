@@ -1,5 +1,5 @@
-import { PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../user/Types';
+import { PayloadAction } from "@reduxjs/toolkit";
+import { User } from "src/redux/reducer/user/Types";
 
 export type Match = {
     _id?: string | null;
@@ -20,7 +20,7 @@ export type matchState = {
 
 export type ActionReqGetMatch = PayloadAction<{}>;
 export type ActionResGetMatch = PayloadAction<{
-    matches: matchState['match'];
+    matches: matchState["match"];
 }>;
 
 export type ActionReqPostAddMatch = PayloadAction<{}>;
@@ -30,7 +30,7 @@ export type ActionResPostAddMatch = PayloadAction<{
 
 export type ActionReqGetMatchById = PayloadAction<{}>;
 export type ActionResGetMatchById = PayloadAction<{
-    matches: matchState['match'];
+    matches: matchState["match"];
 }>;
 
 export type ActionReqPutMatchById = PayloadAction<{}>;

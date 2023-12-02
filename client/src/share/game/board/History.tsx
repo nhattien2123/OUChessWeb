@@ -1,9 +1,9 @@
-import type { FC } from 'react'
+import type { FC } from "react"
 
-import type { Board, Position } from 'src/share/game/logic/board'
-import type { MoveTypes, Piece } from 'src/share/game/logic/pieces'
-import { useHistoryState } from 'src/components/game/Game'
-import 'src/share/game/board/Board'
+import type { Board, Position } from "src/share/game/logic/Board"
+import type { MoveTypes, Piece } from "src/share/game/logic/pieces"
+import { useHistoryState } from "src/components/game/Game"
+import "src/share/game/board/Board"
 
 export type History = {
     board: Board

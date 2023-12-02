@@ -1,6 +1,6 @@
 const rootSocket = (io) => {
     let userConnected = {};
-    const jwt = require('jsonwebtoken');
+    const jwt = require("jsonwebtoken");
     let user = 0;
 
     io.use((socket, next) => {
@@ -8,7 +8,7 @@ const rootSocket = (io) => {
         if (token) {
             jwt.verify(token, process.env.JWT_SECRETKEY, (err, user) => {
                 if (err) {
-                    console.log('Lỗi');
+                    console.log("Lỗi");
                 } else {
                     socket.userId = user._id;
                     userConnected[user._id] = socket.id;
@@ -20,7 +20,7 @@ const rootSocket = (io) => {
         next();
     });
 
-    io.on('connection', (socket) => {
+    io.on("connection", (socket) => {
         user += 1;
         console.log("connection - (con): ", userConnected);
 
@@ -30,7 +30,7 @@ const rootSocket = (io) => {
         //     }
         // });
 
-        socket.on('disconnect', () => {
+        socket.on("disconnect", () => {
             user -= 1;
             console.log("connection (dis): ", userConnected);
             if (socket.userId) {
@@ -38,24 +38,24 @@ const rootSocket = (io) => {
             }
         });
 
-        require('../services/commentInfoService').commentInfoSocket(socket, io, (error) => {
-            socket.emit('error_msg', { error });
+        require("../services/CommentInfoService").commentInfoSocket(socket, io, (error) => {
+            socket.emit("error_msg", { error });
         });
 
-        require('../services/friendService').friendSocket(socket, io, userConnected);
+        require("../services/FriendService").friendSocket(socket, io, userConnected);
         socket.on(`existingPlayer`, (data) => {
             io.sockets.in(data.roomId).emit(`clientExistingPlayer`, data)
         })
 
-        require("../services/gameService").cameraMove(socket, io);
-        require("../services/gameService").disconnect(socket, io);
-        require("../services/gameService").leaveRoom(socket, io);
-        require("../services/gameService").fetchPlayers(socket, io);
-        require("../services/gameService").joinRoom(socket, io);
-        require("../services/gameService").makeMove(socket, io);
-        require("../services/gameService").resetGame(socket, io);
-        require("../services/gameService").sendMessage(socket, io);
-        require("../services/gameService").promotePawn(socket, io);
+        require("../services/GameService").cameraMove(socket, io);
+        require("../services/GameService").disconnect(socket, io);
+        require("../services/GameService").leaveRoom(socket, io);
+        require("../services/GameService").fetchPlayers(socket, io);
+        require("../services/GameService").joinRoom(socket, io);
+        require("../services/GameService").makeMove(socket, io);
+        require("../services/GameService").resetGame(socket, io);
+        require("../services/GameService").sendMessage(socket, io);
+        require("../services/GameService").promotePawn(socket, io);
     });
 };
 

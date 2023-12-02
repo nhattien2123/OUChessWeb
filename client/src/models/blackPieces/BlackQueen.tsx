@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import { useGLTF } from '@react-three/drei';
-import type * as THREE from 'three';
-import * as STDLIB from 'three-stdlib';
+import { useGLTF } from "@react-three/drei";
+import type * as THREE from "three";
+import * as STDLIB from "three-stdlib";
 
 interface GLTFResult extends STDLIB.GLTF {
     nodes: {

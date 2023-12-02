@@ -1,4 +1,3 @@
-import { error } from "console";
 import {
   ref,
   uploadString,
@@ -26,7 +25,7 @@ const uploadImage = async (file: any, userID: any) => {
             throw new Error("Không hợp lệ")
         }
     }else {
-        throw new Error('dataURL is not a string.');
+        throw new Error("dataURL is not a string.");
     }
   } catch (error) {
     console.error("Error uploading image:", error);

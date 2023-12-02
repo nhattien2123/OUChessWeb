@@ -1,12 +1,12 @@
-import React, { FC } from 'react';
-import { Color, Move, Piece, PieceType, getTile, oppositeColor, shouldPromotePawn } from '../logic/pieces';
-import { Board, Tile, copyBoard } from '../logic/board';
-import { isPawn } from '../logic/pieces/pawn';
-import { MovingTo } from 'src/components/game/Game';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
+import React, { FC } from "react";
+import { Color, Move, Piece, PieceType, getTile, oppositeColor, shouldPromotePawn } from "../logic/pieces";
+import { Board, Tile, copyBoard } from "../logic/Board";
+import { isPawn } from "../logic/pieces/Pawn";
+import { MovingTo } from "src/components/game/Game";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
 import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
-import { socket } from 'src/index';
+import { socket } from "src/index";
 
 export type PromotePawn = {
     pieceType: PieceType
@@ -89,19 +89,19 @@ const PromoteDialog: FC<{
                         </div>
                         <div className="promotion-row">
                             <div className="piece-buttons">
-                                <button onClick={() => handleSelectPieceType('queen')}>
+                                <button onClick={() => handleSelectPieceType("queen")}>
                                     <img src="path/to/queen.png" alt="Queen" />
                                     Hậu (Queen)
                                 </button>
-                                <button onClick={() => handleSelectPieceType('rook')}>
+                                <button onClick={() => handleSelectPieceType("rook")}>
                                     <img src="path/to/rook.png" alt="Rook" />
                                     Xe (Rook)
                                 </button>
-                                <button onClick={() => handleSelectPieceType('bishop')}>
+                                <button onClick={() => handleSelectPieceType("bishop")}>
                                     <img src="path/to/bishop.png" alt="Bishop" />
                                     Tượng (Bishop)
                                 </button>
-                                <button onClick={() => handleSelectPieceType('knight')}>
+                                <button onClick={() => handleSelectPieceType("knight")}>
                                     <img src="path/to/knight.png" alt="Knight" />
                                     Mã (Knight)
                                 </button>

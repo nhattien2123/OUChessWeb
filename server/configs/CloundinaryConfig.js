@@ -1,11 +1,11 @@
-const httpHandler = require('../helpers/httpHandler');
+const httpHandler = require("../helpers/HttpHandler");
 
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
-    cloud_name: 'de0pt2lzw',
-    api_key: '269448242686499',
-    api_secret: '36ckrJAaSBk2wrWeU3kU9ICwTOM',
+    cloud_name: "de0pt2lzw",
+    api_key: "269448242686499",
+    api_secret: "36ckrJAaSBk2wrWeU3kU9ICwTOM",
 });
 
 const cloudinaryConfig = {
@@ -19,7 +19,7 @@ const cloudinaryConfig = {
             }
             next();
         } catch (error) {
-            httpHandler.Servererror(res, {}, 'Đã có lỗi xảy ra' + error);
+            httpHandler.Servererror(res, {}, "Đã có lỗi xảy ra" + error);
         }
     },
 };

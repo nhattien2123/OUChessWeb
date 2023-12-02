@@ -1,11 +1,11 @@
-import React, { Dispatch, useEffect, useState } from 'react';
-import jwt_decode, { JwtPayload } from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import Counter from 'src/share/counter/Counter';
-import 'src/share/verify/Verify.scss';
-import 'src/components/login/Login.scss';
+import React, { Dispatch, useEffect, useState } from "react";
+import jwt_decode, { JwtPayload } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import Counter from "src/share/counter/Counter";
+import "src/share/verify/Verify.scss";
+import "src/components/login/Login.scss";
 interface verifyProps {
     email: string;
     verifyToken?: string;
@@ -39,7 +39,7 @@ const Verify: React.FC<verifyProps> = ({
     handler: handler,
 }) => {
     const isLoading = useAppSelector((state: RootState) => state.registerReducer.isLoading);
-    const [verifyCode, setVerifyCode] = useState('');
+    const [verifyCode, setVerifyCode] = useState("");
     const [isReset, setReset] = useState<boolean>(true);
     const [timer, setTimer] = useState<number>(60);
     const [error, setError]= useState<string>("");
@@ -88,7 +88,7 @@ const Verify: React.FC<verifyProps> = ({
                                 onChange={(evt) => setVerifyCode(evt.target.value)}
                                 onBlur={(evt) => setError("")}
                             />
-                            {error !== "" && <div className='error-msg'>{error}</div>}
+                            {error !== "" && <div className="error-msg">{error}</div>}
                         </div>
                         <Counter timer={timer} setReset={setReset} />
                     </div>
@@ -98,7 +98,7 @@ const Verify: React.FC<verifyProps> = ({
                     </button>
                 </form>
                 <div
-                    style={{ margin: '10px auto', padding: '10px', textAlign: 'center' }}
+                    style={{ margin: "10px auto", padding: "10px", textAlign: "center" }}
                     className="w-10 btn-form"
                     onClick={(evt) => {
                         setNextStep((prev) => prev - 1)

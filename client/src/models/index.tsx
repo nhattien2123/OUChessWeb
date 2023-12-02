@@ -1,15 +1,15 @@
-import React, { useRef } from 'react'
-import type { FC } from 'react'
+import { useRef } from "react"
+import type { FC } from "react"
 
-import type { Position } from 'src/share/game/logic/board'
-import { useSpring, animated } from '@react-spring/three'
+import type { Position } from "src/share/game/logic/Board"
+import { useSpring, animated } from "@react-spring/three"
 import type {
     AnimationControls,
     TargetAndTransition,
     VariantLabels,
     Transition,
-} from 'framer-motion'
-import { motion } from 'framer-motion-3d'
+} from "framer-motion"
+import { motion } from "framer-motion-3d"
 
 export const PieceMaterial: FC<
     JSX.IntrinsicElements[`meshPhysicalMaterial`] & {

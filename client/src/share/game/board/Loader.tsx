@@ -1,7 +1,7 @@
-import type { FC } from 'react'
-import React, { useEffect, useState } from 'react'
+import type { FC } from "react"
+import React, { useEffect, useState } from "react"
 
-import { useProgress } from '@react-three/drei'
+import { useProgress } from "@react-three/drei"
 
 export const Loader: FC = () => {
     const [total, setTotal] = useState(0)

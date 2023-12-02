@@ -1,4 +1,4 @@
-import { Board, Position } from "src/share/game/logic/board"
+import { Board, Position } from "src/share/game/logic/Board"
 import { MoveTypes, Piece } from "src/share/game/logic/pieces"
 import { PayloadAction } from "@reduxjs/toolkit";
 
@@ -18,7 +18,7 @@ export type HistoryState = {
 
 export type ActionReqAddHistory = PayloadAction<{}>;
 export type ActionResAddHistory = PayloadAction<{
-    history: HistoryState['history'];
+    history: HistoryState["history"];
 }>;
 export type ActionResUndoHistory = PayloadAction<{}>;
 export type ActionResResetHistory = PayloadAction<{}>;

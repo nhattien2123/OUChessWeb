@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Types from './Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Types from "./Types";
 
 const initialState: Types.OpponentState = {
     position: [0, 100, 0],
@@ -10,7 +10,7 @@ const initialState: Types.OpponentState = {
 }
 
 const opponentSlice = createSlice({
-    name: 'opponent',
+    name: "opponent",
     initialState,
     reducers: {
         setPosition: (state, action: Types.ActionSetPosition) => {

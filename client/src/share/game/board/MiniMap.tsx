@@ -1,8 +1,8 @@
-import type { FC } from 'react'
+import type { FC } from "react"
 
-import type { Board } from 'src/share/game/logic/board'
-import type { Move, Piece } from 'src/share/game/logic/pieces'
-import { checkIfSelectedPieceCanMoveHere } from 'src/share/game/logic/pieces'
+import type { Board } from "src/share/game/logic/Board"
+import type { Move, Piece } from "src/share/game/logic/pieces"
+import { checkIfSelectedPieceCanMoveHere } from "src/share/game/logic/pieces"
 import {
     FaChessPawn,
     FaChessKnight,
@@ -10,9 +10,9 @@ import {
     FaChessRook,
     FaChessQueen,
     FaChessKing,
-} from 'react-icons/fa'
+} from "react-icons/fa"
 
-import 'src/share/game/board/Board.scss'
+import "src/share/game/board/Board.scss"
 
 export const MiniMap: FC<{
     board: Board
@@ -40,9 +40,9 @@ export const MiniMap: FC<{
                             <div
                                 key={j}
                                 className={`mini-map-tile-move 
-                                ${isSelected ? 'selected' : `${tile.piece?.color}`} 
-                                ${bg === `#a5a5a5` ? 'odd' : 'even'} 
-                                ${canMove ? 'can-move' : ''
+                                ${isSelected ? "selected" : `${tile.piece?.color}`} 
+                                ${bg === `#a5a5a5` ? "odd" : "even"} 
+                                ${canMove ? "can-move" : ""
                                     }`}
                             >
                                 {tile && (

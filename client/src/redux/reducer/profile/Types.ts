@@ -1,5 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { Match } from "../match/Types";
+import { Match } from "src/redux/reducer/match/Types";
 
 export type Friend = {
     requester: Profile,

@@ -1,12 +1,12 @@
-import React from 'react';
-import * as yup from 'yup';
-import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ErrorMessage } from '@hookform/error-message';
-import { useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import 'src/components/login/Login.scss';
+import React from "react";
+import * as yup from "yup";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ErrorMessage } from "@hookform/error-message";
+import { useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import "src/components/login/Login.scss";
 
 
 type Props = {
@@ -21,9 +21,9 @@ const LoginForm = (props: Props) => {
     const errorMsg = useAppSelector((state: RootState) => state.commonReducer.errorMsg);
     const { defaultData, onSubmit } = props;
 
-    const schema = yup.object<Props['defaultData']>().shape({
-        username: yup.string().required('Vui lòng nhập tên tài khoản'),
-        password: yup.string().required('Vui lòng nhập mật khẩu'),
+    const schema = yup.object<Props["defaultData"]>().shape({
+        username: yup.string().required("Vui lòng nhập tên tài khoản"),
+        password: yup.string().required("Vui lòng nhập mật khẩu"),
     });
 
     const form = useForm({
@@ -31,7 +31,7 @@ const LoginForm = (props: Props) => {
         resolver: yupResolver(schema),
     });
 
-    const submitHandler = (data: Props['defaultData']) => {
+    const submitHandler = (data: Props["defaultData"]) => {
         onSubmit(data);
     };
 
@@ -41,14 +41,14 @@ const LoginForm = (props: Props) => {
                 <div className="main">
                     <div className="login-title">ĐĂNG NHẬP</div>
                     <div className="login-container">
-                        {errorMsg !== '' && <div className="error-block">{errorMsg}</div>}
+                        {errorMsg !== "" && <div className="error-block">{errorMsg}</div>}
                         <form className="login-input" onSubmit={form.handleSubmit(submitHandler)}>
                             <div className="input-container">
                                 <input
                                     className="input-style"
                                     type="text"
                                     placeholder="Tên đăng nhập"
-                                    {...form.register('username')}
+                                    {...form.register("username")}
                                 ></input>
                                 <ErrorMessage
                                     name="username"
@@ -62,7 +62,7 @@ const LoginForm = (props: Props) => {
                                     className="input-style"
                                     type="password"
                                     placeholder="Mật khẩu"
-                                    {...form.register('password')}
+                                    {...form.register("password")}
                                 ></input>
                                 <ErrorMessage
                                     name="password"
@@ -76,7 +76,7 @@ const LoginForm = (props: Props) => {
                                     <label>Lưu tài khoản</label>
                                 </div>
                                 <div id="forgot-password">
-                                    <Link to={'/forget'}>Quên mật khẩu</Link>
+                                    <Link to={"/forget"}>Quên mật khẩu</Link>
                                 </div>
                             </div>
                           
@@ -86,8 +86,8 @@ const LoginForm = (props: Props) => {
                             
                         </form>
                         <div className="register-link">
-                            <Link to={'/register'} className="register-dir">
-                                {' '}
+                            <Link to={"/register"} className="register-dir">
+                                {" "}
                                 Đăng ký
                             </Link>
                         </div>

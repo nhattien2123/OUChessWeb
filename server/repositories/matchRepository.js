@@ -1,4 +1,4 @@
-const match = require('../models/match');
+const match = require("../models/Match");
 
 const matchRepository = {
     getMatch: async (matchId) => {
@@ -59,8 +59,8 @@ const matchRepository = {
                 $or: [{ whiteId: playerId }, { blackId: playerId }],
                 state: { $ne: null }
             })
-            .populate('whiteId')
-            .populate('blackId');
+            .populate("whiteId")
+            .populate("blackId");
 
         return matches;
     },

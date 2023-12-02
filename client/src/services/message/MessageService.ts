@@ -1,6 +1,6 @@
-import React from 'react';
-import { doc, setDoc, updateDoc, serverTimestamp, collection, getDoc } from 'firebase/firestore';
-import { db } from 'src/config/FirebaseConfig';
+import React from "react";
+import { doc, setDoc, updateDoc, serverTimestamp, collection, getDoc } from "firebase/firestore";
+import { db } from "src/config/FirebaseConfig";
 
 export const MessageService = {
     get: async (_collection: string, _id: string) => {

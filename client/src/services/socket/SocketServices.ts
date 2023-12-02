@@ -1,6 +1,6 @@
-// import type { Color } from 'src/share/game/logic/pieces';
-// import type { MyServer, MySocket } from 'src/config/SocketConfig';
-// import { Socket } from 'socket.io';
+// import type { Color } from "src/share/game/logic/pieces";
+// import type { MyServer, MySocket } from "src/config/SocketConfig";
+// import { Socket } from "socket.io";
 
 // export type CameraMove = {
 //     position: [number, number, number]

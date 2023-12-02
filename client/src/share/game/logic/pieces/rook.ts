@@ -1,5 +1,5 @@
-import type { MoveFunction, Piece, PieceFactory } from 'src/share/game/logic/pieces'
-import { getFarMoves, getBasePiece } from 'src/share/game/logic/pieces'
+import type { MoveFunction, Piece, PieceFactory } from "src/share/game/logic/pieces"
+import { getFarMoves, getBasePiece } from "src/share/game/logic/pieces"
 
 export const isRook = (value: Piece | Rook | null): value is Rook => {
     return value?.type === `rook`

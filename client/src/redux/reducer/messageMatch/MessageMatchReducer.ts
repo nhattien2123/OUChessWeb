@@ -1,12 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Types from './Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Types from "src/redux/reducer/messageMatch/Types";
 
 const initialState: Types.messageMatchState = {
     messages: []
 }
 
 const messageMatchSlice = createSlice({
-    name: 'messages',
+    name: "messages",
     initialState,
     reducers: {
         addMessage: (state, action: Types.ActionAddMessage) => {

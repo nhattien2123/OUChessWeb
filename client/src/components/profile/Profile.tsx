@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { serverTimestamp } from 'firebase/firestore';
-import { toast } from 'react-toastify';
-import moment from 'moment';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import { Friend, Profile as ProfileStyle } from 'src/redux/reducer/profile/Types';
-import { profileActions } from 'src/redux/reducer/profile/Profile';
-import { Match } from 'src/redux/reducer/match/Types';
-import { socket } from 'src/index';
-import CommentInfoList from 'src/share/comment/CommentInfoList';
-import MessageService from 'src/services/message/MessageService';
-import 'src/components/profile/Profile.scss';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { serverTimestamp } from "firebase/firestore";
+import { toast } from "react-toastify";
+import moment from "moment";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import { Friend, Profile as ProfileStyle } from "src/redux/reducer/profile/Types";
+import { profileActions } from "src/redux/reducer/profile/Profile";
+import { Match } from "src/redux/reducer/match/Types";
+import { socket } from "src/index";
+import CommentInfoList from "src/share/comment/CommentInfoList";
+import MessageService from "src/services/message/MessageService";
+import "src/components/profile/Profile.scss";
 
 interface ProfileProps { }
 
@@ -21,14 +21,14 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
     const isLoading = useAppSelector((state: RootState) => state.profileReducer.isLoading);
     const matches = useAppSelector((state: RootState) => state.profileReducer.matches);
     const dispatch = useAppDispatch();
-    const [option, setOption] = useState<string>('history');
+    const [option, setOption] = useState<string>("history");
     const [friends, setFriends] = useState<Friend[]>([]);
     const [isFriend, setisFriend] = useState<number>(3);
     enum friendStatus {
-        'Chấp nhận' = 0,
-        'Đã gửi lời mời' = 1,
-        'Bạn bè' = 2,
-        'Kết bạn' = 3,
+        "Chấp nhận" = 0,
+        "Đã gửi lời mời" = 1,
+        "Bạn bè" = 2,
+        "Kết bạn" = 3,
     }
     const nav = useNavigate();
     const { username } = useParams();
@@ -49,16 +49,16 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
     }, [profile]);
 
     useEffect(() => {
-        if (option === 'history') {
+        if (option === "history") {
             dispatch(profileActions.reqGetMatchesOfUser({ _id: profile._id }));
         }
-        if (option === 'comment') {
+        if (option === "comment") {
             dispatch(profileActions.reqGetCommentInfoesUser({ username: profile._id, params: {} }));
         }
     }, [option, profile]);
 
     useEffect(() => {
-        socket.on('updated-friend', (friend: Friend) => {
+        socket.on("updated-friend", (friend: Friend) => {
             setFriends((prev) => [...prev, friend]);
         });
 
@@ -73,37 +73,37 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
 
     const requestHandle = () => {
         if (isFriend === 3) {
-            socket.emit('addFriend', currentUser._id, profile._id, (succcess: boolean) => {
+            socket.emit("addFriend", currentUser._id, profile._id, (succcess: boolean) => {
                 if (succcess) {
                     setisFriend(1);
                     toast.success(`Đã gửi lời mời kết bạn tới ${profile.username}`);
                 } else {
-                    toast.error('Đã có lỗi xảy ra');
+                    toast.error("Đã có lỗi xảy ra");
                 }
             });
         }
     };
 
     const chatHandle = async () => {
-        let combineId = '';
+        let combineId = "";
         if (profile._id) {
             if (currentUser._id > profile._id) combineId = profile._id + currentUser._id;
             else combineId = currentUser._id + profile._id;
         }
 
-        const doc = await MessageService.get('chat', combineId);
+        const doc = await MessageService.get("chat", combineId);
         if (doc?.exists()) {
             nav(`/messages/${combineId}`);
         } else {
             const _data = {
-                lastMessage: '',
+                lastMessage: "",
                 members: [currentUser._id, profile._id],
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
             };
 
             try {
-                const isSuc = await MessageService.addWithId('chat', combineId, _data);
+                const isSuc = await MessageService.addWithId("chat", combineId, _data);
                 if (isSuc) {
                     const _chat = {
                         [combineId]: {
@@ -111,11 +111,11 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                         },
                     };
 
-                    await MessageService.addWithId('userCharts', currentUser._id, _chat);
+                    await MessageService.addWithId("userCharts", currentUser._id, _chat);
                     nav(`/messages/${combineId}`);
                 }
             } catch (error) {
-                toast.error('Đã có lỗi xảy ra');
+                toast.error("Đã có lỗi xảy ra");
             }
         }
     };
@@ -136,7 +136,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                         </div>
                         <div className="avatar-fullname">Elo: {profile?.elo}</div>
                         <div className="avatar-fullname">
-                            Tham gia: {moment(profile?.createdAt).format('DD/MM/YYYY')}
+                            Tham gia: {moment(profile?.createdAt).format("DD/MM/YYYY")}
                         </div>
                         {profile._id !== currentUser._id && (
                             <div className="profile-feature">
@@ -178,24 +178,24 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                     <div className="notes-toggle-button">
                         <button
                             className={
-                                (option === 'history' && 'notes-button-active ') +
-                                ' notes-button w-50 notes-match-button'
+                                (option === "history" && "notes-button-active ") +
+                                " notes-button w-50 notes-match-button"
                             }
-                            onClick={(evt) => setOption('history')}
+                            onClick={(evt) => setOption("history")}
                         >
                             Lịch sử đấu
                         </button>
                         <button
                             className={
-                                (option === 'comment' && 'notes-button-active ') +
-                                ' notes-button w-50 notes-comment-button'
+                                (option === "comment" && "notes-button-active ") +
+                                " notes-button w-50 notes-comment-button"
                             }
-                            onClick={(evt) => setOption('comment')}
+                            onClick={(evt) => setOption("comment")}
                         >
                             Nhận xét
                         </button>
                     </div>
-                    {option === 'history' && (
+                    {option === "history" && (
                         <>
                             {matches.length === 0 ? (
                                 <div>Không có bất kỳ trận đấu nào</div>
@@ -207,8 +207,8 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                                                 <div
                                                     className={
                                                         (m.whiteId?._id === currentUser._id && m.state === 1) || (m.blackId?._id === currentUser._id && m.state === -1)
-                                                            ? 'match-item win'
-                                                            : 'match-item lose' + (m.state === 0 ? " draw" : "")
+                                                            ? "match-item win"
+                                                            : "match-item lose" + (m.state === 0 ? " draw" : "")
                                                     }
                                                 >
                                                     <div className="white-profile" onClick={evt => nav(`/profile/${m.whiteId?.username}`)}>
@@ -240,7 +240,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                             )}
                         </>
                     )}
-                    {option === 'comment' && <CommentInfoList />}
+                    {option === "comment" && <CommentInfoList />}
                 </div>
             </div>
         </>

@@ -1,14 +1,12 @@
-import type { FC } from 'react';
-import React from 'react';
-import type { EndGame } from 'src/components/game/Game';
-import { VscDebugRestart, VscDebugStepBack } from 'react-icons/vsc';
+import type { FC } from "react";
+import type { EndGame } from "src/components/game/Game";
+import { VscDebugStepBack } from "react-icons/vsc";
 import "src/share/game/board/Board.scss";
 import { socket } from "src/index"
-import { useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import playerReducer from 'src/redux/reducer/player/PlayerReducer';
-import { LeaveRoom } from './Sidebar';
-import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import { LeaveRoom } from "src/share/game/board/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 export const GameOverScreen: FC<{
     endGame: EndGame | null
@@ -25,7 +23,7 @@ export const GameOverScreen: FC<{
         }
         socket.emit(`setJoinedRoom`, data);
         socket.emit(`leaveRoom`, data);
-        nav('/play/online')
+        nav("/play/online")
     }
     return (
         <>

@@ -1,14 +1,13 @@
-import { Match } from 'src/redux/reducer/match/Types';
-import type { FC, FormEvent } from 'react';
-import React, { useEffect, useState } from 'react';
-import 'src/share/roomList/RoomList.scss';
-import { User } from 'src/redux/reducer/user/Types';
-import { socket } from 'src/index';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import { useNavigate } from 'react-router-dom';
-import { playerActions } from 'src/redux/reducer/player/PlayerReducer';
-import { matchActions } from 'src/redux/reducer/match/MatchReducer';
+import { Match } from "src/redux/reducer/match/Types";
+import type { FC } from "react";
+import React, { useEffect, useState } from "react";
+import "src/share/roomList/RoomList.scss";
+import { socket } from "src/index";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import { useNavigate } from "react-router-dom";
+import { playerActions } from "src/redux/reducer/player/PlayerReducer";
+import { matchActions } from "src/redux/reducer/match/MatchReducer";
 
 export type JoinRoomClient = {
     roomId: string | null | undefined
@@ -33,10 +32,20 @@ export const RoomListComponent: FC<{
         const lastestMatchId = useAppSelector((state: RootState) => state.matchReducer.lastestMatchId);
         const avatar = useAppSelector((state: RootState) => state.userReducer.currentUser.avatar);
         const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-        const [searchRoomId, setSearchRoomId] = useState('');
+        const [searchRoomId, setSearchRoomId] = useState("");
         const [isSearch, setIsSearch] = useState(false);
+        const [currentPage, setCurrentPage] = useState(1);
+        const matchesPerPage = 8;
         const nav = useNavigate();
         const dispatch = useAppDispatch();
+
+        const indexOfLastMatch = currentPage * matchesPerPage;
+        const indexOfFirstMatch = indexOfLastMatch - matchesPerPage;
+        const currentMatches = match.slice(indexOfFirstMatch, indexOfLastMatch);
+
+        const paginate = (pageNumber: number) => {
+            setCurrentPage(pageNumber);
+        };
 
         const handleRoomClick = (match: Match) => {
             joinRoom(match._id);
@@ -65,7 +74,6 @@ export const RoomListComponent: FC<{
         const joinRoom = (matchId: string | null | undefined) => {
             if (!socket) return;
             dispatch(playerActions.setRoomId({ roomId: matchId }));
-            // dispatch(matchActions.reqPutMatchById({ matchId: matchId, match: match }));
             const data: JoinRoomClient = { roomId: matchId, username: `${username}#${userId}`, avatar: avatar };
             socket.emit(`joinRoom`, data);
             socket.emit(`fetchPlayers`, { roomId: matchId });
@@ -165,7 +173,7 @@ export const RoomListComponent: FC<{
                                 </tr>
                             </thead>
                             <tbody>
-                                {match.map((matchItem, index) => {
+                                {currentMatches.map((matchItem, index) => {
                                     return (
                                         <tr key={index}>
                                             <td>{index + 1}</td>
@@ -191,6 +199,15 @@ export const RoomListComponent: FC<{
                     {isSearch && match.length === 0 && <div className="no-matches-message">
                         Không tìm thấy trận đấu bạn đang tìm!
                     </div>}
+
+                    {/* Hiển thị Pagination */}
+                    <div className="pagination">
+                        {Array.from({ length: Math.ceil(match.length / matchesPerPage) }, (_, index) => (
+                            <button key={index} onClick={() => paginate(index + 1)}>
+                                {index + 1}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </>
         );

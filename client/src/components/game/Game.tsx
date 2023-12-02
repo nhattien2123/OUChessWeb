@@ -1,36 +1,29 @@
-import { FC, useEffect } from 'react';
-import { useState } from 'react';
-
-import { BoardComponent } from 'src/share/game/board/Board';
-import { GameOverScreen } from 'src/share/game/board/GameOverScreen';
-import type { History } from 'src/share/game/board/History';
-import { LeaveRoom, Sidebar } from 'src/share/game/board/Sidebar';
-// import { css } from '@emotion/react'
-import type { Board, Tile } from 'src/share/game/logic/board';
-import { createBoard } from 'src/share/game/logic/board';
-import type { Color, EndGameType, Move, Piece, PieceType } from 'src/share/game/logic/pieces';
-// import { Border } from 'src/models/Border';
-import { Environment } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
-import PromoteDialog from 'src/share/game/board/PromotionDialog';
-import create from 'zustand';
-
-import { Loader } from 'src/share/game/board/Loader';
-import 'src/components/game/Game.scss';
-import { BoardModel } from 'src/models/Board';
-import { Opponent } from 'src/share/game/board/Opponent';
-import { StatusBar } from 'src/share/game/board/StatusBar';
-import { useSockets } from 'src/util/Socket';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-
+import { FC, useState, useEffect } from "react";
+import { BoardComponent } from "src/share/game/board/Board";
+import { GameOverScreen } from "src/share/game/board/GameOverScreen";
+import type { History } from "src/share/game/board/History";
+import { Sidebar } from "src/share/game/board/Sidebar";
+import type { Board, Tile } from "src/share/game/logic/Board";
+import { createBoard } from "src/share/game/logic/Board";
+import type { Color, EndGameType, Move, Piece } from "src/share/game/logic/pieces";
+import { Environment } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { Loader } from "src/share/game/board/Loader";
+import { BoardModel } from "src/models/Board";
+import { Opponent } from "src/share/game/board/Opponent";
+import { StatusBar } from "src/share/game/board/StatusBar";
+import { useSockets } from "src/util/Socket";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
-import { RootState } from 'src/app/store';
-import { Chat } from 'src/share/game/board/Chat';
-import { StatusUser } from 'src/share/game/board/StatusUser';
-import { Vector, Vector3 } from 'three';
-import { matchActions } from 'src/redux/reducer/match/MatchReducer';
-import { socket } from 'src';
-import { useNavigate } from 'react-router-dom';
+import { RootState } from "src/app/store";
+import { Chat } from "src/share/game/board/Chat";
+import { StatusUser } from "src/share/game/board/StatusUser";
+import { Vector3 } from "three";
+import { matchActions } from "src/redux/reducer/match/MatchReducer";
+import { useNavigate } from "react-router-dom";
+import PromoteDialog from "src/share/game/board/PromotionDialog";
+import create from "zustand";
+import "src/components/game/Game.scss";
 
 export type ThreeMouseEvent = {
     stopPropagation: () => void

@@ -1,8 +1,8 @@
-import { useHistoryState } from 'src/components/game/Game'
+import { useHistoryState } from "src/components/game/Game"
 
-import type { Position, Tile } from '../board'
-import type { Move, MoveFunction, Piece, PieceFactory } from './'
-import { getMove, getBasePiece } from './'
+import type { Position, Tile } from "src/share/game/logic/Board"
+import type { Move, MoveFunction, Piece, PieceFactory } from "."
+import { getMove, getBasePiece } from "src/share/game/logic/pieces/index"
 
 export function isPawn(value: Pawn | Piece | null): value is Pawn {
     return value?.type === `pawn`

@@ -1,9 +1,9 @@
-import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
+import type { FC } from "react";
+import React, { useEffect, useState } from "react";
 
-import type { Position, Tile, Board } from 'src/share/game/logic/board';
-import { checkIfPositionsMatch, copyBoard } from 'src/share/game/logic/board';
-import type { Color, Move, Piece } from 'src/share/game/logic/pieces';
+import type { Position, Tile, Board } from "src/share/game/logic/Board";
+import { checkIfPositionsMatch, copyBoard } from "src/share/game/logic/Board";
+import type { Color, Move, Piece } from "src/share/game/logic/pieces";
 import {
     createId,
     getTile,
@@ -12,39 +12,39 @@ import {
     shouldPromotePawn,
     checkIfSelectedPieceCanMoveHere,
     movesForPiece,
-} from 'src/share/game/logic/pieces';
-import type { ModelProps } from 'src/models/index';
-import { MeshWrapper } from 'src/models/index';
-import { WhiteBishopModel } from 'src/models/whitePieces/WhiteBishop';
-import { WhiteKingModel } from 'src/models/whitePieces/WhiteKing';
-import { WhiteKnightModel } from 'src/models/whitePieces/WhiteKnight';
-import { WhitePawnModel } from 'src/models/whitePieces/WhitePawn';
-import { WhiteQueenModel } from 'src/models/whitePieces/WhiteQueen';
-import { WhiteRookModel } from 'src/models/whitePieces/WhiteRook';
+} from "src/share/game/logic/pieces";
+import type { ModelProps } from "src/models";
+import { MeshWrapper, } from "src/models";
+import { WhiteBishopModel } from "src/models/whitePieces/WhiteBishop";
+import { WhiteKingModel } from "src/models/whitePieces/WhiteKing";
+import { WhiteKnightModel } from "src/models/whitePieces/WhiteKnight";
+import { WhitePawnModel } from "src/models/whitePieces/WhitePawn";
+import { WhiteQueenModel } from "src/models/whitePieces/WhiteQueen";
+import { WhiteRookModel } from "src/models/whitePieces/WhiteRook";
 
-// import { BlackBishopModel } from 'src/models/blackPieces/BlackBishop';
-// import { BlackKingModel } from 'src/models/blackPieces/BlackKing';
-// import { BlackKnightModel } from 'src/models/blackPieces/BlackKnight';
-// import { BlackPawnModel } from 'src/models/blackPieces/BlackPawn';
-// import { BlackQueenModel } from 'src/models/blackPieces/BlackQueen';
-// import { BlackRookModel } from 'src/models/blackPieces/BlackRook';
+// import { BlackBishopModel } from "src/models/blackPieces/BlackBishop";
+// import { BlackKingModel } from "src/models/blackPieces/BlackKing";
+// import { BlackKnightModel } from "src/models/blackPieces/BlackKnight";
+// import { BlackPawnModel } from "src/models/blackPieces/BlackPawn";
+// import { BlackQueenModel } from "src/models/blackPieces/BlackQueen";
+// import { BlackRookModel } from "src/models/blackPieces/BlackRook";
 
-import { TileModel } from 'src/models/Tile';
-import type { EndGame, MovingTo, ThreeMouseEvent } from 'src/components/game/Game';
-import { useHistoryState } from 'src/components/game/Game';
-import { useSpring, animated } from '@react-spring/three';
+import { TileModel } from "src/models/Tile";
+import type { EndGame, MovingTo, ThreeMouseEvent } from "src/components/game/Game";
+import { useHistoryState } from "src/components/game/Game";
+import { useSpring, animated } from "@react-spring/three";
 
-import { isPawn } from 'src/share/game/logic/pieces/pawn';
-import { isKing } from 'src/share/game/logic/pieces/king';
-import { isRook } from 'src/share/game/logic/pieces/rook';
-import { OrbitControls } from '@react-three/drei';
-import { useThree } from '@react-three/fiber';
-import { socket } from 'src/index';
+import { isPawn } from "src/share/game/logic/pieces/Pawn";
+import { isKing } from "src/share/game/logic/pieces/King";
+import { isRook } from "src/share/game/logic/pieces/Rook";
+import { OrbitControls } from "@react-three/drei";
+import { useThree } from "@react-three/fiber";
+import { socket } from "src/index";
 
 import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
-import { matchActions } from 'src/redux/reducer/match/MatchReducer';
+import { matchActions } from "src/redux/reducer/match/MatchReducer";
 
 export type MakeMoveClient = {
     movingTo: MovingTo

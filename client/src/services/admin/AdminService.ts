@@ -1,6 +1,6 @@
-import Cookies from 'js-cookie';
-import { ROOT_URL, CONTENT_TYPE, ADMIN } from 'src/config/ApiConstants';
-import * as Types from 'src/services/admin/Types';
+import Cookies from "js-cookie";
+import { ROOT_URL, CONTENT_TYPE, ADMIN } from "src/config/ApiConstants";
+import * as Types from "src/services/admin/Types";
 
 export const fetchGetListUser = async (kw: string): Promise<Types.resFetchGetListUserFromAdmin> => {
     const { URL, METHOD } = ADMIN.API_GET_LIST_USER;
@@ -8,8 +8,8 @@ export const fetchGetListUser = async (kw: string): Promise<Types.resFetchGetLis
     const res = await fetch(url, {
         method: METHOD,
         headers: {
-            'Content-type': CONTENT_TYPE,
-            Authorization: 'Bearer ' + Cookies.get('token'),
+            "Content-type": CONTENT_TYPE,
+            Authorization: "Bearer " + Cookies.get("token"),
         },
     });
 
@@ -23,7 +23,7 @@ export const fetchAddUser = async (newUser: FormData): Promise<Types.resAddUserF
         method: METHOD,
         body: newUser,
         headers: {
-            Authorization: 'Bearer ' + Cookies.get('token'),
+            Authorization: "Bearer " + Cookies.get("token"),
         },
     });
 
@@ -37,7 +37,7 @@ export const fetchUpdateUser = async (updateUser: FormData): Promise<Types.resUp
         method: METHOD,
         body: updateUser,
         headers: {
-            Authorization: 'Bearer ' + Cookies.get('token'),
+            Authorization: "Bearer " + Cookies.get("token"),
         },
     });
     return await res.json();
@@ -49,7 +49,7 @@ export const fetchDeletedUser = async (username: string): Promise<Types.resDelet
     const res = await fetch(url, {
         method: METHOD,
         headers: {
-            Authorization: 'Bearer ' + Cookies.get('token'),
+            Authorization: "Bearer " + Cookies.get("token"),
         },
     });
     return await res.json();

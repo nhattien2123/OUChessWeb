@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import { authActions } from 'src/redux/reducer/auth/AuthReducer';
-import { userActions } from 'src/redux/reducer/user/UserReducer';
-import LoginForm from 'src/share/form/LoginForm';
-import { socket } from 'src/index';
-import 'src/components/login/Login.scss';
-interface LoginProps {}
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import { authActions } from "src/redux/reducer/auth/AuthReducer";
+import { userActions } from "src/redux/reducer/user/UserReducer";
+import LoginForm from "src/share/form/LoginForm";
+import { socket } from "src/index";
+import "src/components/login/Login.scss";
+import Cookies from "js-cookie";
 
 const Login = () => {
     const isLoggIn = useAppSelector((state: RootState) => state.authReducer.isLoggedIn);
@@ -17,8 +16,8 @@ const Login = () => {
     const dispatch = useAppDispatch();
     const nav = useNavigate();
     const defaultData = {
-        username: '',
-        password: '',
+        username: "",
+        password: "",
     };
 
     const loginHandler = (data: { username: string; password: string }) => {
@@ -27,8 +26,8 @@ const Login = () => {
 
     useEffect(() => {
         if (isLoggIn) {
-            Cookies.set('token', token, {
-                path: '/',
+            Cookies.set("token", token, {
+                path: "/",
             });
             socket.auth = {
                 token: token,
@@ -37,7 +36,7 @@ const Login = () => {
             socket.connect();
             dispatch(userActions.reqGetCurrentUser({}));
             toast.success("Đăng nhập thành công");
-            nav('/');
+            nav("/");
         }
     }, [isLoggIn, token]);
 
