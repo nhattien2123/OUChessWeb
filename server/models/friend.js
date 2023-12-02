@@ -1,16 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const friendShipSchema = new mongoose.Schema(
     {
         requester: {
             type: String,
             required: true,
-            ref: 'user',
+            ref: "user",
         },
         recipient: {
             type: String,
             required: true,
-            ref: 'user',
+            ref: "user",
         },
         status: {
             type: Number,
@@ -20,4 +20,4 @@ const friendShipSchema = new mongoose.Schema(
     { timestamps: true },
 );
 
-module.exports = mongoose.model('friend', friendShipSchema);
+module.exports = mongoose.model("friend", friendShipSchema);

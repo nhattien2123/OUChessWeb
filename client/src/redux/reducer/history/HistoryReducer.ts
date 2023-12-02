@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Types from 'src/redux/reducer/history/Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Types from "src/redux/reducer/history/Types";
 
 const initialState: Types.HistoryState = {
     history: [],
@@ -7,7 +7,7 @@ const initialState: Types.HistoryState = {
 };
 
 const historySlice = createSlice({
-    name: 'history',
+    name: "history",
     initialState,
     reducers: {
         reqAddHistory: (state, action: Types.ActionReqAddHistory): void => {

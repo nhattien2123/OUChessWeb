@@ -1,4 +1,4 @@
-const matchRepository = require('../repositories/matchRepository');
+const matchRepository = require("../repositories/MatchRepository");
 
 const matchService = {
     getMatch: async (matchId) => {

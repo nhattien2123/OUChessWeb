@@ -13,23 +13,29 @@ const disconnect = (socket, io) => {
 
 const leaveRoom = (socket, io) => {
     socket.on(`leaveRoom`, (data) => {
-        console.log('test leave room')
+        console.log(data)
         const playerCount = io.sockets.adapter.rooms.get(data.roomId)?.size || 0;
         if (playerCount === 2) {
-            io.sockets.in(data.roomId).emit(`leftRoom`, data.roomId)
+            io.sockets.in(data.roomId).emit(`leftRoom`, data.roomId, (ack) => {
+                if (ack) {
+                    console.log("Gửi 'leftRoom' thành công");
+                } else {
+                    console.log("Gửi 'leftRoom' không thành công");
+                }
+            })
             socket.leave(data.roomId);
         }
 
         if (playerCount === 1) {
-            io.sockets.in(data.roomId).emit(`leftRoom`, data.roomId)
+            io.sockets.in(data.roomId).emit(`leftRoom`, data.roomId, (ack) => {
+                if (ack) {
+                    console.log("Gửi 'leftRoom' thành công");
+                } else {
+                    console.log("Gửi 'leftRoom' không thành công");
+                }
+            })
             socket.leave(data.roomId);
         }
-    })
-}
-
-const setJoinedRoom = (socket, io) => {
-    socket.on(`setLeavedRoom`, (data) => {
-        io.sockets.in(data.roomId).emit(`leftRoom`, data.roomId)
     })
 }
 
@@ -51,6 +57,7 @@ const joinRoom = (socket, io) => {
         }
         socket.join(roomId)
         const props = { roomId, username, playerCount, avatar }
+        console.log(props)
         io.sockets.in(roomId).emit(`playerJoined`, props)
     })
 }

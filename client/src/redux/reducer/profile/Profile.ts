@@ -1,11 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Types from 'src/redux/reducer/profile/Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Types from "src/redux/reducer/profile/Types";
 
 const initialState: Types.profileState = {
     profile: {
-        _id: '',
-        username: '',
-        avatar: '',
+        _id: "",
+        username: "",
+        avatar: "",
         friends: [],
         createdAt: new Date(),
         elo: 0,
@@ -16,7 +16,7 @@ const initialState: Types.profileState = {
 };
 
 const profileSlice = createSlice({
-    name: 'profile',
+    name: "profile",
     initialState,
     reducers: {
         reqGetProfile: (state, action: Types.ActionReqGetProfile): void => {

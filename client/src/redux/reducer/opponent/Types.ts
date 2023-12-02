@@ -1,5 +1,5 @@
-import { PayloadAction } from '@reduxjs/toolkit';
-import { Color } from 'src/share/game/logic/pieces';
+import { PayloadAction } from "@reduxjs/toolkit";
+import { Color } from "src/share/game/logic/pieces";
 
 export type OpponentState = {
     position: [number, number, number];
@@ -10,21 +10,21 @@ export type OpponentState = {
 }
 
 export type ActionSetPosition = PayloadAction<{
-    position: OpponentState['position'];
+    position: OpponentState["position"];
 }>
 
 export type ActionSetMousePosition = PayloadAction<{
-    mousePosition: OpponentState['mousePosition'];
+    mousePosition: OpponentState["mousePosition"];
 }>
 
 export type ActionSetName = PayloadAction<{
-    name: OpponentState['name'];
+    name: OpponentState["name"];
 }>
 
 export type ActionSetAvatar = PayloadAction<{
-    avatar: OpponentState['avatar'];
+    avatar: OpponentState["avatar"];
 }>
 
 export type ActionSetColor = PayloadAction<{
-    color: OpponentState['color'];
+    color: OpponentState["color"];
 }>

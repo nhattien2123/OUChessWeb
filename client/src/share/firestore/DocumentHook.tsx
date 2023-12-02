@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { collection, query, where, doc, getDoc, orderBy, onSnapshot } from 'firebase/firestore';
-import { db } from 'src/config/FirebaseConfig';
+import React, { useState } from "react";
+import { collection, query, where, doc, getDoc, orderBy, onSnapshot } from "firebase/firestore";
+import { db } from "src/config/FirebaseConfig";
 
 type Props = {
     _collection: string;
@@ -12,7 +12,7 @@ const useDocument = (props: Props) => {
     const { _collection, _id } = props;
 
     React.useEffect(() => {
-        if (_id === '') return;
+        if (_id === "") return;
 
         const unsubcribe = onSnapshot(doc(db, _collection, _id), (doc) => {
             if (doc.exists()) {

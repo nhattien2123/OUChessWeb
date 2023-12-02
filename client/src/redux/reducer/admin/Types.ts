@@ -1,5 +1,5 @@
-import { PayloadAction } from '@reduxjs/toolkit';
-import { Friend } from 'src/redux/reducer/profile/Types';
+import { PayloadAction } from "@reduxjs/toolkit";
+import { Friend } from "src/redux/reducer/profile/Types";
 
 export type userDataForm = {
     _id?: string;
@@ -31,7 +31,7 @@ export type adminState = {
 
 export type ActionReqGetListUser = PayloadAction<{}>;
 export type ActionResGetListUser = PayloadAction<{
-    list: adminState['userList'];
+    list: adminState["userList"];
 }>;
 export type ActionReqAddUser = PayloadAction<{}>;
 export type ActionResAddUser = PayloadAction<{
@@ -48,5 +48,5 @@ export type ActionResDeleteUser = PayloadAction<{
 
 
 export type ActionSetNotify = PayloadAction<{
-    notify: adminState['notify'];
+    notify: adminState["notify"];
 }>;

@@ -1,10 +1,10 @@
-// import { call, put, takeLatest } from 'redux-saga/effects';
-// import httpHandler from 'src/util/HttpHandler';
-// import { commonAction } from 'src/redux/reducer/common/CommonReducer';
-// import { historyActions } from 'src/redux/reducer/history/HistoryReducer';
-// import * as HistoryServices from 'src/services/history/HistoryServices';
-// import * as TypesAction from 'src/redux/reducer/history/Types';
-// import * as TypesFetch from 'src/services/history/Types';
+// import { call, put, takeLatest } from "redux-saga/effects";
+// import httpHandler from "src/util/HttpHandler";
+// import { commonAction } from "src/redux/reducer/common/CommonReducer";
+// import { historyActions } from "src/redux/reducer/history/HistoryReducer";
+// import * as HistoryServices from "src/services/history/HistoryServices";
+// import * as TypesAction from "src/redux/reducer/history/Types";
+// import * as TypesFetch from "src/services/history/Types";
 
 // interface Payload {
 //     history: TypesAction.History[]

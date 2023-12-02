@@ -1,5 +1,5 @@
-import { Color } from 'src/share/game/logic/pieces';
-import { PayloadAction } from '@reduxjs/toolkit';
+import { Color } from "src/share/game/logic/pieces";
+import { PayloadAction } from "@reduxjs/toolkit";
 
 export type PlayerState = {
     userId: string,
@@ -10,21 +10,21 @@ export type PlayerState = {
 }
 
 export type ActionSetUserId = PayloadAction<{
-    userId: PlayerState['userId'];
+    userId: PlayerState["userId"];
 }>;
 
 export type ActionSetPlayerColor = PayloadAction<{
-    playerColor: PlayerState['playerColor'];
+    playerColor: PlayerState["playerColor"];
 }>;
 
 export type ActionSetMode = PayloadAction<{
-    mode: PlayerState['mode'];
+    mode: PlayerState["mode"];
 }>;
 
 export type ActionSetJoinedRoom = PayloadAction<{
-    joinedRoom: PlayerState['joinedRoom'];
+    joinedRoom: PlayerState["joinedRoom"];
 }>;
 
 export type ActionSetRoomId = PayloadAction<{
-    roomId: PlayerState['roomId'];
+    roomId: PlayerState["roomId"];
 }>;

@@ -1,18 +1,18 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Type from 'src/redux/reducer/messages/Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Type from "src/redux/reducer/messages/Types";
 
 const initialState = {
     isLoading: false,
-    selectedChat: '',
+    selectedChat: "",
     selectedUser: {
-        _id: '',
+        _id: "",
         username: "",
         avatar: ""
     }
 };
 
 const messageSlice = createSlice({
-    name: 'message',
+    name: "message",
     initialState,
     reducers: {
         setSelectedChat: (state, action: Type.setSelectedChat) => {

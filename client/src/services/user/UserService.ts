@@ -1,30 +1,30 @@
-import { userState } from 'src/redux/reducer/user/Types';
-import { ROOT_URL, CONTENT_TYPE, USER } from '../../config/ApiConstants';
-import * as Types from './Types';
-import Cookies from 'js-cookie';
+import { userState } from "src/redux/reducer/user/Types";
+import { ROOT_URL, CONTENT_TYPE, USER } from "../../config/ApiConstants";
+import * as Types from "src/services/user/Types";
+import Cookies from "js-cookie";
 
 export const fetchGetCurrrentUser = async (): Promise<Types.ResFetchGetCurrrentUser> => {
     const url = ROOT_URL + USER.API_CURRENT_USER.URL;
     const response = await fetch(url, {
         method: USER.API_CURRENT_USER.METHOD,
         headers: {
-            'Content-type': CONTENT_TYPE,
-            Authorization: `Bearer ${Cookies.get('token')}` || '',
+            "Content-type": CONTENT_TYPE,
+            Authorization: `Bearer ${Cookies.get("token")}` || "",
         },
     });
     return await response.json();
 };
 
 export const fetchPatchUpdateUser = async (
-    profile: userState['currentUser'],
+    profile: userState["currentUser"],
 ): Promise<Types.ResFetchPatchUpdateUser> => {
     const url = `${ROOT_URL}${USER.API_UPDATE_USER(profile.username).URL}`;
     const res = await fetch(url, {
         method: USER.API_UPDATE_USER(profile.username).METHOD,
         body: JSON.stringify(profile),
         headers: {
-            'Content-type': CONTENT_TYPE,
-            Authorization: `Bearer ${Cookies.get('token')}` || '',
+            "Content-type": CONTENT_TYPE,
+            Authorization: `Bearer ${Cookies.get("token")}` || "",
         },
     });
     return await res.json();
@@ -40,8 +40,8 @@ export const fetchPatchChangePassword = async (
         method: USER.API_CHANGE_PASSWORD(username).METHOD,
         body: JSON.stringify({ username, newPassword }),
         headers: {
-            'Content-type': CONTENT_TYPE,
-            Authorization: `Bearer ${Cookies.get('token')}` || '',
+            "Content-type": CONTENT_TYPE,
+            Authorization: `Bearer ${Cookies.get("token")}` || "",
         },
     });
     return await res.json();
@@ -57,7 +57,7 @@ export const fetchPatchChangeAvatar = async (
         method: METHOD,
         body: form,
         headers: {
-            Authorization: `Bearer ${Cookies.get('token')}` || '',
+            Authorization: `Bearer ${Cookies.get("token")}` || "",
         },
     });
     return await res.json();

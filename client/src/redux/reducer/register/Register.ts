@@ -1,16 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Type from 'src/redux/reducer/register/Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Type from "src/redux/reducer/register/Types";
 
 const initialState: Type.registerState = {
     isLoading: false,
     isSuccess: false,
-    verifyToken: '',
-    msg: '',
+    verifyToken: "",
+    msg: "",
     errors: {}
 };
 
 const registerSlice = createSlice({
-    name: 'register',
+    name: "register",
     initialState,
     reducers: {
         reqCheckDataRegister: (state, action) => {

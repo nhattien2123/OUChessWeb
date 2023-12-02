@@ -9,7 +9,7 @@
 //     return(
 //         <mesh position={props.position} onClick={() => killPiece(props.piece, props.pieceKill, data, dispatch)}>
 //             <boxGeometry args={[12.7, 2.2, 12.7]} />
-//             <meshStandardMaterial color='#b31616' />
+//             <meshStandardMaterial color="#b31616" />
 //         </mesh>
 //     );
 // }

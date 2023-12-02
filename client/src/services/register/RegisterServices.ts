@@ -1,5 +1,5 @@
-import { ROOT_URL, CONTENT_TYPE, COMMON } from 'src/config/ApiConstants';
-import * as Type from 'src/services/register/Types';
+import { ROOT_URL, CONTENT_TYPE, COMMON } from "src/config/ApiConstants";
+import * as Type from "src/services/register/Types";
 
 export const checkExist = async (username: string, email: string, phone: number): Promise<Type.ResCheckExist> => {
     const url = ROOT_URL + COMMON.API_CHECK_EXIST.URL;
@@ -11,7 +11,7 @@ export const checkExist = async (username: string, email: string, phone: number)
             phone: phone,
         }),
         headers: {
-            'content-type': CONTENT_TYPE
+            "content-type": CONTENT_TYPE
         }
     });
     return await res.json();
@@ -23,7 +23,7 @@ export const sendVerify = async (emailVerify: string): Promise<Type.ResFetchSend
         method: COMMON.API_SEND_VERIFY.METHOD,
         body: JSON.stringify({ emailVerify }),
         headers: {
-            'content-type': CONTENT_TYPE,
+            "content-type": CONTENT_TYPE,
         },
     });
     return await res.json();
@@ -42,7 +42,7 @@ export const sendDataRegister = async (information: object): Promise<Type.ResFet
         method: COMMON.API_REGISTER.METHOD,
         body: JSON.stringify(information),
         headers: {
-            'content-type': CONTENT_TYPE,
+            "content-type": CONTENT_TYPE,
         },
     });
     return await res.json();
@@ -57,7 +57,7 @@ export const resetPassword = async (
         method: COMMON.API_RESET_PASSWORD.METHOD,
         body: JSON.stringify({ emailReset, newPassword: passwordReset }),
         headers: {
-            'content-type': CONTENT_TYPE,
+            "content-type": CONTENT_TYPE,
         },
     });
     return await res.json();

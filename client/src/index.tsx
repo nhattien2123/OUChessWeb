@@ -1,15 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux';
-import { store } from './app/store';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Cookies from 'js-cookie';
-import { ROOT_URL } from './config/ApiConstants';
-import { io } from 'socket.io-client';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "src/App";
+import reportWebVitals from "./reportWebVitals";
+import { Provider } from "react-redux";
+import { store } from "./app/store";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Cookies from "js-cookie";
+import { ROOT_URL } from "src/config/ApiConstants";
+import { io } from "socket.io-client";
 
 export const socket = io(ROOT_URL, {
     auth: {
@@ -17,7 +17,7 @@ export const socket = io(ROOT_URL, {
     }
 })
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
     <React.StrictMode>
         <Provider store={store}>

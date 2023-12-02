@@ -1,7 +1,7 @@
-const db = require('mongoose');
-const friend = require('../models/friend');
-const friendRepository = require('../repositories/friendRepository');
-const userService = require('../services/userService');
+const db = require("mongoose");
+const friend = require("../models/Friend");
+const friendRepository = require("../repositories/FriendRepository");
+const userService = require("./UserService");
 
 const friendService = {
     addFriend: async (requester, recipient, status) => {
@@ -21,7 +21,7 @@ const friendService = {
 };
 
 const friendSocket = (socket, io, online) => {
-    socket.on('addFriend', async (requester, recipient, callback = (success) => {}) => {
+    socket.on("addFriend", async (requester, recipient, callback = (success) => { }) => {
         console.log(requester, recipient);
         const session = await db.startSession();
         await session.startTransaction();
@@ -36,7 +36,7 @@ const friendSocket = (socket, io, online) => {
             const socketId = online[recipient];
             console.log(f2);
             if (socketId) {
-                io.to(socketId).emit('addRequest', f2);
+                io.to(socketId).emit("addRequest", f2);
             }
             await session.commitTransaction();
         } catch (error) {
@@ -48,7 +48,7 @@ const friendSocket = (socket, io, online) => {
         }
     });
 
-    socket.on('acceptFriend', async (friend) => {
+    socket.on("acceptFriend", async (friend) => {
         const session = await db.startSession();
         await session.startTransaction();
 
@@ -59,22 +59,22 @@ const friendSocket = (socket, io, online) => {
             const recipient = friend.recipient._id;
             const socketId = online[recipient];
             if (socketId) {
-                io.to(socketId).emit('acceptedRequest', userB);
+                io.to(socketId).emit("acceptedRequest", userB);
             }
-            
-            socket.emit('removeRequest', userA);
+
+            socket.emit("removeRequest", userA);
 
             await session.commitTransaction();
         } catch (error) {
             console.log(error);
             await session.abortTransaction();
-            socket.emit('error_msg', 'Đã có lỗi xảy ra');
+            socket.emit("error_msg", "Đã có lỗi xảy ra");
         } finally {
             session.endSession();
         }
     });
 
-    socket.on('rejectFriend', async (friend) => {
+    socket.on("rejectFriend", async (friend) => {
         const session = await db.startSession();
         await session.startTransaction();
 
@@ -86,11 +86,11 @@ const friendSocket = (socket, io, online) => {
             await userService.removeFriend(friend.recipient._id, f2._id);
 
             console.log(f1);
-            socket.emit('removeRequest', f1);
+            socket.emit("removeRequest", f1);
             await session.commitTransaction();
         } catch (error) {
             console.log(error);
-            socket.emit('error_msg', 'Đã có lỗi xảy ra');
+            socket.emit("error_msg", "Đã có lỗi xảy ra");
         } finally {
             session.endSession();
         }

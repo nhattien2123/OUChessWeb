@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const commentInfoSchema = new mongoose.Schema(
     {
@@ -9,15 +9,15 @@ const commentInfoSchema = new mongoose.Schema(
         receiver: {
             type: String,
             required: true,
-            ref: 'user',
+            ref: "user",
         },
         sender: {
             type: String,
             required: true,
-            ref: 'user',
+            ref: "user",
         },
     },
     { timestamps: true },
 );
 
-module.exports = mongoose.model('commentInfo', commentInfoSchema);
+module.exports = mongoose.model("commentInfo", commentInfoSchema);

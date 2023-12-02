@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { socket } from 'src/index';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import { profileActions } from 'src/redux/reducer/profile/Profile';
-import CommentInfoItem from 'src/share/comment/CommentInfoItem';
-import 'src/share/comment/Comment.scss';
+import { useEffect, useState } from "react";
+import { socket } from "src/index";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import { profileActions } from "src/redux/reducer/profile/Profile";
+import CommentInfoItem from "src/share/comment/CommentInfoItem";
+import "src/share/comment/Comment.scss";
 
 type Props = object;
 
@@ -14,12 +14,12 @@ const CommentInfoList = (props: Props) => {
     const profile = useAppSelector((state: RootState) => state.profileReducer.profile);
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const dispatch = useAppDispatch();
-    const [comment, setComment] = useState<string>('');
+    const [comment, setComment] = useState<string>("");
 
     const handlerSubmit = (e: { preventDefault: () => void }) => {
         e.preventDefault();
-        if (comment.trim() !== '') {
-            socket.emit('newComment', {
+        if (comment.trim() !== "") {
+            socket.emit("newComment", {
                 content: comment,
                 receiver: {
                     _id: profile._id,
@@ -32,27 +32,27 @@ const CommentInfoList = (props: Props) => {
                     avatar: currentUser.avatar,
                 },
             });
-            setComment('');
+            setComment("");
         }
     };
 
     useEffect(() => {
-        socket.on('newComment', (comment) => {
+        socket.on("newComment", (comment) => {
             dispatch(profileActions.postAddCommentInfo({ comment }));
         });
 
         return () => {
-            socket.off('newComment');
+            socket.off("newComment");
         };
     }, []);
 
     useEffect(() => {
-        socket.on('error_msg', (status) => {
+        socket.on("error_msg", (status) => {
             console.log(status);
         });
 
         return () => {
-            socket.off('error_msg');
+            socket.off("error_msg");
         };
     }, []);
 
@@ -60,11 +60,11 @@ const CommentInfoList = (props: Props) => {
         console.log(comments.length);
     }, [comments]);
 
-    if (comments.length === 0) <div style={{ textAlign: 'center' }}>...</div>;
+    if (comments.length === 0) <div style={{ textAlign: "center" }}>...</div>;
 
     return (
         <>
-            <div style={{ overflow: 'auto', maxHeight: '240px' }}>
+            <div style={{ overflow: "auto", maxHeight: "240px" }}>
                 {comments.map((m) => {
                     return <CommentInfoItem key={m.sender._id} comment={m} />;
                 })}

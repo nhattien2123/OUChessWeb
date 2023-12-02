@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction } from "@reduxjs/toolkit";
 
 export type Message = {
     author: string;

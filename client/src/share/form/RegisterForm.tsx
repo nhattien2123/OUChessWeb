@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ErrorMessage } from '@hookform/error-message';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { registerActions } from 'src/redux/reducer/register/Register';
-import { RootState } from 'src/app/store';
+import { useEffect } from "react";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ErrorMessage } from "@hookform/error-message";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { registerActions } from "src/redux/reducer/register/Register";
+import { RootState } from "src/app/store";
 
 export type registerData = {
     username: string;
@@ -22,7 +22,7 @@ export type registerData = {
 
 type Props = {
     registerData: registerData;
-    onSubmit: (data: Props['registerData']) => void;
+    onSubmit: (data: Props["registerData"]) => void;
 };
 
 const RegisterForm = (props: Props) => {
@@ -31,19 +31,19 @@ const RegisterForm = (props: Props) => {
     const errors = useAppSelector((state: RootState) => state.registerReducer.errors);
     const isLoading = useAppSelector((state: RootState) => state.registerReducer.isLoading);
 
-    const schema = yup.object<Props['registerData']>().shape({
-        username: yup.string().required('Vui lòng nhập tên tài khoản'),
-        password: yup.string().required('Vui lòng nhập mật khẩu'),
+    const schema = yup.object<Props["registerData"]>().shape({
+        username: yup.string().required("Vui lòng nhập tên tài khoản"),
+        password: yup.string().required("Vui lòng nhập mật khẩu"),
         confirmPassword: yup
             .string()
-            .oneOf([yup.ref('password'), ''], 'Mật khẩu không khớp')
-            .required('Vui lòng nhập mật khẩu xác nhận'),
-        email: yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
+            .oneOf([yup.ref("password"), ""], "Mật khẩu không khớp")
+            .required("Vui lòng nhập mật khẩu xác nhận"),
+        email: yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
         phone: yup
             .string()
-            .length(11, 'Số điện thoại chưa đủ')
-            .matches(/^[\\+]?[(]?[0-9]{3}[)]?[-\s\\.]?[0-9]{3}[-\s\\.]?[0-9]{4,6}$/im, 'Số điện thoại không hợp lệ')
-            .required('Vui lòng nhập số điện thoại'),
+            .length(11, "Số điện thoại chưa đủ")
+            .matches(/^[\\+]?[(]?[0-9]{3}[)]?[-\s\\.]?[0-9]{3}[-\s\\.]?[0-9]{4,6}$/im, "Số điện thoại không hợp lệ")
+            .required("Vui lòng nhập số điện thoại"),
         firstname: yup.string(),
         lastName: yup.string(),
         nation: yup.string(),
@@ -57,7 +57,7 @@ const RegisterForm = (props: Props) => {
 
     const { submitCount } = form.formState;
 
-    const submitHandler = async (data: Props['registerData']) => {
+    const submitHandler = async (data: Props["registerData"]) => {
         await dispatch(
             registerActions.reqCheckExist({
                 fieldCheck: {
@@ -73,17 +73,17 @@ const RegisterForm = (props: Props) => {
         const isErros: boolean = Object.keys(errors).length > 0;
         if (isErros) {
             if (errors.email) {
-                form.setError('email', {
+                form.setError("email", {
                     message: errors.email.message,
                 });
             }
             if (errors.phone) {
-                form.setError('phone', {
+                form.setError("phone", {
                     message: errors.phone.message,
                 });
             }
             if (errors.username) {
-                form.setError('username', {
+                form.setError("username", {
                     message: errors.username.message,
                 });
             }
@@ -106,7 +106,7 @@ const RegisterForm = (props: Props) => {
                                     className="input-style"
                                     type="email"
                                     placeholder="Email"
-                                    {...form.register('email')}
+                                    {...form.register("email")}
                                 />
                                 <ErrorMessage
                                     name="email"
@@ -119,7 +119,7 @@ const RegisterForm = (props: Props) => {
                                     className="input-style"
                                     type="text"
                                     placeholder="Phone"
-                                    {...form.register('phone')}
+                                    {...form.register("phone")}
                                 />
                                 <ErrorMessage
                                     name="phone"
@@ -133,7 +133,7 @@ const RegisterForm = (props: Props) => {
                                     className="input-style"
                                     type="text"
                                     placeholder="Tài khoản"
-                                    {...form.register('username')}
+                                    {...form.register("username")}
                                 />
                                 <ErrorMessage
                                     name="username"
@@ -146,7 +146,7 @@ const RegisterForm = (props: Props) => {
                                     className="input-style"
                                     type="password"
                                     placeholder="Mật khẩu"
-                                    {...form.register('password')}
+                                    {...form.register("password")}
                                 />
                                 <ErrorMessage
                                     name="password"
@@ -159,7 +159,7 @@ const RegisterForm = (props: Props) => {
                                     className="input-style"
                                     type="password"
                                     placeholder="Xác nhận mật khẩu"
-                                    {...form.register('confirmPassword')}
+                                    {...form.register("confirmPassword")}
                                 />
                                 <ErrorMessage
                                     name="confirmPassword"
@@ -172,7 +172,7 @@ const RegisterForm = (props: Props) => {
                             </button>
                         </form>
                         <div className="register-link">
-                            <Link to={'/login'} className="register-dir">
+                            <Link to={"/login"} className="register-dir">
                                 Đăng nhập
                             </Link>
                         </div>

@@ -1,8 +1,8 @@
-const authRepository = require('../repositories/userRepository');
-const bcrypt = require('bcrypt');
-const user = require('../models/user');
-const cloudinaryConfig = require('../configs/CloundinaryConfig');
-const userReposity = require('../repositories/userRepository');
+const authRepository = require("../repositories/UserRepository");
+const bcrypt = require("bcrypt");
+const user = require("../models/User");
+const cloudinaryConfig = require("../configs/CloundinaryConfig");
+const userReposity = require("../repositories/UserRepository");
 
 const userService = {
     getUser: async (param) => {
@@ -18,7 +18,7 @@ const userService = {
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(User.password, salt);
 
-        if (!User.avatar || User.avatar === '') {
+        if (!User.avatar || User.avatar === "") {
             User.avatar = process.env.DEFAULT_AVATAR;
         }
 

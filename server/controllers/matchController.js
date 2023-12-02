@@ -1,5 +1,5 @@
-const matchService = require('../services/matchService');
-const httpHandler = require('../helpers/httpHandler');
+const matchService = require("../services/MatchService");
+const httpHandler = require("../helpers/HttpHandler");
 
 const matchController = {
     getMatch: async (req, res) => {
@@ -8,12 +8,12 @@ const matchController = {
             const match = await matchService.getMatch(matchId);
 
             if (!match) {
-                httpHandler.Fail(res, {}, 'Không tìm thấy trận đấu');
+                httpHandler.Fail(res, {}, "Không tìm thấy trận đấu");
             } else {
-                httpHandler.Success(res, { match }, 'Tìm thấy thông tin trận đấu');
+                httpHandler.Success(res, { match }, "Tìm thấy thông tin trận đấu");
             }
         } catch (error) {
-            httpHandler.Servererror(res, error.message, 'Đã xảy ra lỗi !!!');
+            httpHandler.Servererror(res, error.message, "Đã xảy ra lỗi !!!");
         }
     },
     getMatches: async (req, res) => {
@@ -21,12 +21,12 @@ const matchController = {
             const matches = await matchService.getMatches();
 
             if (!matches) {
-                httpHandler.Fail(res, {}, 'Không tìm thấy trận đấu');
+                httpHandler.Fail(res, {}, "Không tìm thấy trận đấu");
             } else {
-                httpHandler.Success(res, { matches }, 'Tìm thấy danh sách trận đấu');
+                httpHandler.Success(res, { matches }, "Tìm thấy danh sách trận đấu");
             }
         } catch (error) {
-            httpHandler.Servererror(res, error.message, 'Đã xảy ra lỗi !!!');
+            httpHandler.Servererror(res, error.message, "Đã xảy ra lỗi !!!");
         }
     },
     addMatch: async (req, res) => {
@@ -35,29 +35,29 @@ const matchController = {
             const match = await matchService.addMatch(newMatchData);
 
             if (!match) {
-                httpHandler.Fail(res, {}, 'Thêm trận đấu không thành công');
+                httpHandler.Fail(res, {}, "Thêm trận đấu không thành công");
             } else {
-                httpHandler.Success(res, { match }, 'Thêm trận đấu thành công');
+                httpHandler.Success(res, { match }, "Thêm trận đấu thành công");
             }
         } catch (error) {
-            httpHandler.Servererror(res, error.message, 'Đã xảy ra lỗi !!!');
+            httpHandler.Servererror(res, error.message, "Đã xảy ra lỗi !!!");
         }
     },
     updateMatch: async (req, res) => {
         try {
             const matchId = req.params.matchId;
             const match = req.body.match;
-            console.log(matchId + " " +  match);
+            console.log(matchId + " " + match);
 
             const updatedMatch = await matchService.updateMatch(matchId, match);
 
             if (!updatedMatch) {
-                httpHandler.Fail(res, {}, 'Cập nhật trận đấu không thành công');
+                httpHandler.Fail(res, {}, "Cập nhật trận đấu không thành công");
             } else {
-                httpHandler.Success(res, { updatedMatch }, 'Cập nhật trận đấu thành công');
+                httpHandler.Success(res, { updatedMatch }, "Cập nhật trận đấu thành công");
             }
         } catch (error) {
-            httpHandler.Servererror(res, error.message, 'Đã xảy ra lỗi !!!');
+            httpHandler.Servererror(res, error.message, "Đã xảy ra lỗi !!!");
         }
     },
     deleteMatch: async (req, res) => {
@@ -66,24 +66,24 @@ const matchController = {
             const deletedMatch = await matchService.deleteMatch(matchId);
 
             if (!deletedMatch) {
-                httpHandler.Fail(res, {}, 'Xoá trận đấu không thành công');
+                httpHandler.Fail(res, {}, "Xoá trận đấu không thành công");
             } else {
-                httpHandler.Success(res, { deletedMatch }, 'Xoá trận đấu thành công');
+                httpHandler.Success(res, { deletedMatch }, "Xoá trận đấu thành công");
             }
         } catch (error) {
-            httpHandler.Servererror(res, error.message, 'Đã xảy ra lỗi !!!');
+            httpHandler.Servererror(res, error.message, "Đã xảy ra lỗi !!!");
         }
     },
     getMatchById: async (req, res) => {
         try {
             const matchId = req.params.matchId;
             const matches = await matchService.getMatchById(matchId);
-            if (!matches) httpHandler.Fail(res, {}, 'Không tìm thấy thông tin trận đấu');
+            if (!matches) httpHandler.Fail(res, {}, "Không tìm thấy thông tin trận đấu");
             else {
-                httpHandler.Success(res, { matches }, 'Tìm thấy thông tin trận đấu');
+                httpHandler.Success(res, { matches }, "Tìm thấy thông tin trận đấu");
             }
         } catch (error) {
-            httpHandler.Servererror(res, error.message, 'Đã xảy ra lỗi !!!');
+            httpHandler.Servererror(res, error.message, "Đã xảy ra lỗi !!!");
         }
     }
 };

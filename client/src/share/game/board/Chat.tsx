@@ -1,11 +1,8 @@
-import type { FC } from 'react';
-import { useState } from 'react';
-
-import { messageMatchActions } from 'src/redux/reducer/messageMatch/MessageMatchReducer';
-import { playerActions } from  'src/redux/reducer/player/PlayerReducer';
-import { socket } from 'src/index';
-import { useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
+import type { FC } from "react";
+import { useState } from "react";
+import { socket } from "src/index";
+import { useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
 
 export type Message = {
     author: string

@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import 'src/components/players/Players.scss';
-import { playerListActions } from 'src/redux/reducer/playersList/PlayerList';
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import { playerListActions } from "src/redux/reducer/playersList/PlayerList";
+import "src/components/players/Players.scss";
+
 type Props = object;
 
 const Players = (props: Props) => {
@@ -17,9 +18,9 @@ const Players = (props: Props) => {
     const [p] = useSearchParams();
 
     useEffect(() => {
-        const kw = p.get('kw');
-        if(kw)
-            dispatch(playerListActions.ReqGetListUser({ kw }));
+        const kw = p.get("kw");
+        if (kw)
+            dispatch(playerListActions.reqGetListUser({ kw }));
     }, [p]);
 
     useEffect(() => {
@@ -27,8 +28,8 @@ const Players = (props: Props) => {
     }, [players]);
 
     useEffect(() => {
-        if(notify.msg !== ''){
-            switch(notify.type){
+        if (notify.msg !== "") {
+            switch (notify.type) {
                 case "error":
                     toast.error(notify.msg);
                     break;
@@ -41,8 +42,8 @@ const Players = (props: Props) => {
             <div className="players-main">
                 <div className="players-title">Danh sách người chơi</div>
                 <div className="players-list">
-                    {isLoadding && <div style={{textAlign: "center"}}>...</div>}
-                    {!isLoadding && players.length === 0 ? <div style={{textAlign: "center"}}>{p.get('kw') ? "Không có bất kì người dùng nào" : "Vui lòng nhập từ khoá"}</div> :
+                    {isLoadding && <div style={{ textAlign: "center" }}>...</div>}
+                    {!isLoadding && players.length === 0 ? <div style={{ textAlign: "center" }}>{p.get("kw") ? "Không có bất kì người dùng nào" : "Vui lòng nhập từ khoá"}</div> :
                         players.map((p) => {
                             return (
                                 <>

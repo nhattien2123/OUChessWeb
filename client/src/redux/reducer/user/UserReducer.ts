@@ -1,33 +1,32 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as Types from './Types';
-import Cookies from 'js-cookie';
-import { Friend } from '../profile/Types';
+import { createSlice } from "@reduxjs/toolkit";
+import * as Types from "src/redux/reducer/user/Types";
+import Cookies from "js-cookie";
 
-const currentState = Cookies.get('user') || '';
+const currentState = Cookies.get("user") || "";
 
 const initialState: Types.userState = {
     currentUser:
-        currentState !== ''
+        currentState !== ""
             ? JSON.parse(currentState)
             : {
-                  _id: '',
-                  username: '',
-                  firstName: '',
-                  lastName: '',
-                  phone: '',
-                  dateOfBirth: new Date(),
-                  email: '',
-                  elo: 0,
-                  nation: '',
-                  avatar: '',
-              },
+                _id: "",
+                username: "",
+                firstName: "",
+                lastName: "",
+                phone: "",
+                dateOfBirth: new Date(),
+                email: "",
+                elo: 0,
+                nation: "",
+                avatar: "",
+            },
     friends: [],
-    password: '',
+    password: "",
     isLoading: false,
 };
 
 const userSlice = createSlice({
-    name: 'user',
+    name: "user",
     initialState,
     reducers: {
         reqGetCurrentUser: (state, action: Types.ActionReqGetCurrentUser) => {

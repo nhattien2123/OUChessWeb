@@ -1,18 +1,18 @@
-import type { FC } from 'react'
-import React from 'react'
+import type { FC } from "react"
+import React from "react"
 
-import type { Board } from 'src/share/game/logic/board'
-import type { Color, Move, Piece } from 'src/share/game/logic/pieces'
-import { useHistoryState } from 'src/components/game/Game'
-import { AiFillCloseCircle } from 'react-icons/ai'
-import { BsReverseLayoutSidebarInsetReverse } from 'react-icons/bs'
+import type { Board } from "src/share/game/logic/Board"
+import type { Color, Move, Piece } from "src/share/game/logic/pieces"
+import { useHistoryState } from "src/components/game/Game"
+import { AiFillCloseCircle } from "react-icons/ai"
+import { BsReverseLayoutSidebarInsetReverse } from "react-icons/bs"
 
-import { HistoryPanel } from './History'
-import { MiniMap } from './MiniMap'
-import { socket } from 'src/index'
-import { RootState } from 'src/app/store'
-import { useAppSelector } from 'src/app/hooks'
-import { useNavigate } from 'react-router-dom'
+import { HistoryPanel } from "src/share/game/board/History"
+import { MiniMap } from "src/share/game/board/MiniMap"
+import { socket } from "src/index"
+import { RootState } from "src/app/store"
+import { useAppSelector } from "src/app/hooks"
+import { useNavigate } from "react-router-dom"
 
 export type LeaveRoom = {
     roomId?: string | null,
@@ -39,9 +39,8 @@ export const Sidebar: FC<{
         const data: LeaveRoom = {
             roomId: roomId,
         }
-        socket.emit(`setJoinedRoom`, data);
         socket.emit(`leaveRoom`, data);
-        nav('/play/online')
+        nav("/play/online")
     }
 
     return (
@@ -58,7 +57,7 @@ export const Sidebar: FC<{
                         <AiFillCloseCircle onClick={() => setShow(!show)} />
                         <MiniMap board={board} selected={selected} moves={moves} />
                         <HistoryPanel />
-                        <div className='container-sidebar-button'>
+                        <div className="container-sidebar-button">
                             {/* <button onClick={reset}>Reset</button>
                             <button onClick={() => undo()}>Undo</button> */}
                             <button onClick={handleLeaveRoom}>Thoát</button>

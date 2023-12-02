@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import * as yup from 'yup';
-import moment from 'moment';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ErrorMessage } from '@hookform/error-message';
-import { userState } from 'src/redux/reducer/user/Types';
-import { useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
+import React, { useEffect, useState } from "react";
+import * as yup from "yup";
+import moment from "moment";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ErrorMessage } from "@hookform/error-message";
+import { userState } from "src/redux/reducer/user/Types";
+import { useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
 
 
 type Props = {
-    profile: userState['currentUser'];
+    profile: userState["currentUser"];
     isLoading: boolean | undefined;
     onSubmit: (value: any) => void;
 };
@@ -19,30 +19,30 @@ const ProfileForm = (props: Props) => {
     const { profile, isLoading, onSubmit } = props;
     const errorMsg = useAppSelector((state: RootState) => state.commonReducer.errorMsg);
 
-    const schema = yup.object<Props['profile']>().shape({
+    const schema = yup.object<Props["profile"]>().shape({
         _id: yup.string().required(),
         username: yup.string().required(),
         firstName: yup.string().required(),
         lastName: yup.string().required(),
         phone: yup
             .string()
-            .length(11, 'Số điện thoại chưa đủ')
-            .matches(/^[\\+]?[(]?[0-9]{3}[)]?[-\s\\.]?[0-9]{3}[-\s\\.]?[0-9]{4,6}$/im, 'Số điện thoại không hợp lệ')
-            .required('Vui lòng nhập số điện thoại'),
+            .length(11, "Số điện thoại chưa đủ")
+            .matches(/^[\\+]?[(]?[0-9]{3}[)]?[-\s\\.]?[0-9]{3}[-\s\\.]?[0-9]{4,6}$/im, "Số điện thoại không hợp lệ")
+            .required("Vui lòng nhập số điện thoại"),
         dateOfBirth: yup
             .date()
-            .typeError('Ngày sinh không hợp lệ')
-            .required('Vui lòng nhập ngày sinh')
+            .typeError("Ngày sinh không hợp lệ")
+            .required("Vui lòng nhập ngày sinh")
             .max(new Date())
             .nonNullable(),
-        email: yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
+        email: yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
         elo: yup.number().required(),
         nation: yup.string().required(),
         avatar: yup.string().nullable().required(),
         role: yup.string().optional()
     });
 
-    const form = useForm<Props['profile']>({
+    const form = useForm<Props["profile"]>({
         defaultValues: profile,
         resolver: yupResolver(schema),
     });
@@ -52,7 +52,7 @@ const ProfileForm = (props: Props) => {
 
     useEffect(() => {
         const subscription = form.watch((value: any, { name, type }) => {
-            if (name === 'dateOfBirth' && type === 'change') setInitialDate(moment(value[name]).format('yyyy-MM-DD'));
+            if (name === "dateOfBirth" && type === "change") setInitialDate(moment(value[name]).format("yyyy-MM-DD"));
         });
 
         return () => {
@@ -65,7 +65,7 @@ const ProfileForm = (props: Props) => {
     };
 
     useEffect(() => {
-        setInitialDate(moment(profile.dateOfBirth).format('yyyy-MM-DD'));
+        setInitialDate(moment(profile.dateOfBirth).format("yyyy-MM-DD"));
     }, []);
 
     return (
@@ -76,11 +76,11 @@ const ProfileForm = (props: Props) => {
                     {errorMsg && (
                         <div
                             style={{
-                                width: '50%',
-                                margin: '5px auto',
-                                padding: '10px',
-                                backgroundColor: 'red',
-                                textAlign: 'center',
+                                width: "50%",
+                                margin: "5px auto",
+                                padding: "10px",
+                                backgroundColor: "red",
+                                textAlign: "center",
                             }}
                         >
                             {errorMsg}
@@ -96,7 +96,7 @@ const ProfileForm = (props: Props) => {
                                     type="text"
                                     id="firstName"
                                     className="input-form"
-                                    {...form.register('firstName')}
+                                    {...form.register("firstName")}
                                 />
 
                                 <ErrorMessage
@@ -115,7 +115,7 @@ const ProfileForm = (props: Props) => {
                                     type="text"
                                     id="lastName"
                                     className="input-form"
-                                    {...form.register('lastName')}
+                                    {...form.register("lastName")}
                                 />
                                 <ErrorMessage
                                     name="lastName"
@@ -129,7 +129,7 @@ const ProfileForm = (props: Props) => {
                                 Email
                             </label>
                             <div className="input-field">
-                                <input type="text" id="email" className="input-form" {...form.register('email')} />
+                                <input type="text" id="email" className="input-form" {...form.register("email")} />
 
                                 <ErrorMessage
                                     name="email"
@@ -143,7 +143,7 @@ const ProfileForm = (props: Props) => {
                                 Phone
                             </label>
                             <div className="input-field">
-                                <input type="text" id="phone" className="input-form" {...form.register('phone')} />
+                                <input type="text" id="phone" className="input-form" {...form.register("phone")} />
                                 <ErrorMessage
                                     name="phone"
                                     errors={form.formState.errors}
@@ -162,7 +162,7 @@ const ProfileForm = (props: Props) => {
                                     id="dOb"
                                     className="input-form"
                                     value={initialDate}
-                                    {...form.register('dateOfBirth')}
+                                    {...form.register("dateOfBirth")}
                                 />
                                 <ErrorMessage
                                     name="dateOfBirth"
@@ -176,7 +176,7 @@ const ProfileForm = (props: Props) => {
                                 Quốc tịch
                             </label>
                             <div className="input-field">
-                                <input {...form.register('nation')} type="text" id="nation" className="input-form" />
+                                <input {...form.register("nation")} type="text" id="nation" className="input-form" />
 
                                 <ErrorMessage
                                     name="nation"

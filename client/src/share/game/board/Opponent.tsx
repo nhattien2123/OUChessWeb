@@ -1,13 +1,13 @@
-import { useEffect, type FC } from 'react'
+import { useEffect, type FC } from "react"
 
-import { animated, useSpring } from '@react-spring/three'
-import { Float, Html } from '@react-three/drei'
+import { animated, useSpring } from "@react-spring/three"
+import { Float, Html } from "@react-three/drei"
 
-// import { useOpponentState, usePlayerState } from '@/state/player'
+// import { useOpponentState, usePlayerState } from "@/state/player"
 
 // import { playerActions } from "src/redux/reducer/player/PlayerReducer";
 // import { opponentActions } from "src/redux/reducer/opponent/OpponentReducer";
-import { useAppSelector } from 'src/app/hooks';
+import { useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 
 export const Opponent: FC = () => {

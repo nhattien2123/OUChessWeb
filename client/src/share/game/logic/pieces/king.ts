@@ -1,8 +1,8 @@
-import type { Board, Position } from 'src/share/game/logic/board'
-import type { Move, MoveFunction, Piece, PieceFactory } from 'src/share/game/logic/pieces'
-import { moveTypes, getFarMoves, getPiece, getMove, getBasePiece } from 'src/share/game/logic/pieces'
-import type { Rook } from 'src/share/game/logic/pieces/rook'
-import { isRook } from 'src/share/game/logic/pieces/rook'
+import type { Board, Position } from "src/share/game/logic/Board"
+import type { Move, MoveFunction, Piece, PieceFactory } from "src/share/game/logic/pieces"
+import { moveTypes, getFarMoves, getPiece, getMove, getBasePiece } from "src/share/game/logic/pieces"
+import type { Rook } from "src/share/game/logic/pieces/Rook"
+import { isRook } from "src/share/game/logic/pieces/Rook"
 
 export const isKing = (value: King | Piece | null): value is King => {
     return value?.type === `king`

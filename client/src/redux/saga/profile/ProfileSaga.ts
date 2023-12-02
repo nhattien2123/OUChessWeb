@@ -1,10 +1,10 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
-import httpHandler from 'src/util/HttpHandler';
-import { commonAction } from 'src/redux/reducer/common/CommonReducer';
-import { profileActions } from 'src/redux/reducer/profile/Profile';
-import * as ProfileServices from 'src/services/profile/ProfileServices';
-import * as TypesAction from 'src/redux/reducer/profile/Types';
-import * as TypesFetch from 'src/services/profile/Types';
+import { call, put, takeLatest } from "redux-saga/effects";
+import httpHandler from "src/util/HttpHandler";
+import { commonAction } from "src/redux/reducer/common/CommonReducer";
+import { profileActions } from "src/redux/reducer/profile/Profile";
+import * as ProfileServices from "src/services/profile/ProfileServices";
+import * as TypesAction from "src/redux/reducer/profile/Types";
+import * as TypesFetch from "src/services/profile/Types";
 
 interface Payload {
     username: string;

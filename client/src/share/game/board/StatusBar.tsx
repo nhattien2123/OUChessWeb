@@ -1,9 +1,7 @@
-import type { FC } from 'react'
-import { uppercaseFirstLetter } from 'src/util/UpperCaseFirstLetter';
+import type { FC } from "react"
+import { uppercaseFirstLetter } from "src/util/UpperCaseFirstLetter";
 
-import { playerActions } from "src/redux/reducer/player/PlayerReducer";
-import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 
 export const StatusBar: FC = () => {

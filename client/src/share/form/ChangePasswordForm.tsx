@@ -1,8 +1,8 @@
-import React from 'react';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ErrorMessage } from '@hookform/error-message';
+import React from "react";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ErrorMessage } from "@hookform/error-message";
 
 type Props = {
     onSubmit: (data: any) => void;
@@ -12,17 +12,17 @@ const ChangePasswordForm = (props: Props) => {
     const { onSubmit } = props;
 
     const schema = yup.object().shape({
-        password: yup.string().required('Vui lòng nhập mật khẩu mới'),
+        password: yup.string().required("Vui lòng nhập mật khẩu mới"),
         confirmPassword: yup
             .string()
-            .oneOf([yup.ref('password'), ''], 'Mật khẩu xác nhận không trùng khớp')
-            .required('Vui lòng nhập xác nhận mật khẩu'),
+            .oneOf([yup.ref("password"), ""], "Mật khẩu xác nhận không trùng khớp")
+            .required("Vui lòng nhập xác nhận mật khẩu"),
     });
 
     const form = useForm({
         defaultValues: {
-            password: '',
-            confirmPassword: '',
+            password: "",
+            confirmPassword: "",
         },
         resolver: yupResolver(schema),
     });
@@ -50,9 +50,9 @@ const ChangePasswordForm = (props: Props) => {
                                     type="password"
                                     id="password"
                                     className="input-form"
-                                    {...form.register('password', {
+                                    {...form.register("password", {
                                         onChange: (e) => {
-                                            form.setValue('password', e.target.value.trim());
+                                            form.setValue("password", e.target.value.trim());
                                         },
                                     })}
                                 />
@@ -74,9 +74,9 @@ const ChangePasswordForm = (props: Props) => {
                                     type="password"
                                     id="confirmPassword"
                                     className="input-form"
-                                    {...form.register('confirmPassword', {
+                                    {...form.register("confirmPassword", {
                                         onChange: (e) => {
-                                            form.setValue('confirmPassword', e.target.value.trim());
+                                            form.setValue("confirmPassword", e.target.value.trim());
                                         },
                                     })}
                                 />

@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const matchController = require("../controllers/matchController");
-const middlewareController = require("../controllers/middlewareController");
+const matchController = require("../controllers/MatchController");
+const middlewareController = require("../controllers/MiddlewareController");
 const apiConstants = require("../configs/ApiConstant");
 
-const matchRepository = require("../repositories/matchRepository");
+const matchRepository = require("../repositories/MatchRepository");
 
 router.get(apiConstants.API_GET_MATCH, matchController.getMatches);
 

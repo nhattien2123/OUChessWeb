@@ -1,23 +1,16 @@
-import { useEffect } from 'react'
-
-import { toast } from 'react-toastify'
-import type { Socket } from 'socket.io-client'
-// eslint-disable-next-line import/no-named-as-default
-import io from 'socket.io-client'
-
-import type { MovingTo } from 'src/components/game/Game'
-
-import { socket } from 'src/index';
-import type { Message } from 'src/redux/reducer/messageMatch/Types';
-
-import { opponentActions } from 'src/redux/reducer/opponent/OpponentReducer';
-import { playerActions } from 'src/redux/reducer/player/PlayerReducer';
-import { messageMatchActions } from 'src/redux/reducer/messageMatch/MessageMatchReducer';
-import { gameSettingActions } from 'src/redux/reducer/gameSettings/GameSettingsReducer';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { Color, PieceType } from 'src/share/game/logic/pieces';
-import { RootState } from 'src/app/store'
-import { LeaveRoom } from 'src/share/game/board/Sidebar'
+import { useEffect } from "react"
+import { toast } from "react-toastify"
+import type { MovingTo } from "src/components/game/Game"
+import { socket } from "src/index";
+import type { Message } from "src/redux/reducer/messageMatch/Types";
+import { opponentActions } from "src/redux/reducer/opponent/OpponentReducer";
+import { playerActions } from "src/redux/reducer/player/PlayerReducer";
+import { messageMatchActions } from "src/redux/reducer/messageMatch/MessageMatchReducer";
+import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { Color, PieceType } from "src/share/game/logic/pieces";
+import { RootState } from "src/app/store";
+import { LeaveRoom } from "src/share/game/board/Sidebar";
 
 export type playerJoinedServer = {
     roomId: string
@@ -51,6 +44,7 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
     const opponentColor = useAppSelector((state: RootState) => state.opponentReducer.color);
 
     useEffect(() => {
+        socket.removeAllListeners();
         socketInitializer()
 
         return () => {
@@ -58,7 +52,6 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
                 socket.emit(`playerLeft`, { roomId: roomId })
                 // socket.disconnect()
             }
-            socket.removeAllListeners();
         }
     }, [playerColor])
 
@@ -100,7 +93,8 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
             }
         })
 
-        socket.on(`setLeavedRoom`, (data: LeaveRoom) => {
+        socket.on(`leftRoom`, (data: LeaveRoom) => {
+            console.log("Left Room")
             dispatch(playerActions.setJoinedRoom({ joinedRoom: false }));
             reset();
         })
@@ -134,11 +128,10 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
         })
 
         socket.on(`gameReset`, () => {
-            reset()
+            reset();
         })
 
         socket.on(`playersInRoom`, (data: number) => {
-            console.log("Test PlayerInRoom")
             if (data === 2) {
                 dispatch(gameSettingActions.setGameStarted({ gameStarted: true }));
             }

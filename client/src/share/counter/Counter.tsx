@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import 'src/share/counter/Counter.scss';
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import "src/share/counter/Counter.scss";
 
 type CounterProps = {
     timer: number;

@@ -1,27 +1,24 @@
-import Cookies from 'js-cookie';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import { userDataForm } from 'src/redux/reducer/admin/Types';
-import { adminActions } from 'src/redux/reducer/admin/AdminReducer';
-import { registerState } from 'src/redux/reducer/register/Types';
-import AdminAddUserForm from 'src/share/form/AdminAddUserForm';
-import { registerData } from 'src/share/form/RegisterForm';
-import 'src/components/admin/Admin.scss';
+import moment from "moment";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import { userDataForm } from "src/redux/reducer/admin/Types";
+import { adminActions } from "src/redux/reducer/admin/AdminReducer";
+import AdminAddUserForm from "src/share/form/AdminAddUserForm";
+import "src/components/admin/Admin.scss";
 type Props = object;
 
 const defaultUser: userDataForm = {
-    username: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    nation: '',
-    avatar: '',
+    username: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    nation: "",
+    avatar: "",
     dateOfBirth: new Date(),
     elo: 500,
     friends: [],
@@ -36,22 +33,22 @@ const Admin = (props: Props) => {
     const dispatch = useAppDispatch();
     const nav = useNavigate();
     const [p] = useSearchParams();
-    const [kw, setKw] = useState<string>('');
+    const [kw, setKw] = useState<string>("");
     const [add, setAddActive] = useState<boolean>(false);
     const [newUser, setNewUser] = useState<userDataForm>(defaultUser);
 
     useEffect(() => {
-        const kw = p.get('kw') || '';
+        const kw = p.get("kw") || "";
         if (kw !== null) dispatch(adminActions.reqGetListUser({ kw }));
     }, [p]);
 
     const AddHandler = async (data: userDataForm) => {
         // console.log(data["username"]);
-        console.log('adding...');
+        console.log("adding...");
         const fd = new FormData();
 
         for (const d in data) {
-            if (d === 'file' && data[d]) {
+            if (d === "file" && data[d]) {
                 fd.append(d, (data[d as keyof typeof data] as any)[0]);
                 continue;
             }
@@ -63,10 +60,10 @@ const Admin = (props: Props) => {
     };
 
     const updateHandler = async (data: userDataForm) => {
-        console.log('updating...');
+        console.log("updating...");
         const fd = new FormData();
         for (const d in data) {
-            if (d === 'file' && data[d]) {
+            if (d === "file" && data[d]) {
                 fd.append(d, (data[d as keyof typeof data] as any)[0]);
                 continue;
             }
@@ -92,17 +89,17 @@ const Admin = (props: Props) => {
     const addModel = add ? (
         <AdminAddUserForm newUser={newUser} onSubmit={submitHandler} closeModel={setAddActive} />
     ) : (
-        ''
+        ""
     );
 
     useEffect(() => {
         switch (notify.type) {
-            case 'success': {
+            case "success": {
                 toast.success(notify.msg);
                 setAddActive(false);
                 break;
             }
-            case 'error': {
+            case "error": {
                 toast.error(notify.msg);
                 break;
             }
@@ -132,7 +129,7 @@ const Admin = (props: Props) => {
                                 value={kw}
                                 onChange={(evt) => setKw(evt.target.value)}
                                 onKeyDown={(evt) => {
-                                    if (evt.key === 'Enter') nav(`/admin/?kw=${kw}`);
+                                    if (evt.key === "Enter") nav(`/admin/?kw=${kw}`);
                                 }}
                             />
                         </div>
@@ -148,7 +145,7 @@ const Admin = (props: Props) => {
                     </div>
                 </div>
                 <div className="content-body">
-                    <div style={{ overflow: 'auto', height: '600px', display: 'inline-block' }}>
+                    <div style={{ overflow: "auto", height: "600px", display: "inline-block" }}>
                         <table className="table-content">
                             <thead className="table-header">
                                 <tr>
@@ -166,13 +163,13 @@ const Admin = (props: Props) => {
                                         if (u?.username !== currentUser.username) {
                                             return (
                                                 <>
-                                                    <tr className={u.deletedAt ? 'banned' : 'default'}>
+                                                    <tr className={u.deletedAt ? "banned" : "default"}>
                                                         <td className="col-avatar">
                                                             <img src={u.avatar} alt={u.username} />
                                                         </td>
                                                         <td>{u.username}</td>
                                                         <td>{u.elo}</td>
-                                                        <td>{moment(u?.createdAt).format('DD-MM-YYYY')}</td>
+                                                        <td>{moment(u?.createdAt).format("DD-MM-YYYY")}</td>
 
                                                         <td>
                                                             {!u.deletedAt && (

@@ -1,23 +1,23 @@
-import React from 'react';
-import { Navigate, useParams } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import { useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import { useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
 
 type AdminRouterProps = {
     component: any;
 };
 
 const AdminRouter: React.FC<AdminRouterProps> = ({ component: Component }) => {
-    const currentuser = useAppSelector((state: RootState) => state.userReducer);
-    const token = Cookies.get('token');
+    const currentuser = useAppSelector((state: RootState) => state.userReducer.currentUser);
+    const token = Cookies.get("token");
     if (!token) {
-        return <Navigate to={'/login'} />;
+        return <Navigate to={"/login"} />;
     } else {
-        if(currentuser.role === "ADMIN"){
+        if (currentuser.role === "ADMIN") {
             return <>{Component}</>
-        }else{
-            return <Navigate to={'/'} />
+        } else {
+            return <Navigate to={"/"} />
         }
     }
 };

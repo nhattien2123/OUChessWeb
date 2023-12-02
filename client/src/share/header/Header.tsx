@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import { userActions } from 'src/redux/reducer/user/UserReducer';
-import { Friend } from 'src/redux/reducer/profile/Types';
-import { socket } from 'src/index';
-import useDocument from 'src/share/firestore/DocumentHook';
-import 'src/share/header/Header.scss';
+import React, { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import { userActions } from "src/redux/reducer/user/UserReducer";
+import { Friend } from "src/redux/reducer/profile/Types";
+import { socket } from "src/index";
+import useDocument from "src/share/firestore/DocumentHook";
+import "src/share/header/Header.scss";
 
 type Props = object;
 
@@ -24,7 +24,7 @@ const Header = (props: Props) => {
     const nav = useNavigate();
 
     const chat = useDocument({
-        _collection: 'userCharts',
+        _collection: "userCharts",
         _id: currentUser._id,
     });
 
@@ -49,26 +49,26 @@ const Header = (props: Props) => {
     }, [friends]);
 
     const acceptRequest = (friend: Friend) => {
-        socket.emit('acceptFriend', friend);
+        socket.emit("acceptFriend", friend);
     };
 
     const rejectRequest = (friend: Friend) => {
-        socket.emit('rejectFriend', friend);
+        socket.emit("rejectFriend", friend);
     };
 
     useEffect(() => {
-        socket.on('acceptedRequest', (friend: Friend) => {
+        socket.on("acceptedRequest", (friend: Friend) => {
             toast.success(`${friend.recipient.username} đã chấp nhận lời mời kết bạn`);
         });
 
-        socket.on('addRequest', (friend: Friend) => {
+        socket.on("addRequest", (friend: Friend) => {
             const newList = [...friends, friend];
             console.log(newList);
             dispatch(userActions.reqSetFriends({ friends: newList }));
         });
 
-        socket.on('removeRequest', (friend: Friend) => {
-            console.log('remove');
+        socket.on("removeRequest", (friend: Friend) => {
+            console.log("remove");
             console.log(friend.recipient._id);
             const newList = friends.filter((f: Friend) => {
                 return f.recipient._id !== friend.recipient._id;

@@ -1,5 +1,5 @@
-const commentInfo = require('../models/commentInfo');
-const commentInfoRepository = require('../repositories/commentInfoRepository');
+const commentInfo = require("../models/CommentInfo");
+const commentInfoRepository = require("../repositories/CommentInfoRepository");
 
 const commentInfoService = {
     getComments: async (params) => {
@@ -11,14 +11,14 @@ const commentInfoService = {
     },
 };
 
-const commentInfoSocket = (socket, io, callback = (error) => {}) => {
-    socket.on('newComment', async (comment) => {
+const commentInfoSocket = (socket, io, callback = (error) => { }) => {
+    socket.on("newComment", async (comment) => {
         try {
             const newComment = await commentInfoService.addComment(comment);
-            if (newComment) io.emit('newComment', comment);
-            else callback('Đã có lỗi xảy ra');
+            if (newComment) io.emit("newComment", comment);
+            else callback("Đã có lỗi xảy ra");
         } catch (error) {
-            callback('Đã có lỗi xảy ra');
+            callback("Đã có lỗi xảy ra");
         }
     });
 };

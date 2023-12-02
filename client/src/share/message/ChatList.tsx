@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import useDocument from 'src/share/firestore/DocumentHook';
-import ChatItem from 'src/share/message/ChatItem';
-import 'src/components/messenger/Messenger.scss';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import useDocument from "src/share/firestore/DocumentHook";
+import ChatItem from "src/share/message/ChatItem";
+import "src/components/messenger/Messenger.scss";
 
 interface Props {}
 
 const Chat = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
-    const [kw, setKw] = useState('');
+    const [kw, setKw] = useState("");
     const { chatId } = useParams();
     const nav = useNavigate();
     const dispatch = useAppDispatch();
 
     const listChat = useDocument({
-        _collection: 'userCharts',
+        _collection: "userCharts",
         _id: currentUser._id,
     }).sort((a: { [key: string]: any }, b: { [key: string]: any }) => a.updateAt - b.updateAt);
     // .filter((kw:string) => );
@@ -32,10 +32,10 @@ const Chat = (props: Props) => {
                         return;
                     }
                 }
-                nav('/messages');
+                nav("/messages");
                 console.log("not In")
             } else {
-                console.log('not ok');
+                console.log("not ok");
             }
     }, [listChat]);
 

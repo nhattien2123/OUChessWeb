@@ -1,8 +1,8 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect } from "react"
 
 import { playerActions } from "src/redux/reducer/player/PlayerReducer";
 import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 
 export const StatusUser: FC = () => {

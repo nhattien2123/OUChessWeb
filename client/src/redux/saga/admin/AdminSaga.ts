@@ -1,9 +1,9 @@
-import httpHandler from 'src/util/HttpHandler';
-import { all, call, put, takeLatest } from 'redux-saga/effects';
-import { adminActions } from 'src/redux/reducer/admin/AdminReducer';
-import * as AdminService from 'src/services/admin/AdminService';
-import * as TypesAction from 'src/redux/reducer/admin/Types';
-import * as TypesFetch from 'src/services/admin/Types';
+import httpHandler from "src/util/HttpHandler";
+import { all, call, put, takeLatest } from "redux-saga/effects";
+import { adminActions } from "src/redux/reducer/admin/AdminReducer";
+import * as AdminService from "src/services/admin/AdminService";
+import * as TypesAction from "src/redux/reducer/admin/Types";
+import * as TypesFetch from "src/services/admin/Types";
 
 interface Payload {
     kw: string;
@@ -23,17 +23,17 @@ function* getListUser(action: TypesAction.ActionReqGetListUser) {
                 break;
             }
             case httpHandler.FAIL:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
             case httpHandler.SERVER_ERROR:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
             default:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
         }
     } catch (error) {
-        yield put(adminActions.reqSetNotify({ notify: { msg: 'Đã có lỗi xảy ra', type: 'error' } }));
+        yield put(adminActions.reqSetNotify({ notify: { msg: "Đã có lỗi xảy ra", type: "error" } }));
     }
 }
 
@@ -48,22 +48,22 @@ function* addUser(action: TypesAction.ActionReqAddUser) {
                 const { newUser } = response.data;
                 yield all([
                     put(adminActions.resAddUser({ newUser })),
-                    put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'success' } })),
+                    put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "success" } })),
                 ]);
                 break;
             }
             case httpHandler.FAIL:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
             case httpHandler.SERVER_ERROR:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
             default:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
         }
     } catch (error) {
-        yield put(adminActions.reqSetNotify({ notify: { msg: 'Đã có lỗi xảy ra', type: 'error' } }));
+        yield put(adminActions.reqSetNotify({ notify: { msg: "Đã có lỗi xảy ra", type: "error" } }));
     }
 }
 
@@ -78,22 +78,22 @@ function* updateUser(action: TypesAction.ActionReqUpdateUser) {
 
                 yield all([
                     put(adminActions.resUpdateUser({ updatedUser })),
-                    put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'success' } })),
+                    put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "success" } })),
                 ]);
                 break;
             }
             case httpHandler.FAIL:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
             case httpHandler.SERVER_ERROR:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
             default:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
         }
     } catch (error) {
-        yield put(adminActions.reqSetNotify({ notify: { msg: 'Đã có lỗi xảy ra', type: 'error' } }));
+        yield put(adminActions.reqSetNotify({ notify: { msg: "Đã có lỗi xảy ra", type: "error" } }));
     }
 }
 
@@ -108,22 +108,22 @@ function* deleteUser(action: TypesAction.ActionReqDeleteUser) {
 
                 yield all([
                     put(adminActions.resDeletedUser({ deletedUser })),
-                    put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'success' } })),
+                    put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "success" } })),
                 ]);
                 break;
             }
             case httpHandler.FAIL:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
             case httpHandler.SERVER_ERROR:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
             default:
-                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: 'error' } }));
+                yield put(adminActions.reqSetNotify({ notify: { msg: response.message, type: "error" } }));
                 break;
         }
     } catch (error) {
-        yield put(adminActions.reqSetNotify({ notify: { msg: 'Đã có lỗi xảy ra', type: 'error' } }));
+        yield put(adminActions.reqSetNotify({ notify: { msg: "Đã có lỗi xảy ra", type: "error" } }));
     }
 }
 

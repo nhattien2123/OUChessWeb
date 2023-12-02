@@ -1,6 +1,6 @@
 // import { History } from "src/redux/reducer/history/Types";
-// import { ROOT_URL, CONTENT_TYPE, HISTORY } from 'src/config/ApiConstants';
-// import * as Types from 'src/services/history/Types';
+// import { ROOT_URL, CONTENT_TYPE, HISTORY } from "src/config/ApiConstants";
+// import * as Types from "src/services/history/Types";
 
 // export const fetchAddHistory = async (history: History[]): Promise<Types.ResFetchAddHistory> => {
 //     const url = ROOT_URL + HISTORY.API_HISTORY_ADD.URL;
