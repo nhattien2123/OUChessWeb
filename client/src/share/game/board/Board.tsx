@@ -197,7 +197,7 @@ export const BoardComponent: FC<{
             const gameOverType = detectGameOver(board, turn)
             if (gameOverType) {
                 setEndGame({ type: gameOverType, winner: oppositeColor(turn) })
-                if (gameOverType === `stalemate`) {
+                if (gameOverType === `stalemate` || gameOverType === `insufficient material`) {
                     dispatch(matchActions.reqPutMatchById({ matchId: roomId, match: { state: 0 } }))
                 }
 
@@ -206,10 +206,6 @@ export const BoardComponent: FC<{
                         dispatch(matchActions.reqPutMatchById({ matchId: roomId, match: { state: 1 } }))
                     else dispatch(matchActions.reqPutMatchById({ matchId: roomId, match: { state: -1 } }))
                 }
-
-                // if (gameOverType === `checkmate`) {
-
-                // }
             }
         }, [board, turn])
 
