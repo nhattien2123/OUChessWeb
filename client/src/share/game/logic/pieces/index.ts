@@ -10,6 +10,7 @@ import { createPawn, isPawn, pawnMoves } from "src/share/game/logic/pieces/Pawn"
 
 import type { Pawn } from "src/share/game/logic/pieces/Pawn"
 import type { King } from "src/share/game/logic/pieces/King"
+import { BokehShaderUniforms } from "three-stdlib";
 
 export type Piece = {
     type: PieceType
@@ -214,19 +215,65 @@ export const detectThreefordRepetition = (
     return `threeford repetition`;
 }
 
+export const detectInsufficientMaterial = (
+    board: Board,
+    turn: Color,
+): EndGameType | null => {
+    let totalBlackPieces = 0;
+    let blackKnights = 0;
+    let blackBishops = 0;
+
+    let totalWhitePieces = 0;
+    let whiteKnights = 0;
+    let whiteBishops = 0;
+
+    for (const tile of board.flat()) {
+        if (tile.piece?.color === `black`) {
+            totalBlackPieces++;
+            if (totalBlackPieces > 2)
+                return null;
+            else {
+                if (tile.piece.type === `knight`)
+                    blackKnights++;
+                if (tile.piece.type === `bishop`)
+                    blackBishops++;
+            }
+        }
+
+        if (tile.piece?.color === `white`) {
+            totalWhitePieces++;
+            if (totalWhitePieces > 2)
+                return null;
+            else {
+                if (tile.piece.type === `knight`)
+                    whiteKnights++;
+                if (tile.piece.type === `bishop`)
+                    whiteBishops++;
+            }
+        }
+    }
+
+    if (blackBishops === 1 || whiteBishops === 1 || blackKnights === 1 || whiteKnights === 1)
+        return `insufficient material`;
+    return null;
+}
+
 export const detectGameOver = (
     board: Board,
     turn: Color,
 ): EndGameType | null => {
-    let gameOver = null
+    let gameOver = null;
     const staleMate = detectStalemate(board, turn)
     if (staleMate) {
-        gameOver = staleMate
-        const checkMate = detectCheckmate(board, turn)
-        if (checkMate) gameOver = checkMate
+        gameOver = staleMate;
+        const checkMate = detectCheckmate(board, turn);
+        if (checkMate) gameOver = checkMate;
     }
 
-    return gameOver
+    const insufficientMaterialMate = detectInsufficientMaterial(board, turn);
+    if (insufficientMaterialMate) gameOver = insufficientMaterialMate;
+
+    return gameOver;
 }
 
 export const getTile = (board: Board, position: Position): Tile | null => {
