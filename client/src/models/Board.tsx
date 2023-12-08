@@ -12,7 +12,7 @@ interface GLTFResult extends STDLIB.GLTF {
         Chess_Board_Tile_White: THREE.Mesh;
     };
     materials: {
-        [`Chess_Board_Border_Material`]: THREE.MeshStandardMaterial;
+        [`Chess_Board_Border_Material`]?: THREE.MeshStandardMaterial;
         [`Chess_Board_Border_Tile_Material`]: THREE.MeshStandardMaterial;
         [`Chess_Board_Tile_Black_Material`]: THREE.MeshStandardMaterial;
         [`Chess_Board_Tile_White_Material`]: THREE.MeshStandardMaterial;

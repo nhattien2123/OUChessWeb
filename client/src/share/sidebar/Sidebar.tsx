@@ -7,7 +7,8 @@ import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 import { socket } from "src/index";
 import "src/share/sidebar/Sidebar.scss";
-interface Props {}
+
+interface Props { }
 
 const Sidebar = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
@@ -27,9 +28,49 @@ const Sidebar = (props: Props) => {
         dispatch(userActions.clearUser({}));
     };
 
+    // const body = document.querySelector("body");
+    // const sidebar = body.querySelector(".sidebar");
+    // const toggle = body.querySelector(".toggle");
+    // const searchBtn = body.querySelector(".search-box");
+    // const modeSwitch = body.querySelector(".toggle-switch");
+    // const modeText = body.querySelector(".mode-text");
+
+    // toggle.addEventListener("click", () => {
+    //     sidebar.classList.toggle("close");
+    // });
+
+    // searchBtn?.addEventListener("click", () => {
+    //     sidebar.classList.remove("close");
+    // });
+
+    // modeSwitch.addEventListener("click", () => {
+    //     body.classList.toggle("close");
+
+    //     if (body?.classList.contains("dark")) {
+    //         modeText.innerText = "Light Mode";
+    //     } else {
+    //         modeText.innerText = "Dark Mode";
+    //     }
+    // });
+
+    const [isSidebarOpen, setSidebarOpen] = useState(true);
+    const [isDarkMode, setDarkMode] = useState(false);
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!isSidebarOpen);
+    };
+
+    const openSidebar = () => {
+        setSidebarOpen(false);
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!isDarkMode);
+    };
+
     return (
         <>
-            <ul className="sidebar">
+            {/* <ul className="sidebar">
                 <li className="sidebar-item">
                     <Link to={"/"}>Chess Realm</Link>
                 </li>
@@ -82,7 +123,162 @@ const Sidebar = (props: Props) => {
                         </li>
                     </>
                 )}
-            </ul>
+            </ul> */}
+            {/* <nav className="sidebar">
+                <header>
+                    <div className="sidebar-image-text">
+                        <span className="sidebar-image">
+                            <img src="logo.png" alt="logo" />
+                        </span>
+
+                        <div className="text header-text">
+                            <span className="name">CodingLab</span>
+                            <span className="profession">Web developer</span>
+                        </div>
+                    </div>
+
+                    <i className="bx bx-chevron-right toggle"></i>
+                </header>
+                <div className="menu-bar">
+                    <div className="menu">
+                        <li className="search-box">
+                            <i className="bx bx-search icon"></i>
+                            <input type="search" placeholder="Search..." />
+                        </li>
+                        <ul className="menu-links">
+                            <li className="nav-link">
+                                <a href="#">
+                                    <i className="bx bx-home-alt icon"></i>
+                                    <span className="text nav-text">Dashboard</span>
+                                </a>
+                            </li>
+                            <li className="nav-link">
+                                <a href="#">
+                                    <i className="bx bx-home-alt icon"></i>
+                                    <span className="text nav-text">Dashboard</span>
+                                </a>
+                            </li>
+                            <li className="nav-link">
+                                <a href="#">
+                                    <i className="bx bx-home-alt icon"></i>
+                                    <span className="text nav-text">Dashboard</span>
+                                </a>
+                            </li>
+                            <li className="nav-link">
+                                <a href="#">
+                                    <i className="bx bx-home-alt icon"></i>
+                                    <span className="text nav-text">Dashboard</span>
+                                </a>
+                            </li>
+                            <li className="nav-link">
+                                <a href="#">
+                                    <i className="bx bx-home-alt icon"></i>
+                                    <span className="text nav-text">Dashboard</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="bottom-content">
+                        <li className="">
+                            <a href="#">
+                                <i className="bx bx-log-out icon"></i>
+                                <span className="text nav-text">Logout</span>
+                            </a>
+                        </li>
+
+                        <li className="mode">
+                            <div className="moon-sun">
+                                <i className="bx bx-moon icon"></i>
+                                <i className="bx bx-sun icon"></i>
+                            </div>
+                            <span className="mode-text text">Dark Mode</span>
+
+                            <div className="toggle-switch">
+                                <span className="switch"></span>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+            </nav>
+            <script></script> */}
+            <nav className={`sidebar${isSidebarOpen ? '' : 'close'}${isDarkMode ? 'dark' : ''}`}>
+                <header>
+                    <div className="image-text">
+                        <span className="image">
+                            <img src="src/assets/images/chess-realm-logo.png" alt="logo" />
+                        </span>
+
+                        <div className="text header-text">
+                            <span className="name">CodingLab</span>
+                            <span className="profession">Web developer</span>
+                        </div>
+                    </div>
+
+                    <i className="bx bx-chevron-right toggle" onClick={toggleSidebar}></i>
+                </header>
+                <div className="menu-bar">
+                    <div className="menu">
+                        <li className="search-box">
+                            <i className="bx bx-search icon"></i>
+                            <input type="search" placeholder="Search..." />
+                        </li>
+                        <ul className="menu-links">
+                            <li className="nav-link">
+                                <a href="#">
+                                    <i className="bx bx-home-alt icon"></i>
+                                    <span className="text nav-text">Dashboard</span>
+                                </a>
+                            </li>
+                            <li className="nav-link">
+                                <a href="#">
+                                    <i className="bx bx-home-alt icon"></i>
+                                    <span className="text nav-text">Dashboard</span>
+                                </a>
+                            </li>
+                            <li className="nav-link">
+                                <a href="#">
+                                    <i className="bx bx-home-alt icon"></i>
+                                    <span className="text nav-text">Dashboard</span>
+                                </a>
+                            </li>
+                            <li className="nav-link">
+                                <a href="#">
+                                    <i className="bx bx-home-alt icon"></i>
+                                    <span className="text nav-text">Dashboard</span>
+                                </a>
+                            </li>
+                            <li className="nav-link">
+                                <a href="#">
+                                    <i className="bx bx-home-alt icon"></i>
+                                    <span className="text nav-text">Dashboard</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="bottom-content">
+                        <li className="">
+                            <a href="#">
+                                <i className="bx bx-log-out icon"></i>
+                                <span className="text nav-text">Logout</span>
+                            </a>
+                        </li>
+
+                        <li className="mode">
+                            <div className="moon-sun">
+                                <i className="bx bx-moon icon"></i>
+                                <i className="bx bx-sun icon"></i>
+                            </div>
+                            <span className="mode-text text">{isDarkMode ? 'Dark Mode' : 'Light Mode'}</span>
+
+                            <div className="toggle-switch" onClick={toggleDarkMode}>
+                                <span className={`switch ${isDarkMode ? 'on' : 'off'}`}></span>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+            </nav>
         </>
     );
 };
