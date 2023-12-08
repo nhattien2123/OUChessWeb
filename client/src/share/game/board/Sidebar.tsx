@@ -1,18 +1,18 @@
-import type { FC } from "react"
-import React from "react"
+import type { FC } from "react";
+import React from "react";
 
-import type { Board } from "src/share/game/logic/Board"
-import type { Color, Move, Piece } from "src/share/game/logic/pieces"
-import { useHistoryState } from "src/components/game/Game"
-import { AiFillCloseCircle } from "react-icons/ai"
-import { BsReverseLayoutSidebarInsetReverse } from "react-icons/bs"
+import type { Board } from "src/share/game/logic/Board";
+import type { Color, Move, Piece } from "src/share/game/logic/pieces";
+import { useHistoryState } from "src/components/game/Game";
+import { AiFillCloseCircle } from "react-icons/ai";
+import { BsReverseLayoutSidebarInsetReverse } from "react-icons/bs";
 
-import { HistoryPanel } from "src/share/game/board/History"
-import { MiniMap } from "src/share/game/board/MiniMap"
-import { socket } from "src/index"
-import { RootState } from "src/app/store"
-import { useAppSelector } from "src/app/hooks"
-import { useNavigate } from "react-router-dom"
+import { HistoryPanel } from "src/share/game/board/History";
+import { MiniMap } from "src/share/game/board/MiniMap";
+import { socket } from "src/index";
+import { RootState } from "src/app/store";
+import { useAppSelector } from "src/app/hooks";
+import { useNavigate } from "react-router-dom";
 
 export type LeaveRoom = {
     roomId?: string | null,
