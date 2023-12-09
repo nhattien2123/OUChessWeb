@@ -19,6 +19,7 @@
     "@types/node": "^16.18.39",
     "@types/react": "^18.2.17",
     "@types/react-dom": "^18.2.7",
+    "boxicons": "^2.1.4",
     "emoji-mart": "^5.5.2",
     "firebase": "^10.4.0",
     "framer-motion-3d": "^8.5.5",
