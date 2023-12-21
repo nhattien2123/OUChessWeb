@@ -1,8 +1,8 @@
-import type { FC } from "react"
+import type { FC } from "react";
 
-import { useSpring, animated } from "@react-spring/three"
+import { useSpring, animated } from "@react-spring/three";
 
-import type { Position } from "src/share/game/logic/Board"
+import type { Position } from "src/interfaces/gameplay/chess";
 
 // import * as THREE from "three"
 

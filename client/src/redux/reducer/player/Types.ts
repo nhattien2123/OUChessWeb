@@ -1,4 +1,4 @@
-import { Color } from "src/share/game/logic/pieces";
+import type { Color } from "src/interfaces/gameplay/chess";
 import { PayloadAction } from "@reduxjs/toolkit";
 
 export type PlayerState = {

@@ -1,7 +1,6 @@
 import type { FC } from "react"
 
-import type { Board } from "src/share/game/logic/Board"
-import type { Move, Piece } from "src/share/game/logic/pieces"
+import type { Board, Move, Piece } from "src/interfaces/gameplay/chess";
 import { checkIfSelectedPieceCanMoveHere } from "src/share/game/logic/pieces"
 import {
     FaChessPawn,

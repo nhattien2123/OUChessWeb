@@ -1,4 +1,4 @@
-import type { MoveFunction, Piece, PieceFactory } from "src/share/game/logic/pieces"
+import type { MoveFunction, Piece, PieceFactory, Rook } from "src/interfaces/gameplay/chess"
 import { getFarMoves, getBasePiece } from "src/share/game/logic/pieces"
 
 export const isRook = (value: Piece | Rook | null): value is Rook => {
@@ -24,5 +24,3 @@ export const createRook = ({ color, id, position }: PieceFactory): Rook => {
         ...getBasePiece({ color, id, type: `rook`, position }),
     }
 }
-
-export type Rook = Piece & { hasMoved: boolean }

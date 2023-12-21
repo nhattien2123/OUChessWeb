@@ -1,4 +1,6 @@
-// Board.ts
+import { moveTypes } from "src/share/game/logic/pieces/index"
+
+// Board Type
 export type Position = { x: number; y: number }
 
 export type Board = Tile[][]
@@ -8,7 +10,7 @@ export type Tile = {
     piece: Pawn | Piece | Rook | null
 }
 
-// index.ts
+// Gameplay Type
 export type Piece = {
     type: PieceType
     color: Color
@@ -41,16 +43,6 @@ export type Move = {
     }
 }
 
-export const moveTypes = {
-    invalid: `invalid` as const,
-    valid: `valid` as const,
-    capture: `capture` as const,
-    captureKing: `captureKing` as const,
-    captureEnPassant: `captureEnPassant` as const,
-    castling: `castling` as const,
-    willBeInCheck: `willBeInCheck` as const,
-}
-
 export type MoveTypes = typeof moveTypes[keyof typeof moveTypes]; // keyof typeof moveTypes sẽ trả về invalid | valid | castling | ...
 
 export type MoveFunction<T extends Piece = Piece> = (props: {
@@ -61,16 +53,16 @@ export type MoveFunction<T extends Piece = Piece> = (props: {
 
 export type EndGameType = `checkmate` | `stalemate` | `threeford repetition` | `insufficient material`;
 
-// King.ts
+// King Type
 export type King = Piece & {
     hasMoved: boolean
 }
 
-// Rook.ts
+// Rook Type
 export type Rook = Piece & { hasMoved: boolean }
 
 
-// Pawn.ts
+// Pawn Type
 export type Pawn = Piece & {
     hasMoved: boolean
 }

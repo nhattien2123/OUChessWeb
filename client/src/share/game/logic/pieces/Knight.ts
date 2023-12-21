@@ -1,5 +1,4 @@
-import type { Position } from "src/share/game/logic/Board"
-import type { MoveFunction, Piece, PieceFactory } from "src/share/game/logic/pieces"
+import type { Position, MoveFunction, Piece, PieceFactory } from "src/interfaces/gameplay/chess";
 import { getMove, getBasePiece } from "src/share/game/logic/pieces"
 
 export function isKnight(value: Knight | Piece | null): value is Knight {

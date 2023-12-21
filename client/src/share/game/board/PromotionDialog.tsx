@@ -1,7 +1,8 @@
 import React, { FC } from "react";
-import { Color, Move, Piece, PieceType, getTile, oppositeColor, shouldPromotePawn } from "../logic/pieces";
-import { Board, Tile, copyBoard } from "../logic/Board";
-import { isPawn } from "../logic/pieces/Pawn";
+import { getTile, oppositeColor, shouldPromotePawn } from "src/share/game/logic/pieces";
+import { copyBoard } from "src/share/game/logic/Board";
+import { Color, Move, Piece, PieceType, Board, Tile } from "src/interfaces/gameplay/chess";
+import { isPawn } from "src/share/game/logic/pieces/Pawn";
 import { MovingTo } from "src/components/game/Game";
 import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";

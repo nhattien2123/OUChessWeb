@@ -1,4 +1,4 @@
-import type { Board, Position, Tile } from "src/share/game/logic/Board";
+import type { Board, Position, Tile, Piece, Color, King, Pawn, PieceArgs, PieceFactory, Move, EndGameType } from "src/interfaces/gameplay/chess";
 import { copyBoard } from "src/share/game/logic/Board"
 
 import { createKing, isKing, kingMoves } from "src/share/game/logic/pieces/King";
@@ -7,21 +7,17 @@ import { createKnight, isKnight, knightMoves } from "src/share/game/logic/pieces
 import { createBishop, isBishop, bishopMoves } from "src/share/game/logic/pieces/Bishop";
 import { createRook, isRook, rookMoves } from "src/share/game/logic/pieces/Rook";
 import { createPawn, isPawn, pawnMoves } from "src/share/game/logic/pieces/Pawn";
-
-import type { Pawn } from "src/share/game/logic/pieces/Pawn"
-import type { King } from "src/share/game/logic/pieces/King"
 import { BokehShaderUniforms } from "three-stdlib";
 
-export type Piece = {
-    type: PieceType
-    color: Color
-    id: number
-    getId: () => string
-    position: Position
+export const moveTypes = {
+    invalid: `invalid` as const,
+    valid: `valid` as const,
+    capture: `capture` as const,
+    captureKing: `captureKing` as const,
+    captureEnPassant: `captureEnPassant` as const,
+    castling: `castling` as const,
+    willBeInCheck: `willBeInCheck` as const,
 }
-
-export type Color = `black` | `white`
-export type PieceType = `bishop` | `king` | `knight` | `pawn` | `queen` | `rook`
 
 export const oppositeColor = (color: Color): Color => {
     return color === `black` ? `white` : `black`
@@ -60,13 +56,6 @@ export const movesForPiece = ({
 }
 
 // PieceArgs là loại quân cờ gì?
-export type PieceArgs = {
-    color: Color
-    id: number
-    type: PieceType
-}
-
-export type PieceFactory = PieceArgs & { position: Position }
 
 export const createId = (piece?: PieceArgs | null): string => {
     if (!piece) return `empty`
@@ -105,37 +94,6 @@ export const createPiece = (
     }
 }
 
-export const moveTypes = {
-    invalid: `invalid` as const,
-    valid: `valid` as const,
-    capture: `capture` as const,
-    captureKing: `captureKing` as const,
-    captureEnPassant: `captureEnPassant` as const,
-    castling: `castling` as const,
-    willBeInCheck: `willBeInCheck` as const,
-}
-
-export type Move = {
-    steps: Position
-    type: MoveTypes
-    piece: Piece
-    capture: Piece | null
-    newPosition: Position
-    castling?: {
-        rook: Piece
-        rookNewPosition: Position
-        rookSteps: Position
-    }
-}
-
-export type MoveTypes = typeof moveTypes[keyof typeof moveTypes]; // keyof typeof moveTypes sẽ trả về invalid | valid | castling | ...
-
-export type MoveFunction<T extends Piece = Piece> = (props: {
-    piece: T
-    board: Board
-    propagateDetectCheck: boolean
-}) => Move[]
-
 export const willBeInCheck = (
     piece: Piece,
     board: Board,
@@ -166,8 +124,6 @@ export const willBeInCheck = (
     }
     return false
 }
-
-export type EndGameType = `checkmate` | `stalemate` | `threeford repetition` | `insufficient material`;
 
 export const detectStalemate = (
     board: Board,
