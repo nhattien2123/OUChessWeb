@@ -1,4 +1,4 @@
-import type { MoveFunction, Piece, PieceFactory } from "src/share/game/logic/pieces";
+import type { MoveFunction, Piece, PieceFactory } from "src/interfaces/gameplay/chess";
 import { getFarMoves, getBasePiece } from "src/share/game/logic/pieces";
 
 export const isBishop = (value: Bishop | Piece | null): value is Bishop => {
@@ -11,7 +11,7 @@ export const bishopMoves: MoveFunction = ({
     propagateDetectCheck,
 }) => {
     const props = { piece, board, propagateDetectCheck }
-    const moveRightUp = getFarMoves({ direction: { x: 1, y: -1 }, ...props }) 
+    const moveRightUp = getFarMoves({ direction: { x: 1, y: -1 }, ...props })
     const moveRightDown = getFarMoves({ direction: { x: 1, y: 1 }, ...props })
     const moveLeftUp = getFarMoves({ direction: { x: -1, y: -1 }, ...props })
     const moveLeftDown = getFarMoves({ direction: { x: -1, y: 1 }, ...props })

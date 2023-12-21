@@ -1,4 +1,4 @@
-import type { MoveFunction, Piece, PieceFactory } from "src/share/game/logic/pieces"
+import type { MoveFunction, Piece, PieceFactory } from "src/interfaces/gameplay/chess";
 import { getFarMoves, getBasePiece } from "src/share/game/logic/pieces"
 
 export function isQueen(value: Piece | Queen | null): value is Queen {

@@ -1,8 +1,7 @@
 import type { FC } from "react";
 import React from "react";
 
-import type { Board } from "src/share/game/logic/Board";
-import type { Color, Move, Piece } from "src/share/game/logic/pieces";
+import type { Board, Color, Move, Piece } from "src/interfaces/gameplay/chess";
 import { useHistoryState } from "src/components/game/Game";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { BsReverseLayoutSidebarInsetReverse } from "react-icons/bs";

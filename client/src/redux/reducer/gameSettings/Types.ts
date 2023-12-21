@@ -1,4 +1,4 @@
-import { Color, PieceType } from "src/share/game/logic/pieces";
+import type { Color, PieceType } from "src/interfaces/gameplay/chess";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { MovingTo } from "src/components/game/Game";
 

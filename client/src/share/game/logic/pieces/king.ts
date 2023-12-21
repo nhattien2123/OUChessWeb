@@ -1,7 +1,5 @@
-import type { Board, Position } from "src/share/game/logic/Board"
-import type { Move, MoveFunction, Piece, PieceFactory } from "src/share/game/logic/pieces"
+import type { Board, Position, Move, MoveFunction, Piece, PieceFactory, Rook } from "src/interfaces/gameplay/chess"
 import { moveTypes, getFarMoves, getPiece, getMove, getBasePiece } from "src/share/game/logic/pieces"
-import type { Rook } from "src/share/game/logic/pieces/Rook"
 import { isRook } from "src/share/game/logic/pieces/Rook"
 
 export const isKing = (value: King | Piece | null): value is King => {

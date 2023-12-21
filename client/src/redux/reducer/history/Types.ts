@@ -1,5 +1,4 @@
-import { Board, Position } from "src/share/game/logic/Board"
-import { MoveTypes, Piece } from "src/share/game/logic/pieces"
+import type { Board, Position, MoveTypes, Piece } from "src/interfaces/gameplay/chess"
 import { PayloadAction } from "@reduxjs/toolkit";
 
 export type History = {

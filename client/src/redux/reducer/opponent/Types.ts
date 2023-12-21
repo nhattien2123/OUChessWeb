@@ -1,5 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { Color } from "src/share/game/logic/pieces";
+import type { Color } from "src/interfaces/gameplay/chess";
 
 export type OpponentState = {
     position: [number, number, number];

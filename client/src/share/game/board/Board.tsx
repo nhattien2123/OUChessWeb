@@ -1,9 +1,8 @@
 import type { FC } from "react";
 import React, { useEffect, useState } from "react";
 
-import type { Position, Tile, Board } from "src/share/game/logic/Board";
 import { checkIfPositionsMatch, copyBoard } from "src/share/game/logic/Board";
-import type { Color, Move, Piece } from "src/share/game/logic/pieces";
+import type { Position, Tile, Board, Color, Move, Piece } from "src/interfaces/gameplay/chess";
 import {
     createId,
     getTile,
