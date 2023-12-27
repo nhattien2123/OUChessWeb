@@ -8,7 +8,7 @@ import { playerActions } from "src/redux/reducer/player/PlayerReducer";
 import { messageMatchActions } from "src/redux/reducer/messageMatch/MessageMatchReducer";
 import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
 import { useAppDispatch, useAppSelector } from "src/app/hooks";
-import { Color, PieceType } from "src/share/game/logic/pieces";
+import { Color, PieceType } from "src/interfaces/gameplay/chess";
 import { RootState } from "src/app/store";
 import { LeaveRoom } from "src/share/game/board/Sidebar";
 
