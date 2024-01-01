@@ -1,0 +1,64 @@
+.auth__container {
+    .register__form {
+        width: 50%;
+        position:fixed;
+        left: 25%;
+        top: 10%;
+
+        .register__title {
+            font-size: 50px;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+            margin: 10px 0;
+        }
+
+        .register__container {
+            input {
+                margin-bottom: 10px;
+                background-color: #d4d4d4;
+                color: #414141;
+
+                &:hover {
+                    background-color: #a3d160;
+                    border: 1px solid #adff32;
+                    box-shadow: 0px 4px #5d9948 !important;
+                }
+          
+                &:focus {
+                    background-color: #d4d4d4;
+                    border: none;
+                    box-shadow: 0px 4px #666666 !important;
+                }
+            }
+        }
+    }
+
+    .verify__container {
+        width: 70%;
+        position: absolute;
+        left: 15%;
+        top: 10%;
+    }
+}
+
+.register__button {
+    button{
+        display: block;
+        margin: 15px auto;
+        font-size: 20px;
+        font-weight: bold;
+    }
+}
+
+.login__link {
+    a{
+        color: #646464;
+        display: block;
+        text-align: center;
+
+        &:hover {
+        color: #dddddd;
+        }
+    }
+}

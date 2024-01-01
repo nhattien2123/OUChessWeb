@@ -50,27 +50,31 @@ const Register: React.FC<RegisterProps> = () => {
 
     useEffect(() => {
         const num = params.get("step");
-        if(num !== null){
+        if (num !== null) {
             const step = Number(num);
-            if(!isNaN(step))
-                setNextStep(step);
+            if (!isNaN(step)) setNextStep(step);
         }
-    }, [])
+    }, []);
 
     return (
         <>
-            {nextStep === 1 ? (
-                <RegisterForm registerData={info} onSubmit={verifyFormHandle} />
-            ) : (
-                <Verify
-                    email={info.email}
-                    verifyToken={verifyToken}
-                    information={info}
-                    setNextStep={setNextStep}
-                    verify={verifyEmail}
-                    handler={submitHandler}
-                />
-            )}
+            <div className="auth__container">
+                <div className="form__container register__form">
+                    <RegisterForm registerData={info} onSubmit={verifyFormHandle} />
+                </div>
+                {/* <div className="verify__container">
+                    <Verify
+                        email={""}
+                        verifyToken={""}
+                        information={info}
+                        setNextStep={setNextStep}
+                        verify={(str) => {}}
+                        handler={() => {}}
+                    />
+                </div> */}
+            </div>
+
+            {/* {nextStep === 1 ? ( */}
         </>
     );
 };
