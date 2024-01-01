@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import * as yup from "yup";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -7,14 +7,15 @@ import { ErrorMessage } from "@hookform/error-message";
 import { useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 import "src/components/login/Login.scss";
-
+import "src/Common.scss"
+import { toast } from "react-toastify";
 
 type Props = {
     defaultData: {
         username: string;
         password: string;
     };
-    onSubmit: (data: Props["defaultData"]) => void
+    onSubmit: (data: Props["defaultData"]) => void;
 };
 
 const LoginForm = (props: Props) => {
@@ -35,62 +36,68 @@ const LoginForm = (props: Props) => {
         onSubmit(data);
     };
 
+    useEffect(() => {
+        if(errorMsg !== ""){
+            toast.error(errorMsg);
+        }
+    }, [errorMsg])
+
     return (
         <>
-            <div className="container">
-                <div className="main">
-                    <div className="login-title">ĐĂNG NHẬP</div>
-                    <div className="login-container">
-                        {errorMsg !== "" && <div className="error-block">{errorMsg}</div>}
-                        <form className="login-input" onSubmit={form.handleSubmit(submitHandler)}>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="text"
-                                    placeholder="Tên đăng nhập"
-                                    {...form.register("username")}
-                                ></input>
-                                <ErrorMessage
-                                    name="username"
-                                    errors={form.formState.errors}
-                                    render={({ message }) => <div className="error-msg">{message}</div>}
-                                />
-                            </div>
-
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="password"
-                                    placeholder="Mật khẩu"
-                                    {...form.register("password")}
-                                ></input>
-                                <ErrorMessage
-                                    name="password"
-                                    errors={form.formState.errors}
-                                    render={({ message }) => <div className="error-msg">{message}</div>}
-                                />
-                            </div>
-                            <div className="login-feature">
-                                <div id="remember-me">
-                                    <input type="checkbox" name="rememberMe" />
-                                    <label>Lưu tài khoản</label>
-                                </div>
-                                <div id="forgot-password">
-                                    <Link to={"/forget"}>Quên mật khẩu</Link>
-                                </div>
-                            </div>
-                          
-                                <button type="submit" className="btn-style btn-form btn-form-save">
-                                    Đăng nhập
-                                </button>
-                            
-                        </form>
-                        <div className="register-link">
-                            <Link to={"/register"} className="register-dir">
-                                {" "}
-                                Đăng ký
-                            </Link>
+            <div className="login__container">
+                <div className="login__title">ĐĂNG NHẬP</div>
+                <div className="input__container w-70">
+                    {/* {errorMsg !== "" && <div className="error__block">{errorMsg}</div>} */}
+                    <form className="input__form w-100" onSubmit={form.handleSubmit(submitHandler)}>
+                        <div className="textbox__container">
+                            <input
+                                className="textbox__style"
+                                type="text"
+                                placeholder="Tên đăng nhập"
+                                {...form.register("username")}
+                            ></input>
+                            <ErrorMessage
+                                name="username"
+                                errors={form.formState.errors}
+                                render={({ message }) => <div className="error-msg">{message}</div>}
+                            />
                         </div>
+
+                        <div className="textbox__container">
+                            <input
+                                className="textbox__style"
+                                type="password"
+                                placeholder="Mật khẩu"
+                                {...form.register("password")}
+                            ></input>
+                            <ErrorMessage
+                                name="password"
+                                errors={form.formState.errors}
+                                render={({ message }) => <div className="error-msg">{message}</div>}
+                            />
+                        </div>
+
+                        <div className="login__feature">
+                            <div id="remember__me">
+                                <input type="checkbox" id="rememberMe" name="rememberMe" />
+                                <label htmlFor="rememberMe">Lưu tài khoản</label>
+                            </div>
+                            <div id="forgot__password">
+                                <Link to={"/forget"} className="link__style">Quên mật khẩu</Link>
+                            </div>
+                        </div>
+
+                        <div className="login__button">
+                            <button type="submit" className="btn__style btn__create w-60 p-3" style={{margin: "10px auto"}}>
+                                ĐĂNG NHẬP
+                            </button>
+                        </div>
+                    </form>
+                    <div className="register__link">
+                        <Link to={"/register"} className="link__style">
+                            {" "}
+                            Đăng ký
+                        </Link>
                     </div>
                 </div>
             </div>
