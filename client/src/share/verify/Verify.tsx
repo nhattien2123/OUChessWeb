@@ -42,15 +42,15 @@ const Verify: React.FC<verifyProps> = ({
     const [verifyCode, setVerifyCode] = useState("");
     const [isReset, setReset] = useState<boolean>(true);
     const [timer, setTimer] = useState<number>(60);
-    const [error, setError]= useState<string>("");
+    const [error, setError] = useState<string>("");
     const nav = useNavigate();
 
     useEffect(() => {
-        if(isReset){
+        if (isReset) {
             verify(email);
             setReset(false);
         }
-    }, [isReset])
+    }, [isReset]);
 
     const verifyToHandler = (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -65,24 +65,23 @@ const Verify: React.FC<verifyProps> = ({
                     handler();
                     nav("/login");
                 } else {
-                    setError("Mã xác nhận không trùng khớp")
+                    setError("Mã xác nhận không trùng khớp");
                 }
             } else {
-                setError("Mã xác nhận đã quá hạn")
+                setError("Mã xác nhận đã quá hạn");
             }
         }
     };
 
     return (
         <>
-            <div className="verify-container">
-                <div className="verify-title">Xác nhận tài khoản</div>
-
-                <form className="verify-form" onSubmit={verifyToHandler}>
-                    <div className="verify-input">
-                        <div className="input-container">
+            <div className="verify__container">
+                <div className="verify__title">XÁC NHẬN TÀI KHOẢN</div>
+                <form className="verify__form" onSubmit={verifyToHandler}>
+                    <div className="verify__input">
+                        <div className="textbox__container">
                             <input
-                                className="input-style"
+                                className="textbox__style"
                                 type="text"
                                 placeholder="Mã xác nhận"
                                 onChange={(evt) => setVerifyCode(evt.target.value)}
@@ -90,21 +89,26 @@ const Verify: React.FC<verifyProps> = ({
                             />
                             {error !== "" && <div className="error-msg">{error}</div>}
                         </div>
-                        <Counter timer={timer} setReset={setReset} />
+                        <div className="counter__container">
+                            <Counter timer={timer} setReset={setReset} />
+                        </div>
                     </div>
 
-                    <button type="submit" className="btn-style btn-form btn-form-save">
-                        Xác nhận
-                    </button>
+                    <div className="verify__button">
+                        <button type="submit" className="btn__style btn__confirm">
+                            Xác nhận
+                        </button>
+                    </div>
                 </form>
-                <div
-                    style={{ margin: "10px auto", padding: "10px", textAlign: "center" }}
-                    className="w-10 btn-form"
-                    onClick={(evt) => {
-                        setNextStep((prev) => prev - 1)
-                    }}
-                >
-                    back
+                <div className="back__button">
+                    <button
+                        className="btn__style"
+                        onClick={(evt) => {
+                            setNextStep((prev) => prev - 1);
+                        }}
+                    >
+                        Trở về
+                    </button>
                 </div>
             </div>
         </>
