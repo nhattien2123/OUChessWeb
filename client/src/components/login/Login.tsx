@@ -1,16 +1,20 @@
+import Cookies from "js-cookie";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Canvas } from "@react-three/fiber";
+import LoginForm from "src/share/form/LoginForm";
+import LoginScene from "src/share/scene/LoginScene";
 import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 import { authActions } from "src/redux/reducer/auth/AuthReducer";
 import { userActions } from "src/redux/reducer/user/UserReducer";
-import LoginForm from "src/share/form/LoginForm";
 import { socket } from "src/index";
-import "src/components/login/Login.scss";
-import Cookies from "js-cookie";
 
-const Login = () => {
+import "src/components/login/Login.scss";
+
+
+const Login: React.FC = () => {
     const isLoggIn = useAppSelector((state: RootState) => state.authReducer.isLoggedIn);
     const token = useAppSelector((state: RootState) => state.authReducer.token);
     const dispatch = useAppDispatch();
@@ -42,7 +46,23 @@ const Login = () => {
 
     return (
         <>
-            <LoginForm defaultData={defaultData} onSubmit={loginHandler} />
+            <div className="auth__container">
+                <div className="model__container">
+                    <Canvas>
+                        <LoginScene />
+                        <ambientLight color="#fff" intensity={0.1} />
+                        <mesh rotation-x={-(Math.PI / 180) * 90}>
+                            <planeGeometry args={[2000, 600]} />
+                            <meshLambertMaterial color={"#000"} />
+                        </mesh>
+                        <pointLight position={[200, 100, 500]} color="#fff" intensity={0.3} />
+
+                    </Canvas>
+                </div>
+                <div className="form__container">
+                    <LoginForm defaultData={defaultData} onSubmit={loginHandler} />
+                </div>
+            </div>
         </>
     );
 };
