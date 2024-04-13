@@ -1,18 +1,16 @@
 import Cookies from "js-cookie";
+import LoginForm from "src/share/form/LoginForm";
+import LoginScene from "src/share/scene/LoginScene";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Canvas } from "@react-three/fiber";
-import LoginForm from "src/share/form/LoginForm";
-import LoginScene from "src/share/scene/LoginScene";
 import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 import { authActions } from "src/redux/reducer/auth/AuthReducer";
 import { userActions } from "src/redux/reducer/user/UserReducer";
-import { socket } from "src/index";
 
 import "src/components/login/Login.scss";
-
 
 const Login: React.FC = () => {
     const isLoggIn = useAppSelector((state: RootState) => state.authReducer.isLoggedIn);
@@ -33,11 +31,6 @@ const Login: React.FC = () => {
             Cookies.set("token", token, {
                 path: "/",
             });
-            socket.auth = {
-                token: token,
-            };
-            socket.disconnect();
-            socket.connect();
             dispatch(userActions.reqGetCurrentUser({}));
             toast.success("Đăng nhập thành công");
             nav("/");
@@ -56,7 +49,6 @@ const Login: React.FC = () => {
                             <meshLambertMaterial color={"#000"} />
                         </mesh>
                         <pointLight position={[200, 100, 500]} color="#fff" intensity={0.3} />
-
                     </Canvas>
                 </div>
                 <div className="form__container">
