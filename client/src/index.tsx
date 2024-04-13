@@ -1,21 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import App from "src/App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie";
 import { ROOT_URL } from "src/config/ApiConstants";
 import { io } from "socket.io-client";
 
+import "react-toastify/dist/ReactToastify.css";
+import "./index.css";
+
 export const socket = io(ROOT_URL, {
-    auth: {
-        token: Cookies.get("token")
-    }
-})
+    autoConnect: false,
+});
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
