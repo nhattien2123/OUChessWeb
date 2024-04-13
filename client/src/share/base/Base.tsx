@@ -14,9 +14,7 @@ const Base: React.FC<Props> = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     return (
         <>
-            {currentUser._id && <Header />}
             <Sidebar />
-
             <div className="content-field">{component}</div>
         </>
     );
