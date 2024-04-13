@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import * as Types from "src/redux/reducer/match/Types";
 
 const initialState: Types.matchState = {
+    rooms: [],
     match: [],
     isLoading: false,
     lastestMatchId: null,
@@ -45,6 +46,14 @@ const matchSlice = createSlice({
         },
         resetLastedMatchId: (state) => {
             state.lastestMatchId = null
+        },
+        //new reducer
+        requestGettingRoom: (state) => {
+            state.isLoading = true;
+        },
+        responeGettingRoom: (state, action: Types.GetMatchesResponse) => {
+            state.isLoading = false;
+            state.rooms = action.payload.rooms;
         }
     }
 });
