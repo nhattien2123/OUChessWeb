@@ -1,5 +1,6 @@
-import { all, call, put, takeLatest } from "redux-saga/effects";
 import httpHandler from "src/util/HttpHandler";
+import { all, call, put, takeLatest } from "redux-saga/effects";
+import { socket } from "src";
 import { commonAction } from "src/redux/reducer/common/CommonReducer";
 import { matchActions } from "src/redux/reducer/match/MatchReducer";
 import * as MatchService from "src/services/match/MatchServices";
@@ -45,10 +46,7 @@ function* getMatch(action: TypesAction.ActionReqGetMatch) {
 function* postAddMatch(action: TypesAction.ActionReqPostAddMatch) {
     try {
         const { match } = action.payload as Payload;
-        const response: TypesFetch.ResFetchPostAddMatch = yield call(
-            MatchService.fetchPostAddMatch,
-            match
-        )
+        const response: TypesFetch.ResFetchPostAddMatch = yield call(MatchService.fetchPostAddMatch, match);
         const statusCode = response.code;
         switch (statusCode) {
             case httpHandler.SUCCESS: {
@@ -80,10 +78,7 @@ function* postAddMatch(action: TypesAction.ActionReqPostAddMatch) {
 function* getMatchById(action: TypesAction.ActionReqGetMatchById) {
     try {
         const { matchId } = action.payload as Payload;
-        const response: TypesFetch.ResFetchGetMatchById = yield call(
-            MatchService.fetchGetMatchById,
-            matchId
-        );
+        const response: TypesFetch.ResFetchGetMatchById = yield call(MatchService.fetchGetMatchById, matchId);
         const statusCode = response.code;
         switch (statusCode) {
             case httpHandler.SUCCESS: {
@@ -94,7 +89,7 @@ function* getMatchById(action: TypesAction.ActionReqGetMatchById) {
             case httpHandler.FAIL: {
                 yield all([
                     put(matchActions.resGetMatchById({ matches: [] })),
-                    put(commonAction.displayError({ errorMsg: response.message }))
+                    put(commonAction.displayError({ errorMsg: response.message })),
                 ]);
                 break;
             }
@@ -118,11 +113,7 @@ function* getMatchById(action: TypesAction.ActionReqGetMatchById) {
 function* putMatchById(action: TypesAction.ActionReqGetMatchById) {
     try {
         const { matchId, match } = action.payload as Payload;
-        const response: TypesFetch.ResFetchPutMatchById = yield call(
-            MatchService.fetchPutMatchById,
-            matchId,
-            match
-        );
+        const response: TypesFetch.ResFetchPutMatchById = yield call(MatchService.fetchPutMatchById, matchId, match);
         const statusCode = response.code;
         switch (statusCode) {
             case httpHandler.SUCCESS: {
@@ -151,10 +142,14 @@ function* putMatchById(action: TypesAction.ActionReqGetMatchById) {
     }
 }
 
+function* getRoom() {
+    yield socket.emit("get-rooms");
+}
 
 export function* watchMatchFunction() {
     yield takeLatest(matchActions.reqGetMatch.type, getMatch);
     yield takeLatest(matchActions.reqPostAddMatch.type, postAddMatch);
     yield takeLatest(matchActions.reqGetMatchById.type, getMatchById);
     yield takeLatest(matchActions.reqPutMatchById.type, putMatchById);
+    yield takeLatest(matchActions.requestGettingRoom.type, getRoom);
 }
