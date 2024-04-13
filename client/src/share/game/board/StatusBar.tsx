@@ -1,31 +1,29 @@
-import type { FC } from "react"
+import { useEffect, type FC } from "react";
 import { uppercaseFirstLetter } from "src/util/UpperCaseFirstLetter";
-
 import { useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 
 export const StatusBar: FC = () => {
-    const room = useAppSelector((state: RootState) => state.playerReducer.roomId);
-    const joinedRoom = useAppSelector((state: RootState) => state.playerReducer.joinedRoom);
-    const playerColor = useAppSelector((state: RootState) => state.playerReducer.playerColor);
-    const gameStarted = useAppSelector((state: RootState) => state.gameSettingsReducer.gameStarted);
-    const turn = useAppSelector((state: RootState) => state.gameSettingsReducer.turn);
+    const detail = useAppSelector((state: RootState) => state.roomReducer.detail);
+    const gameState = useAppSelector((state: RootState) => state.roomReducer.gameState);
+
+    useEffect(() => {
+        console.log("Turn: ", gameState.turn);
+    }, [gameState.turn]);
 
     return (
         <div className="status-bar">
-            {joinedRoom && (
+            {detail && (
                 <p>
                     Room{` `}
-                    <span>{room}</span>
+                    <span>{detail.id}</span>
                     {` | `}Player{` `}
-                    <span>{uppercaseFirstLetter(playerColor)}</span>
+                    <span>{uppercaseFirstLetter(gameState.playerColor === 0 ? "white" : "black")}</span>
                     {` | `}Turn{` `}
-                    <span>{uppercaseFirstLetter(turn)}</span>
+                    <span>{uppercaseFirstLetter(gameState.turn === 0 ? "white" : "black")}</span>
                 </p>
             )}
-            {!gameStarted && joinedRoom && (
-                <p>Share your room name to invite another player.</p>
-            )}
+            {!gameState.isStarted && detail && <p>Share your room name to invite another player.</p>}
         </div>
-    )
-}
+    );
+};

@@ -1,25 +1,19 @@
-import { useRef } from "react"
-import type { FC } from "react"
-
-import type { Position } from "src/interfaces/gameplay/chess"
-import { useSpring, animated } from "@react-spring/three"
-import type {
-    AnimationControls,
-    TargetAndTransition,
-    VariantLabels,
-    Transition,
-} from "framer-motion"
-import { motion } from "framer-motion-3d"
+import { useRef, useState } from "react";
+import type { FC } from "react";
+import type { Position } from "src/interfaces/gameplay/chess";
+import { useSpring, animated } from "@react-spring/three";
+import type { AnimationControls, TargetAndTransition, VariantLabels, Transition } from "framer-motion";
+import { motion } from "framer-motion-3d";
 
 export const PieceMaterial: FC<
     JSX.IntrinsicElements[`meshPhysicalMaterial`] & {
-        isSelected: boolean
-        pieceIsBeingReplaced: boolean
+        isSelected: boolean;
+        pieceIsBeingReplaced: boolean;
     }
 > = ({ color, isSelected, pieceIsBeingReplaced, ...props }) => {
     const { opacity } = useSpring({
         opacity: pieceIsBeingReplaced ? 0 : 1,
-    })
+    });
     return (
         // @ts-ignore
         <animated.meshPhysicalMaterial
@@ -34,18 +28,18 @@ export const PieceMaterial: FC<
             transparent={true}
             {...props}
         />
-    )
-}
+    );
+};
 
 export type ModelProps = JSX.IntrinsicElements[`group`] & {
-    color: string
-    isSelected: boolean
-    canMoveHere: Position | null
-    movingTo: Position | null
-    finishMovingPiece: () => void
-    pieceIsBeingReplaced: boolean
-    wasSelected: boolean
-}
+    color: string;
+    isSelected: boolean;
+    canMoveHere: Position | null;
+    movingTo: Position | null;
+    finishMovingPiece: () => void;
+    pieceIsBeingReplaced: boolean;
+    wasSelected: boolean;
+};
 
 export const MeshWrapper: FC<ModelProps> = ({
     movingTo,
@@ -56,9 +50,8 @@ export const MeshWrapper: FC<ModelProps> = ({
     wasSelected,
     ...props
 }) => {
-    const ref = useRef(null)
-    const meshRef = useRef(null)
-
+    const ref = useRef(null);
+    const meshRef = useRef(null);
     return (
         <group ref={ref} {...props} dispose={null} castShadow>
             <motion.mesh
@@ -71,25 +64,14 @@ export const MeshWrapper: FC<ModelProps> = ({
                     movingTo
                         ? variants.move({ movingTo, isSelected })
                         : pieceIsBeingReplaced
-                            ? variants.replace({ movingTo, isSelected })
-                            : isSelected
-                                ? variants.select({ movingTo, isSelected })
-                                : variants.initial({ movingTo, isSelected })
-                }
-                transition={
-                    movingTo
-                        ? transitions.moveTo
-                        : pieceIsBeingReplaced
-                            ? transitions.replace
-                            : isSelected
-                                ? transitions.select
-                                : wasSelected
-                                    ? transitions.wasSelected
-                                    : transitions.initial
+                        ? variants.replace({ movingTo, isSelected })
+                        : isSelected
+                        ? variants.select({ movingTo, isSelected })
+                        : variants.initial({ movingTo, isSelected })
                 }
                 onAnimationComplete={() => {
                     if (movingTo) {
-                        finishMovingPiece()
+                        finishMovingPiece();
                     }
                 }}
             >
@@ -101,24 +83,24 @@ export const MeshWrapper: FC<ModelProps> = ({
                 />
             </motion.mesh>
         </group>
-    )
-}
+    );
+};
 
-export const FRAMER_MULTIPLIER = 2
-export const getDistance = (px?: number): number =>
-    px ? px * FRAMER_MULTIPLIER : 0
+export const FRAMER_MULTIPLIER = 2;
+export const getDistance = (px?: number): number => (px ? px * FRAMER_MULTIPLIER : 0);
 
 export const transitions: {
-    select: Transition
-    moveTo: Transition & { y: Transition }
-    initial: Transition
-    replace: Transition
-    wasSelected: Transition
+    select: Transition;
+    moveTo: Transition & { y: Transition };
+    initial: Transition;
+    replace: Transition;
+    wasSelected: Transition;
 } = {
     moveTo: {
         type: `spring`,
         stiffness: 200,
         damping: 30,
+        duration: 0.5,
         y: { delay: 0.15, stiffness: 120, damping: 5 },
     },
     select: {
@@ -136,24 +118,20 @@ export const transitions: {
         type: `spring`,
         duration: 0.5,
     },
-}
+};
 
-export type VariantReturns =
-    | AnimationControls
-    | TargetAndTransition
-    | VariantLabels
-    | boolean
+export type VariantReturns = AnimationControls | TargetAndTransition | VariantLabels | boolean;
 export type VariantProps = {
-    isSelected: boolean
-    movingTo: Position | null
-}
+    isSelected: boolean;
+    movingTo: Position | null;
+};
 
-type VariantFunction = (props: VariantProps) => VariantReturns
+type VariantFunction = (props: VariantProps) => VariantReturns;
 export const variants: {
-    select: VariantFunction
-    move: VariantFunction
-    replace: VariantFunction
-    initial: VariantFunction
+    select: VariantFunction;
+    move: VariantFunction;
+    replace: VariantFunction;
+    initial: VariantFunction;
 } = {
     initial: () => ({
         x: 0,
@@ -165,7 +143,7 @@ export const variants: {
     }),
     move: ({ movingTo }: VariantProps) => ({
         x: getDistance(movingTo?.x),
-        y: [1.4, 1.6, 0],
+        y: [0, 1.2, 1.4],
         z: getDistance(movingTo?.y),
     }),
     replace: () => ({
@@ -174,6 +152,6 @@ export const variants: {
         z: 10 * randomNegative(),
         rotateX: (Math.PI / 4) * randomNegative(),
     }),
-}
+};
 
-const randomNegative = () => (Math.random() > 0.5 ? -1 : 1)
+const randomNegative = () => (Math.random() > 0.5 ? -1 : 1);
