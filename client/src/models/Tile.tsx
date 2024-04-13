@@ -83,7 +83,7 @@ export const TileMaterial: FC<
 
 export const TileModel: FC<
     JSX.IntrinsicElements[`mesh`] & {
-        canMoveHere: Position | null
+        canMoveHere: Position | null,
         color: string
         // isSelected: boolean
     }

@@ -1,26 +1,18 @@
-import type { FC } from "react"
+import type { FC } from "react";
 
-import type { Board, Move, Piece } from "src/interfaces/gameplay/chess";
-import { checkIfSelectedPieceCanMoveHere } from "src/share/game/logic/pieces"
-import {
-    FaChessPawn,
-    FaChessKnight,
-    FaChessBishop,
-    FaChessRook,
-    FaChessQueen,
-    FaChessKing,
-} from "react-icons/fa"
+import { checkIfSelectedPieceCanMoveHere } from "src/share/game/logic/pieces";
 
-import "src/share/game/board/Board.scss"
+import "src/share/game/board/Board.scss";
+import Board from "src/interfaces/gamecore/board/Board";
 
 export const MiniMap: FC<{
-    board: Board
-    selected: Piece | null
-    moves: Move[]
+    board: Board;
+    selected: number | null;
+    moves: number[];
 }> = ({ board, selected, moves }) => {
     return (
         <div className="mini-map">
-            {board.map((row, i) => (
+            {/* {board.map((row, i) => (
                 <div
                     key={i}
                     className="mini-map-row"
@@ -58,7 +50,7 @@ export const MiniMap: FC<{
                         )
                     })}
                 </div>
-            ))}
+            ))} */}
         </div>
-    )
-}
+    );
+};
