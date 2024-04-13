@@ -1,21 +1,22 @@
-import { useEffect } from 'react';
-import { toast } from 'react-toastify';
-import type { MovingTo } from 'src/components/game/Game';
-import type { Message } from 'src/redux/reducer/messageMatch/Types';
-import { opponentActions } from 'src/redux/reducer/opponent/OpponentReducer';
-import { playerActions } from 'src/redux/reducer/player/PlayerReducer';
-import { messageMatchActions } from 'src/redux/reducer/messageMatch/MessageMatchReducer';
-import { gameSettingActions } from 'src/redux/reducer/gameSettings/GameSettingsReducer';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { Color, PieceType } from 'src/interfaces/gameplay/chess';
-import { RootState } from 'src/app/store';
-import { LeaveRoom } from 'src/share/game/board/Sidebar';
-import Move from 'src/interfaces/bot/board/Move';
-import { roomAction } from 'src/redux/reducer/room/RoomReducer';
-import { matchActions } from 'src/redux/reducer/match/MatchReducer';
+
+import Move from "src/interfaces/gamecore/board/Move";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import type { MovingTo } from "src/components/game/Game";
+import type { Message } from "src/redux/reducer/messageMatch/Types";
+import { opponentActions } from "src/redux/reducer/opponent/OpponentReducer";
+import { playerActions } from "src/redux/reducer/player/PlayerReducer";
+import { messageMatchActions } from "src/redux/reducer/messageMatch/MessageMatchReducer";
+import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { Color, PieceType } from "src/interfaces/gameplay/chess";
+import { RootState } from "src/app/store";
+import { LeaveRoom } from "src/share/game/board/Sidebar";
+import { roomAction } from "src/redux/reducer/room/RoomReducer";
+import { matchActions } from "src/redux/reducer/match/MatchReducer";
+import { socket } from "src";
+import { Moving } from "src/redux/reducer/room/Types";
 import * as UserTypes from "src/redux/reducer/user/Types";
-import { socket } from 'src';
-import { Moving } from 'src/redux/reducer/room/Types';
 
 export type playerJoinedServer = {
     roomId: string;
@@ -42,18 +43,16 @@ export type OpponentUser = {
 export interface Room {
     id: string;
     title: string;
-    player: UserTypes.User[]
+    player: UserTypes.User[];
 }
 
 export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
     const dispatch = useAppDispatch();
-    const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
     const userId = useAppSelector((state: RootState) => state.userReducer.currentUser._id);
     const playerColor = useAppSelector((state: RootState) => state.playerReducer.playerColor);
     const username = useAppSelector((state: RootState) => state.userReducer.currentUser.username);
     const avatar = useAppSelector((state: RootState) => state.userReducer.currentUser.avatar);
     const opponentColor = useAppSelector((state: RootState) => state.opponentReducer.color);
-    const playerColor2 = useAppSelector((state: RootState) => state.roomReducer.gameState.playerColor);
 
     const Socket = socket;
 
@@ -108,14 +107,14 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
         });
 
         socket.on(`leftRoom`, (data: LeaveRoom) => {
-            console.log('Left Room');
+            console.log("Left Room");
             dispatch(playerActions.setJoinedRoom({ joinedRoom: false }));
             reset();
         });
 
         socket.on(`clientExistingPlayer`, (data: OpponentUser) => {
             const split = data.name.split(`#`);
-            console.log(split + ' 2');
+            console.log(split + " 2");
             if (split[1] !== userId) {
                 dispatch(opponentActions.setName({ name: split[0] }));
                 dispatch(opponentActions.setAvatar({ avatar: data.avatar }));
@@ -166,9 +165,11 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
 
         // get lits room - need redux for this.
         socket.on(`rep-get-rooms`, (rooms: Room[]) => {
-            dispatch(matchActions.responeGettingRoom({
-                rooms: rooms
-            }))
+            dispatch(
+                matchActions.responeGettingRoom({
+                    rooms: rooms,
+                }),
+            );
         });
 
         // interface
@@ -178,7 +179,7 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
             color: number;
         }
 
-        socket.on('rep-join-room', (req: rResult) => {
+        socket.on("rep-join-room", (req: rResult) => {
             const { detail, status } = req;
             if (status === 1) {
                 dispatch(
@@ -193,11 +194,13 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
                 );
                 if (detail.player.length === 2) {
                     const opponent = detail.player.filter((player) => player._id !== userId)[0];
-                    dispatch(opponentActions.setDetail({
-                        name: opponent.username,
-                        avatar: opponent.avatar,
-                        color:  detail.player.findIndex((player) => player._id !== userId) === 1 ? "black" : "white",
-                    }))
+                    dispatch(
+                        opponentActions.setDetail({
+                            name: opponent.username,
+                            avatar: opponent.avatar,
+                            color: detail.player.findIndex((player) => player._id !== userId) === 1 ? "black" : "white",
+                        }),
+                    );
                     const message: Message = {
                         author: `System`,
                         message: `${opponent.username} has joined room`,
@@ -210,33 +213,35 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
                     );
                 }
             } else if (status === 2) {
-                toast.info('The room is full');
+                toast.info("The room is full");
             } else if (status === 3) {
-                toast.info('The server has erros. Please try again later');
+                toast.info("The server has erros. Please try again later");
             } else {
-                toast.info('The server has erros. Please try again later');
+                toast.info("The server has erros. Please try again later");
             }
         });
 
-        socket.on('req-leave-room', () => {
+        socket.on("req-leave-room", () => {
             // Player left
             // Clear room state.
             // Clear player state.
             // Clear opponent state.
             // Clear session.
-            toast.info('Player left');
+            toast.info("Player left");
         });
 
         //interface
         interface mResult {
-            moving: Moving,
-            timer: number
+            moving: Moving;
+            timer: number;
         }
-        socket.on('req-send-move', (req: mResult) => {
+        socket.on("req-send-move", (req: mResult) => {
             console.log(req.moving);
-            dispatch(roomAction.responseMoving({
-                moving: req.moving
-            }))
+            dispatch(
+                roomAction.responseMoving({
+                    moving: req.moving,
+                }),
+            );
         });
         //#endregion New Socket
     };
