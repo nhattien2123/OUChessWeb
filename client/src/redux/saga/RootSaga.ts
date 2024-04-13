@@ -8,6 +8,8 @@ import * as userSaga from "src/redux/saga/user/UserSaga";
 import * as profileSaga from "src/redux/saga/profile/ProfileSaga";
 import * as playerListSaga from "src/redux/saga/playerList/PlayerListSaga";
 import * as adminSaga from "src/redux/saga/admin/AdminSaga";
+import * as roomSaga from "src/redux/saga/room/RoomSaga";
+
 
 /**
  * Root saga
@@ -23,5 +25,6 @@ export default function* rootSaga() {
         fork(profileSaga.watchProfle),
         fork(playerListSaga.watchPlayerList),
         fork(adminSaga.watchAdminFunction),
+        fork(roomSaga.watchRoom)
     ]);
 }
