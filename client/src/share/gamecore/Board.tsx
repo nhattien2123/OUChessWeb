@@ -28,13 +28,13 @@ import { isRook } from '../game/logic/pieces/Rook';
 import { MakeMoveClient } from '../game/board/Board';
 import { Exception } from 'sass';
 
-import Board from 'src/interfaces/bot/board/Board';
-import * as BoardHelper from 'src/interfaces/bot/helper/BoardHelper';
-import * as PieceFunc from 'src/share/bot/board/Piece';
-import * as Piece from 'src/interfaces/bot/board/Piece';
+import Board from 'src/interfaces/gamecore/board/Board';
+import * as BoardHelper from 'src/interfaces/gamecore/helper/BoardHelper';
+import * as PieceFunc from 'src/share/gamecore/board/Piece';
+import * as Piece from 'src/interfaces/gamecore/board/Piece';
 
-import Move from 'src/interfaces/bot/board/Move';
-import MoveGenerator from 'src/interfaces/bot/move/MoveGenerator';
+import Move from 'src/interfaces/gamecore/board/Move';
+import MoveGenerator from 'src/interfaces/gamecore/move/MoveGenerator';
 import { connectStorageEmulator } from 'firebase/storage';
 
 interface Props {
@@ -493,8 +493,8 @@ export const BoardDefault: FC<Props> = ({ board, setBoard }) => {
     //             const startTime = performance.now();
     //             Minimax(board, 4, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, true, 'black').then((bestMove) => {
     //                 console.log('Best: ', bestMove);
-    //                 const botMove = (bestMove as MinimaxMove).bestMove as MovingTo;
-    //                 setMovingTo(botMove);
+    //                 const gamecoreMove = (bestMove as MinimaxMove).bestMove as MovingTo;
+    //                 setMovingTo(gamecoreMove);
     //                 const endTime = performance.now();
     //                 console.log('Time: ', (endTime - startTime) / 1000);
     //                 console.log('Count: ', count);

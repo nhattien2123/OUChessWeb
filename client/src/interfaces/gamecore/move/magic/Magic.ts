@@ -1,5 +1,5 @@
-import * as PrecomputedMagics from 'src/interfaces/bot/move/magic/PrecomputedMagics';
-import * as MagicHelper from 'src/interfaces/bot/move/magic/MagicHelper';
+import * as PrecomputedMagics from 'src/interfaces/gamecore/move/magic/PrecomputedMagics';
+import * as MagicHelper from 'src/interfaces/gamecore/move/magic/MagicHelper';
 class Magic {
     static initialized = false;
 

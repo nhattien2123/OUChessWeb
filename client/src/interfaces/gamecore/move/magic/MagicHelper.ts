@@ -1,5 +1,5 @@
-import Crood from "../../board/Coord";
-import * as BoardHelper from "src/interfaces/bot/helper/BoardHelper"
+import * as BoardHelper from "../../helper/BoardHelper";
+import Coord from "../../board/Coord";
 import {SetSquare, ContainsSquare} from "../bitboard/BitBoardUtility";
 
 export const CreateAllBlockerBitboards = (movementMask: bigint): bigint[] => {
@@ -24,15 +24,15 @@ export const CreateAllBlockerBitboards = (movementMask: bigint): bigint[] => {
 export const CreateMovementMask = (squareIndex: number, ortho: boolean): bigint => {
     let mask = BigInt(0);
     const directions = ortho ? BoardHelper.RookDirection : BoardHelper.BishopDirection;
-    const startCrood = new Crood(squareIndex); 
+    const startCoord = new Coord(squareIndex); 
     
     for(const dir in directions){
         const cr = directions[dir];
         for(let dst = 1; dst < 8; dst++){
-            const crood = Crood.Add(startCrood, Crood.multiply(cr, dst));
-            const nextCrood = Crood.Add(startCrood, Crood.multiply(cr, dst + 1));
-            if(nextCrood.IsValidSquare()){
-                mask = SetSquare(mask, crood.SquareIndex());
+            const coord = Coord.Add(startCoord, Coord.multiply(cr, dst));
+            const nextCoord = Coord.Add(startCoord, Coord.multiply(cr, dst + 1));
+            if(nextCoord.IsValidSquare()){
+                mask = SetSquare(mask, coord.SquareIndex());
             }else{
                 break;
             }
@@ -45,12 +45,12 @@ export const LegalMoveBitboardFromBlockers = (startSquare: number, blockerBitBoa
     let bitBoard = BigInt(0);
 
     const directions = ortho ? BoardHelper.RookDirection : BoardHelper.BishopDirection;
-    const startCrood = new Crood(startSquare);
+    const startCoord = new Coord(startSquare);
 
     for(const i in directions){
         const dir = directions[i];
         for(let dst = 0; dst < 8; dst++){
-            const coord = Crood.Add(startCrood, Crood.multiply(dir, dst));
+            const coord = Coord.Add(startCoord, Coord.multiply(dir, dst));
             if(coord.IsValidSquare()){
                 bitBoard = SetSquare(bitBoard, coord.SquareIndex());
                 if(ContainsSquare(blockerBitBoards, coord.SquareIndex())){
