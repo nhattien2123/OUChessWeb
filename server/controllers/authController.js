@@ -22,6 +22,7 @@ const authController = {
     signIn: async (req, res) => {
         try {
             const curUser = await userService.getUser(req.body.username);
+            console.log(req.body.username);
             if (!curUser) {
                 httpHandler.Fail(res, {}, "Tài khoản không đúng");
                 return;
