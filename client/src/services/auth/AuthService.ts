@@ -3,6 +3,7 @@ import * as Types from "src/services/auth/Types";
 
 export const fetchLogin = async (username: string, password: string): Promise<Types.ResFetchGetDataLogin> => {
     const url = ROOT_URL + COMMON.API_LOGIN.URL;
+    console.log(url);
     try {
         const res = await fetch(url, {
             method: COMMON.API_LOGIN.METHOD,
@@ -14,7 +15,7 @@ export const fetchLogin = async (username: string, password: string): Promise<Ty
         return await res.json();
     } catch (error) {
         console.log("error");
-        return {code: 400, data: {token: "", refreshToken: "", errorMsg: ""}, message: "Lỗi"};
+        return { code: 400, data: { token: "", refreshToken: "", errorMsg: "" }, message: "Lỗi" };
     }
 };
 
