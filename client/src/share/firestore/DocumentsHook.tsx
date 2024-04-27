@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { collection, query, where, doc, getDoc, orderBy, onSnapshot, limit, limitToLast } from "firebase/firestore";
+import { collection, query, where,  orderBy, onSnapshot,limitToLast } from "firebase/firestore";
 import { db } from "src/config/FirebaseConfig";
 
 type Props = {
@@ -40,7 +40,7 @@ const useDocuments = (props: Props) => {
 
             return unsubcribe;
         }
-    }, [_collection, _condition, _limit]);
+    }, [_collection, _condition, _limit, _orderBy.asc, _orderBy.by]);
 
     return documents;
 };

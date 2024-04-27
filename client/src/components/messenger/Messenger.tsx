@@ -17,7 +17,7 @@ const Messenger = (props: Props) => {
     const selectedUser = useAppSelector((state: RootState) => state.messageReducer.selectedUser);
     const [message, setMessage] = useState("");
     const [showEmoji, setShowEmoji] = useState(false);
-    const [limit, setLimit] = useState<number>(100);
+    const limit = 100;
     const ref = useRef(null);
 
     const _condition = useMemo(() => {

@@ -73,7 +73,7 @@ export const BoardComponent: FC<{
     const playerColor = useAppSelector((state: RootState) => state.playerReducer.playerColor);
     const detail = useAppSelector((state: RootState) => state.roomReducer.detail);
     const turn = useAppSelector((state: RootState) => state.roomReducer.gameState.turn);
-    const isStarted = useAppSelector((state: RootState) => state.roomReducer.gameState.isStarted);
+    // const isStarted = useAppSelector((state: RootState) => state.roomReducer.gameState.isStarted);
     const whiteCounter = useAppSelector((state: RootState) => state.roomReducer.gameState.whiteTimer);
     const blackCounter = useAppSelector((state: RootState) => state.roomReducer.gameState.blackTimer);
     const moving = useAppSelector((state: RootState) => state.roomReducer.gameAction.move);
@@ -326,7 +326,7 @@ export const BoardComponent: FC<{
             } satisfies CameraMove);
         }, 500);
         return () => clearInterval(interval);
-    }, [camera.position, socket, detail, playerColor]);
+    }, [camera.position, detail, playerColor]);
 
     // useEffect(() => {
     //     dispatch(gameSettingActions.setIsPromotePawn({ isPromotePawn: false }));
@@ -361,7 +361,7 @@ export const BoardComponent: FC<{
         if (detail === null) {
             window.history.back();
         }
-    }, []);
+    }, [detail]);
 
     useEffect(() => {}, []);
 
@@ -402,7 +402,7 @@ export const BoardComponent: FC<{
                         };
                     }
 
-                    const pieceIsBeingReplaced = false;
+                    // const pieceIsBeingReplaced = false;
                     // movingTo?.move.piece && tile.piece && movingTo?.move.capture
                     //     ? tileId === createId(movingTo?.move.capture)
                     //     : false;

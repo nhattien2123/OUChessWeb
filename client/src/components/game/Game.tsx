@@ -13,14 +13,11 @@ import { Loader } from "src/share/game/board/Loader";
 import { BoardModel } from "src/models/Board";
 import { Opponent } from "src/share/game/board/Opponent";
 import { StatusBar } from "src/share/game/board/StatusBar";
-import { useAppDispatch, useAppSelector } from "src/app/hooks";
-import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
+import { useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 import { Chat } from "src/share/game/board/Chat";
 import { StatusUser } from "src/share/game/board/StatusUser";
 import { Vector3 } from "three";
-import { matchActions } from "src/redux/reducer/match/MatchReducer";
-import { useNavigate } from "react-router-dom";
 import { Color, EndGameType, Move, Tile } from "src/interfaces/gameplay/chess";
 
 import "src/components/game/Game.scss";
@@ -67,12 +64,6 @@ export const Game: FC = () => {
     const [moves, setMoves] = useState<number[]>([]);
     const [endGame, setEndGame] = useState<EndGame | null>(null);
     const [lastSelected, setLastSelected] = useState<number | null>(null);
-    const dispatch = useAppDispatch();
-    const nav = useNavigate();
-
-    const resetTurn = () => {
-        dispatch(gameSettingActions.resetTurn());
-    };
 
     const detail = useAppSelector((state: RootState) => state.roomReducer.detail);
     const [board, setBoard] = useState<Board>(initializeStartPos());
@@ -93,10 +84,6 @@ export const Game: FC = () => {
             setCameraDefault(new Vector3(0, 10, 6));
         }
     }, [playerColor]);
-
-    useEffect(() => {
-        dispatch(matchActions.resetLastedMatchId());
-    }, []);
 
     return (
         <div className="container-chess">

@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { RootState } from "src/app/store";
 import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { RoomListComponent } from "src/share/roomList/RoomList";
-import { useNavigate } from "react-router-dom";
 import { matchActions } from "src/redux/reducer/match/MatchReducer";
 import { Match } from "src/redux/reducer/match/Types";
 
@@ -21,12 +20,11 @@ const Matches = (props: Props) => {
         mode: "",
     });
     const dispatch = useAppDispatch();
-    const nav = useNavigate();
 
     useEffect(() => {
         dispatch(matchActions.reqGetMatch({}));
         dispatch(matchActions.requestGettingRoom());
-    }, []);
+    }, [dispatch]);
 
     return (
         <>

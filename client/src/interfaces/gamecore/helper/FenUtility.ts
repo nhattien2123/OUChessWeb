@@ -224,7 +224,6 @@ export const FlipFen = (fen: string): string => {
     let flippedFen = "";
     const sections: string[] = fen.split(" ");
 
-    const invertedFenChars = [] as string[];
     const fenRanks = sections[0].split("/");
 
     const InvertCase = (c: string): string => {

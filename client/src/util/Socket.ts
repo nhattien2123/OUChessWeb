@@ -1,5 +1,3 @@
-
-import Move from "src/interfaces/gamecore/board/Move";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import type { MovingTo } from "src/components/game/Game";
@@ -65,7 +63,7 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
                 Socket.disconnect();
             }
         };
-    }, [socket]);
+    }, [Socket]);
 
     const socketInitializer = async () => {
         socket.on(`newIncomingMessage`, (msg: Message) => {

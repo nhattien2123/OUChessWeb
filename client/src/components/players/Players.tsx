@@ -21,7 +21,7 @@ const Players = (props: Props) => {
         const kw = p.get("kw");
         if (kw)
             dispatch(playerListActions.reqGetListUser({ kw }));
-    }, [p]);
+    }, [p, dispatch]);
 
     useEffect(() => {
         console.log({ players });

@@ -1,6 +1,6 @@
 import { createPiece } from "src/share/game/logic/pieces";
 
-import type { Board, Position, Tile, Piece, PieceArgs, Pawn, Rook } from "src/interfaces/gameplay/chess";
+import type { Board, Position, Tile, PieceArgs } from "src/interfaces/gameplay/chess";
 
 export const createTile = (position: Position, piece?: PieceArgs): Tile => {
     return {

@@ -35,7 +35,7 @@ const Login: React.FC = () => {
             toast.success("Đăng nhập thành công");
             nav("/");
         }
-    }, [isLoggIn, token]);
+    }, [isLoggIn, token, dispatch, nav]);
 
     return (
         <>

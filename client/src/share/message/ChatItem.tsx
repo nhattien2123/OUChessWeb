@@ -13,7 +13,7 @@ type Props = {
     kw: string;
 };
 
-const ChatItem: React.FC<Props> = ({ chat: chat, kw: kw }) => {
+const ChatItem: React.FC<Props> = ({ chat, kw }) => {
     const [user, setUser] = useState<{ [key: string]: any }>({});
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const selectedChat = useAppSelector((state: RootState) => state.messageReducer.selectedChat);
@@ -38,7 +38,7 @@ const ChatItem: React.FC<Props> = ({ chat: chat, kw: kw }) => {
                 }),
             );
         }
-    }, [chatInfo]);
+    }, [chatInfo, currentUser._id]);
 
     useEffect(() => {
         if (chat.key === chatId) {
@@ -49,7 +49,7 @@ const ChatItem: React.FC<Props> = ({ chat: chat, kw: kw }) => {
                 }),
             );
         }
-    }, [user]);
+    }, [user, chat.key, chatId, dispatch]);
 
     const selectChatHandler = () => {
         dispatch(

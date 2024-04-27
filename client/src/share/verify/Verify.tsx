@@ -31,12 +31,12 @@ interface verifyPayload extends JwtPayload {
 }
 
 const Verify: React.FC<verifyProps> = ({
-    email: email,
-    verifyToken: verifyToken,
-    information: information,
-    setNextStep: setNextStep,
-    verify: verify,
-    handler: handler,
+    email,
+    verifyToken,
+    information,
+    setNextStep,
+    verify,
+    handler,
 }) => {
     const isLoading = useAppSelector((state: RootState) => state.registerReducer.isLoading);
     const [verifyCode, setVerifyCode] = useState("");
@@ -50,7 +50,7 @@ const Verify: React.FC<verifyProps> = ({
             verify(email);
             setReset(false);
         }
-    }, [isReset])
+    }, [isReset, email])
 
     const verifyToHandler = (e: { preventDefault: () => void }) => {
         e.preventDefault();

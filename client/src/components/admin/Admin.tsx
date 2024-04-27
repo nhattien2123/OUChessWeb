@@ -40,7 +40,7 @@ const Admin = (props: Props) => {
     useEffect(() => {
         const kw = p.get("kw") || "";
         if (kw !== null) dispatch(adminActions.reqGetListUser({ kw }));
-    }, [p]);
+    }, [p, dispatch]);
 
     const AddHandler = async (data: userDataForm) => {
         // console.log(data["username"]);
@@ -159,7 +159,7 @@ const Admin = (props: Props) => {
                             <tbody className="table-body">
                                 {!isLoadding &&
                                     userList.length !== 0 &&
-                                    userList.map((u) => {
+                                    userList.map((u) =>  {
                                         if (u?.username !== currentUser.username) {
                                             return (
                                                 <>
@@ -198,6 +198,7 @@ const Admin = (props: Props) => {
                                                 </>
                                             );
                                         }
+                                        return <></>
                                     })}
                             </tbody>
                         </table>

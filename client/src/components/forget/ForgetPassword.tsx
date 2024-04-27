@@ -38,7 +38,7 @@ const ForgetPassword: React.FC<ForgetPasswordProps> = () => {
 
     useEffect(() => {
         nav(`/forget?step=${nextStep}`);
-    }, [nextStep]);
+    }, [nextStep, nav]);
 
     useEffect(() => {
         const num = params.get("step");
@@ -46,7 +46,7 @@ const ForgetPassword: React.FC<ForgetPasswordProps> = () => {
             const step = Number(num);
             if (!isNaN(step)) setNextStep(step);
         }
-    }, []);
+    }, [params]);
 
     return (
         <>

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import type { FC } from "react";
 import type { Position } from "src/interfaces/gameplay/chess";
 import { useSpring, animated } from "@react-spring/three";

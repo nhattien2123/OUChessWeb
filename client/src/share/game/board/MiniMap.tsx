@@ -1,6 +1,6 @@
 import type { FC } from "react";
 
-import { checkIfSelectedPieceCanMoveHere } from "src/share/game/logic/pieces";
+// import { checkIfSelectedPieceCanMoveHere } from "src/share/game/logic/pieces";
 
 import "src/share/game/board/Board.scss";
 import Board from "src/interfaces/gamecore/board/Board";

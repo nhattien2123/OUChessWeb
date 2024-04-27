@@ -19,7 +19,7 @@ function App() {
             };
             socket.connect();
         }
-    }, []);
+    }, [currentUser]);
 
     useSockets({ reset: () => {} });
 

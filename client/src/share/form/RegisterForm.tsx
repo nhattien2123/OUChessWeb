@@ -92,7 +92,7 @@ const RegisterForm = (props: Props) => {
                 onSubmit(form.getValues());
             }
         }
-    }, [errors, isLoading]);
+    }, [errors, isLoading, form, onSubmit, submitCount]);
 
     return (
         <>

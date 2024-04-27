@@ -1,4 +1,4 @@
-import { useEffect, type FC } from "react";
+import { type FC } from "react";
 
 import { animated, useSpring } from "@react-spring/three";
 import { Float, Html } from "@react-three/drei";

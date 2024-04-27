@@ -41,7 +41,7 @@ const matchSlice = createSlice({
             state.isLoading = true;
         },
         resPutMatchById: (state, action: Types.ActionResPutMatchById) => {
-            const { match } = action.payload;
+            // const { match } = action.payload;
             state.isLoading = false;
         },
         resetLastedMatchId: (state) => {

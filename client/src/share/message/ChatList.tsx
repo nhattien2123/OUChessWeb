@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import {  useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 import useDocument from "src/share/firestore/DocumentHook";
 import ChatItem from "src/share/message/ChatItem";
@@ -13,7 +13,6 @@ const Chat = (props: Props) => {
     const [kw, setKw] = useState("");
     const { chatId } = useParams();
     const nav = useNavigate();
-    const dispatch = useAppDispatch();
 
     const listChat = useDocument({
         _collection: "userCharts",
@@ -37,7 +36,7 @@ const Chat = (props: Props) => {
             } else {
                 console.log("not ok");
             }
-    }, [listChat]);
+    }, [listChat, chatId, nav]);
 
     return (
         <>

@@ -25,7 +25,6 @@ export const RoomListComponent: FC<{
 }> = ({ rooms, match, newMatch, setNewMatch }) => {
     const userId = useAppSelector((state: RootState) => state.userReducer.currentUser._id);
     const username = useAppSelector((state: RootState) => state.userReducer.currentUser.username);
-    const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const lastestMatchId = useAppSelector((state: RootState) => state.matchReducer.lastestMatchId);
     const avatar = useAppSelector((state: RootState) => state.userReducer.currentUser.avatar);
     const detail = useAppSelector((state: RootState) => state.roomReducer.detail);
@@ -39,17 +38,17 @@ export const RoomListComponent: FC<{
 
     const indexOfLastMatch = currentPage * matchesPerPage;
     const indexOfFirstMatch = indexOfLastMatch - matchesPerPage;
-    const currentMatches = match.slice(indexOfFirstMatch, indexOfLastMatch);
+    // const currentMatches = match.slice(indexOfFirstMatch, indexOfLastMatch);
     const currentList = rooms.slice(indexOfFirstMatch, indexOfLastMatch);
     // Old code
     const paginate = (pageNumber: number) => {
         setCurrentPage(pageNumber);
     };
 
-    const handleRoomClick = (match: Match) => {
-        joinRoom(match._id);
-        updateRoom(match);
-    };
+    // const handleRoomClick = (match: Match) => {
+    //     joinRoom(match._id);
+    //     updateRoom(match);
+    // };
 
     const handleCreateModal = () => {
         setIsCreateModalOpen(!isCreateModalOpen);
@@ -65,9 +64,9 @@ export const RoomListComponent: FC<{
         }
     };
 
-    const handleCreateRoom = () => {
-        dispatch(matchActions.reqPostAddMatch({ match: { ...newMatch, whiteId: currentUser._id } }));
-    };
+    // const handleCreateRoom = () => {
+    //     dispatch(matchActions.reqPostAddMatch({ match: { ...newMatch, whiteId: currentUser._id } }));
+    // };
 
     const joinRoom = (matchId: string | null | undefined) => {
         if (!socket) return;
@@ -78,9 +77,9 @@ export const RoomListComponent: FC<{
         nav(`/game/live/${matchId}`);
     };
 
-    const updateRoom = (match: Match) => {
-        dispatch(matchActions.reqPutMatchById({ matchId: match._id, match: { ...match, blackId: currentUser._id } }));
-    };
+    // const updateRoom = (match: Match) => {
+    //     dispatch(matchActions.reqPutMatchById({ matchId: match._id, match: { ...match, blackId: currentUser._id } }));
+    // };
 
     const handleSearchRoomIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchRoomId(e.target.value);
@@ -125,7 +124,7 @@ export const RoomListComponent: FC<{
         if (detail !== null) {
             nav(`/game/live/${detail?.id}`);
         }
-    }, [detail]);
+    }, [detail, nav]);
     // New Code
     return (
         <>

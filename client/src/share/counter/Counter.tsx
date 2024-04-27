@@ -6,7 +6,7 @@ type CounterProps = {
     setReset: Dispatch<SetStateAction<boolean>>;
 };
 
-const Counter: React.FC<CounterProps> = ({ timer: timer, setReset: setReset }) => {
+const Counter: React.FC<CounterProps> = ({ timer, setReset }) => {
     const [time, setTime] = useState(timer);
 
     useEffect(() => {

@@ -58,7 +58,7 @@ const ProfileForm = (props: Props) => {
         return () => {
             subscription.unsubscribe();
         };
-    }, [form.watch]);
+    }, [form.watch, form]);
 
     const submitHandle = (data: any) => {
         onSubmit(data);
@@ -66,7 +66,7 @@ const ProfileForm = (props: Props) => {
 
     useEffect(() => {
         setInitialDate(moment(profile.dateOfBirth).format("yyyy-MM-DD"));
-    }, []);
+    }, [profile.dateOfBirth]);
 
     return (
         <>

@@ -1,7 +1,6 @@
 import type { FC } from "react";
 import React from "react";
 
-import { useHistoryState } from "src/components/game/Game";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { BsReverseLayoutSidebarInsetReverse } from "react-icons/bs";
 

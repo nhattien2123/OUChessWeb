@@ -7,7 +7,6 @@ import { createKnight, isKnight, knightMoves } from "src/share/game/logic/pieces
 import { createBishop, isBishop, bishopMoves } from "src/share/game/logic/pieces/Bishop";
 import { createRook, isRook, rookMoves } from "src/share/game/logic/pieces/Rook";
 import { createPawn, isPawn, pawnMoves } from "src/share/game/logic/pieces/Pawn";
-import { BokehShaderUniforms } from "three-stdlib";
 
 export const moveTypes = {
     invalid: `invalid` as const,

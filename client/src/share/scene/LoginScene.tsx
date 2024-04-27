@@ -64,7 +64,7 @@ const LoginScene: FC = () => {
             x:100
         })
 
-    }, []) 
+    }, [target1.position, tl, tl2, tl3]) 
 
     return (
         <>

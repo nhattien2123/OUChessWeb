@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
-import { Friend, Profile as ProfileStyle } from "src/redux/reducer/profile/Types";
+import { Friend } from "src/redux/reducer/profile/Types";
 import { profileActions } from "src/redux/reducer/profile/Profile";
 import { Match } from "src/redux/reducer/match/Types";
 import { socket } from "src/index";

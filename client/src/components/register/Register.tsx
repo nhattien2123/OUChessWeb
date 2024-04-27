@@ -46,7 +46,7 @@ const Register: React.FC<RegisterProps> = () => {
 
     useEffect(() => {
         nav(`/register?step=${nextStep}`);
-    }, [nextStep]);
+    }, [nextStep, nav]);
 
     useEffect(() => {
         const num = params.get("step");
@@ -55,7 +55,7 @@ const Register: React.FC<RegisterProps> = () => {
             if(!isNaN(step))
                 setNextStep(step);
         }
-    }, [])
+    }, [params])
 
     return (
         <>

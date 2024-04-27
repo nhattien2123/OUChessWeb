@@ -24,7 +24,7 @@ const Editor: React.FC<EditorProps> = () => {
         if (currentUser.username !== usernameProfile) {
             nav(`/profile/${usernameProfile}`);
         }
-    }, []);
+    }, [param, currentUser.username, nav]);
 
     useEffect(() => {
         setProfile(currentUser);

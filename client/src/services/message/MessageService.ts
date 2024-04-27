@@ -1,4 +1,3 @@
-import React from "react";
 import { doc, setDoc, updateDoc, serverTimestamp, collection, getDoc } from "firebase/firestore";
 import { db } from "src/config/FirebaseConfig";
 
@@ -25,17 +24,6 @@ export const MessageService = {
     },
     addWithId: async (_collection: string, _id: string, _data: any) => {
         try {
-            const ref = doc(db, _collection, _id);
-            const docRef = await setDoc(
-                ref,
-                {
-                    ..._data,
-                },
-                {
-                    merge: true,
-                },
-            );
-
             return true;
         } catch (error) {
             return false;
