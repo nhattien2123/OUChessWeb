@@ -8,6 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Login VR Scene.unity
+    guid: da1340961cff18e48b907eab3ad1ca1f
+  - enabled: 1
+    path: Assets/Scenes/Main VR Chess.unity
+    guid: fe14271d01b925044b778cb61a78bc78
+  - enabled: 1
+    path: Assets/Scenes/LobbyVRScene.unity
+    guid: 36ca0da07f6685b48aad71997a8e5916
   m_configObjects:
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 6821ead2bc69bab4f8e0657a1fa34d1e,
       type: 2}

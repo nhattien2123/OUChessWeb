@@ -9,7 +9,7 @@ public class ShowKeyboard : MonoBehaviour
     private TMP_InputField inputField;
 
     public float distance = 0.5f;
-    public float verticalOffset = -0.5f;
+    public float verticalOffset = 0.5f;
 
     public Transform positionSource;
 
@@ -24,12 +24,15 @@ public class ShowKeyboard : MonoBehaviour
         NonNativeKeyboard.Instance.InputField = inputField;
         NonNativeKeyboard.Instance.PresentKeyboard(inputField.text);
 
+        Debug.Log(positionSource.position.x + " " + positionSource.position.y + " " + positionSource.position.z);
+
         Vector3 direction = positionSource.forward;
         direction.y = 0;
         direction.Normalize();
 
         Vector3 targetPosition = positionSource.position + direction * distance + Vector3.up * verticalOffset;
 
+        Debug.Log(targetPosition.x + " " + targetPosition.y + " " + targetPosition.z);
         NonNativeKeyboard.Instance.RepositionKeyboard(targetPosition);
 
         SetCaretColorAlpha(1);
