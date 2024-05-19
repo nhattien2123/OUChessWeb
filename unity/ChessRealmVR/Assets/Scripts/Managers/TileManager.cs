@@ -10,7 +10,7 @@ namespace Managers
         public Material[] tilesMaterials;
         
         [Header("Tile Logic")]
-        public const float TileSize = 0.075f;
+        public const float TileSize = 0.045f;
         public float yOffset = 0.005f;
         public const int TileCountX = 8;
         public const int TileCountY = 8;

@@ -1,5 +1,4 @@
 using System;
-using UnityEditor.MPE;
 
 public class Users
 {
@@ -16,4 +15,7 @@ public class Users
     public int elo;
     public string role;
     public string[] friends;
+    public DateTime createdAt;
+    public DateTime updatedAt;
+    public int __v;
 }

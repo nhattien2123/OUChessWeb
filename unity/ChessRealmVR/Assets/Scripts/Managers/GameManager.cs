@@ -6,6 +6,7 @@ using ChessLogic;
 using ChessPieces;
 using Players;
 using Unity.VisualScripting;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -150,8 +151,10 @@ namespace Managers
             StartGame(chessboardConfig);
             var rotation = selectedTeam is Shared.TeamType.White
                 ? Quaternion.Euler(0, 41, 0)
-                : Quaternion.Euler(0, 0, 0); 
-            SetPlayer(selectorPosition);
+                : Quaternion.Euler(0, 0, 0);
+            if (selectedTeam is Shared.TeamType.White)
+                SetPlayer(teamSelectors[0].gameObject.transform.position);
+            else SetPlayer(teamSelectors[1].gameObject.transform.position);
 
             foreach (var teamSelector in teamSelectors)
                 Destroy(teamSelector);
@@ -396,9 +399,13 @@ namespace Managers
         private void SetPlayer(Vector3 position)
         {
             var direction = Shared.TeamType.White == HumanPlayer.Team ? 1 : -1;
-            xrOrigin.transform.position = new Vector3(position.x + (0.25f * direction), position.y - 2.5f,
+            Debug.Log(position.x + " " + position.y + " " + position.z);
+            if (Shared.TeamType.White == HumanPlayer.Team)
+                xrOrigin.transform.rotation = Quaternion.Euler(0, -90, 0);
+            else xrOrigin.transform.rotation = Quaternion.Euler(0, 90, 0);
+            xrOrigin.transform.position = new Vector3(position.x, position.y,
                 position.z);
-            xrOrigin.GetComponent<ActionBasedContinuousMoveProvider>().enabled = false;
+            xrOrigin.GetComponent<ActionBasedContinuousMoveProvider>().enabled = true;
         }
         
         public bool IsChessPieceInHistory(ChessPiece chessPiece)

@@ -29,6 +29,8 @@ const io = new Server(httpServer, {
     cors: {
         origin: "http://localhost:3000",
     },
+    pingInterval: 10000,
+    pingTimeout: 5000
 });
 const socketRoot = require("./configs/SocketRoot")(io);
 
