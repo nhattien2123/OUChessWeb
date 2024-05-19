@@ -41,7 +41,7 @@ const Chat = (props: Props) => {
 
     return (
         <>
-            <div className="chat-list">
+            <div className="chat-list sketchy">
                 <div className="chat-list-header">Các cuộc trò truyện</div>
                 <div className="chat-list-search">
                     <input

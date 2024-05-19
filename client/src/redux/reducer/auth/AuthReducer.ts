@@ -23,6 +23,7 @@ const authSlice = createSlice({
             state.isLoadingBlock = false;
         },
         resGetDataLogin: (state, action: Types.ActionResGetDataLogin) => {
+            console.log(action.payload)
             const { token, refreshToken } = action.payload;
             state.isLoading = false;
             state.isLoggedIn = true;

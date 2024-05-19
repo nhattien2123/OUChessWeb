@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import { useNavigate, useParams } from 'react-router-dom';
-import { userActions } from 'src/redux/reducer/user/UserReducer';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import ProfileForm from 'src/share/form/ProfileForm';
-import ChangePasswordForm from 'src/share/form/ChangePasswordForm';
-import './Editor.scss';
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { useNavigate, useParams } from "react-router-dom";
+import { userActions } from "src/redux/reducer/user/UserReducer";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import ProfileForm from "src/share/form/ProfileForm";
+import ChangePasswordForm from "src/share/form/ChangePasswordForm";
+import "./Editor.scss";
 
 interface EditorProps {}
 
@@ -20,7 +20,7 @@ const Editor: React.FC<EditorProps> = () => {
     const [profile, setProfile] = useState(currentUser);
 
     useEffect(() => {
-        const usernameProfile = param['username'];
+        const usernameProfile = param["username"];
         if (currentUser.username !== usernameProfile) {
             nav(`/profile/${usernameProfile}`);
         }
@@ -28,7 +28,7 @@ const Editor: React.FC<EditorProps> = () => {
 
     useEffect(() => {
         setProfile(currentUser);
-        Cookies.set('user', JSON.stringify(currentUser));
+        Cookies.set("user", JSON.stringify(currentUser));
     }, [currentUser]);
 
     const updateProfile = (data: any) => {
@@ -48,7 +48,7 @@ const Editor: React.FC<EditorProps> = () => {
     const updateImage = (e: any) => {
         const f = e.target.files[0];
         const formData = new FormData();
-        formData.append('file', f);
+        formData.append("file", f);
         const data = {
             username: profile.username,
             form: formData,
@@ -62,10 +62,10 @@ const Editor: React.FC<EditorProps> = () => {
 
     return (
         <>
-            <div className="profile-container">
-                <div className="avatar-container">
+            <div className="profile__container">
+                <div className="avatar__container">
                     <div className="avatar-img">
-                        <img src={profile.avatar} alt="Avatar" className='profile-avatar' />
+                        <img src={profile.avatar} alt="Avatar" className="profile-avatar" />
                         <div className="input-file">
                             <input onChange={updateImage} type="file" name="avatar" id="avatar" />
                             <label className="label-avatar" htmlFor="avatar">
@@ -75,11 +75,12 @@ const Editor: React.FC<EditorProps> = () => {
                     </div>
                     <div className="avatar-content">
                         <div className="avatar-username">{profile.username}</div>
+                        <div className="avatar-elo"> Elo: {profile.elo}</div>
                     </div>
                 </div>
-                
-                        <ProfileForm profile={profile} isLoading={isLoading} onSubmit={updateProfile} />
-                    
+
+                <ProfileForm profile={profile} isLoading={isLoading} onSubmit={updateProfile} />
+
                 {/* <div className="information-container">
                     <div className="information-title">ĐẶT LẠI MẬT KHẨU</div>
                     <div className="information-content">

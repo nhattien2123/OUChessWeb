@@ -6,7 +6,7 @@ import { userActions } from "src/redux/reducer/user/UserReducer";
 import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 import { socket } from "src/index";
-import logoIcon from "src/assets/images/chess-realm-logo.png";
+import logoIcon from "src/assets/images/chess-realm-logo-2.png";
 import "src/share/sidebar/Sidebar.scss";
 
 interface Props { }
@@ -71,148 +71,17 @@ const Sidebar = (props: Props) => {
 
     return (
         <>
-            {/* <ul className="sidebar">
-                <li className="sidebar-item">
-                    <Link to={"/"}>Chess Realm</Link>
-                </li>
-                <li className="sidebar-item">
-                    <Link to={"/play/online"}>Play</Link>
-                </li>
-                <li className="sidebar-item">
-                    <Link to={`/profile/${currentUser.username}`}>Thông tin</Link>
-                </li>
-                <li className="sidebar-item">
-                    <Link to={"/messages"}>Tin nhắn</Link>
-                </li>
-                {currentUser.role === "ADMIN" && (
-                    <li className="sidebar-item">
-                        <Link to={"/admin"}>Admin</Link>
-                    </li>
-                )}
-                <li className="sidebar-input">
-                    <input
-                        placeholder="Tìm kiếm..."
-                        onChange={(evt) => setKw(evt.target.value)}
-                        onKeyDown={(evt) => {
-                            if (evt.key === "Enter") {
-                                if (kw.trim() !== "") {
-                                    nav(`/player/?kw=${kw}`);
-                                }
-                            }
-                        }}
-                    ></input>
-                </li>
-                {currentUser._id === "" ? (
-                    <>
-                        <li className="sidebar-btn">
-                            <Link to={`/register`} className="btn-form w-80">
-                                Đăng ký
-                            </Link>
-                        </li>
-                        <li className="sidebar-btn">
-                            <Link to={`/login`} className="btn-form btn-form-save w-80">
-                                Đăng nhập
-                            </Link>
-                        </li>
-                    </>
-                ) : (
-                    <>
-                        <li className="sidebar-btn">
-                            <Link to={`/login`} className="btn-form w-80 btn-form-save" onClick={logOut}>
-                                Đăng xuất
-                            </Link>
-                        </li>
-                    </>
-                )}
-            </ul> */}
-            {/* <nav className="sidebar">
-                <header>
-                    <div className="sidebar-image-text">
-                        <span className="sidebar-image">
-                            <img src="logo.png" alt="logo" />
-                        </span>
-
-                        <div className="text header-text">
-                            <span className="name">CodingLab</span>
-                            <span className="profession">Web developer</span>
-                        </div>
-                    </div>
-
-                    <i className="bx bx-chevron-right toggle"></i>
-                </header>
-                <div className="menu-bar">
-                    <div className="menu">
-                        <li className="search-box">
-                            <i className="bx bx-search icon"></i>
-                            <input type="search" placeholder="Search..." />
-                        </li>
-                        <ul className="menu-links">
-                            <li className="nav-link">
-                                <a href="#">
-                                    <i className="bx bx-home-alt icon"></i>
-                                    <span className="text nav-text">Dashboard</span>
-                                </a>
-                            </li>
-                            <li className="nav-link">
-                                <a href="#">
-                                    <i className="bx bx-home-alt icon"></i>
-                                    <span className="text nav-text">Dashboard</span>
-                                </a>
-                            </li>
-                            <li className="nav-link">
-                                <a href="#">
-                                    <i className="bx bx-home-alt icon"></i>
-                                    <span className="text nav-text">Dashboard</span>
-                                </a>
-                            </li>
-                            <li className="nav-link">
-                                <a href="#">
-                                    <i className="bx bx-home-alt icon"></i>
-                                    <span className="text nav-text">Dashboard</span>
-                                </a>
-                            </li>
-                            <li className="nav-link">
-                                <a href="#">
-                                    <i className="bx bx-home-alt icon"></i>
-                                    <span className="text nav-text">Dashboard</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div className="bottom-content">
-                        <li className="">
-                            <a href="#">
-                                <i className="bx bx-log-out icon"></i>
-                                <span className="text nav-text">Logout</span>
-                            </a>
-                        </li>
-
-                        <li className="mode">
-                            <div className="moon-sun">
-                                <i className="bx bx-moon icon"></i>
-                                <i className="bx bx-sun icon"></i>
-                            </div>
-                            <span className="mode-text text">Dark Mode</span>
-
-                            <div className="toggle-switch">
-                                <span className="switch"></span>
-                            </div>
-                        </li>
-                    </div>
-                </div>
-            </nav>
-            <script></script> */}
+            
             <nav className={`sidebar ${isSidebarClosed ? 'close' : ''}`}>
                 <header>
                     <Link to={"/"} className="link-container">
                         <div className="image-text">
                             <span className="image">
-                                <img src={logoIcon} alt="Logo Chess Realm" />
+                                <img src={logoIcon} alt="Logo Chess Realm" style={{backgroundColor: "transparent"}} />
                             </span>
                             <div className="text logo-text">
-                                <span className="name">Chess Realm</span>
-                                <span className="profession">Made by SupportX</span>
+                                <span style={isSidebarClosed ? {display: "none"} : {display: "inline-block"}} className="name">Chess Realm</span>
+                                <span style={isSidebarClosed ? {display: "none"} : {display: "inline-block"}} className="profession">Made by SupportX</span>
                             </div>
                         </div>
                     </Link>
@@ -238,26 +107,32 @@ const Sidebar = (props: Props) => {
                             <li className="nav-link">
                                 <Link to={"/play/online"} className="nav-link-contain">
                                     <i className="fa-solid fa-chess-board icon"></i>
-                                    <span className="text nav-text">Play</span>
+                                    <span className="text nav-text">Chơi</span>
+                                </Link>
+                            </li>
+                            <li className="nav-link">
+                                <Link to={"/tutorial"} className="nav-link-contain">
+                                    <i className="fa-solid fa-book icon"></i>
+                                    <span className="text nav-text">Hướng dẫn</span>
                                 </Link>
                             </li>
                             <li className="nav-link">
                                 <Link to={`/profile/${currentUser.username}`} className="nav-link-contain">
                                     <i className="fa-solid fa-user icon"></i>
-                                    <span className="text nav-text">Information</span>
+                                    <span className="text nav-text">Thông tin</span>
                                 </Link>
                             </li>
                             <li className="nav-link">
                                 <Link to={"/messages"} className="nav-link-contain">
                                     <i className="fa-regular fa-message icon"></i>
-                                    <span className="text nav-text">Message</span>
+                                    <span className="text nav-text">Tin nhắn</span>
                                 </Link>
                             </li>
                             {currentUser.role === "ADMIN" && (
                                 <li className="nav-link">
                                     <Link to={"/admin"} className="nav-link-contain">
                                         <i className="fa-solid fa-user-tie icon"></i>
-                                        <span className="text nav-text">Management</span>
+                                        <span className="text nav-text">Quản trị</span>
                                     </Link>
                                 </li>
                             )}
@@ -281,11 +156,11 @@ const Sidebar = (props: Props) => {
                             <li className="nav-link">
                                 <Link to={`/login`} className="nav-link-contain" onClick={logOut}>
                                     <i className='bx bx-log-out icon'></i>
-                                    <span className="text nav-text">Logout</span>
+                                    <span className="text nav-text">Đăng xuất</span>
                                 </Link>
                             </li>
                         )}
-                        <li className="mode" onClick={toggleDarkMode}>
+                        {/* <li className="mode" onClick={toggleDarkMode}>
                             <div className="sun-moon">
                                 <i className={`bx ${isDarkMode ? 'bx-sun' : 'bx-moon'} icon moon`}></i>
                                 <i className={`bx ${isDarkMode ? 'bx-moon' : 'bx-sun'} icon sun`}></i>
@@ -294,7 +169,7 @@ const Sidebar = (props: Props) => {
                             <div className="toggle-switch">
                                 <span className="switch"></span>
                             </div>
-                        </li>
+                        </li> */}
                     </div>
                 </div>
             </nav>

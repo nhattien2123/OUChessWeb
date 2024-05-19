@@ -15,7 +15,7 @@ const apiConstant = {
     API_DELETE_MATCH: "/matchapi-deletematch",
     API_GET_MATCH_BY_ID: "/matchapi-getmatchbyid/:matchId",
     API_GET_LIST_USER: "/userapi-getlistuser/",
-
+    API_GOOGLE_AUTHENTICATED: "/authapi-google-auth",
 
     API_UPDATE_USER_PROFILE: "/:username/userapi-updateuser",
     API_UPDATE_USER_PASSWORD: "/:username/userapi-changepassword",

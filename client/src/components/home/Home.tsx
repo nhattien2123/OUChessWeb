@@ -6,7 +6,7 @@ import Sidebar from "src/share/sidebar/Sidebar";
 import Header from "src/share/header/Header";
 import { socket } from "src";
 
-interface Props { }
+interface Props {}
 
 const Home = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
@@ -19,15 +19,17 @@ const Home = (props: Props) => {
         }
         socket.auth = {
             token: token,
-            userInfo: currentUser
+            userInfo: currentUser,
         };
-        
+
         socket.connect();
     }, [currentUser]);
 
     return (
         <>
-            <Sidebar />
+            <div style={{ width: "100%", height: "100vh", backgroundColor: "#312e2b" }}>
+                <Sidebar />
+            </div>
         </>
     );
 };

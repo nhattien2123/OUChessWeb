@@ -9,31 +9,34 @@ import { HistoryPanel } from "src/share/game/board/History";
 import { MiniMap } from "src/share/game/board/MiniMap";
 import { socket } from "src/index";
 import { RootState } from "src/app/store";
-import { useAppSelector } from "src/app/hooks";
-import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { Router, redirect, useNavigate } from "react-router-dom";
 import Board from "src/interfaces/gamecore/board/Board";
+import { roomAction } from "src/redux/reducer/room/RoomReducer";
 
 export type LeaveRoom = {
     roomId?: string | null;
 };
 
 export const Sidebar: FC<{
-    board: Board;
+    board?: Board;
     moves: number[];
     selected: number | null;
-    setBoard: (board: Board) => void;
+    setBoard?: (board: Board) => void;
     reset: () => void;
 }> = ({ board, moves, selected, reset, setBoard }) => {
     const [show, setShow] = React.useState<boolean>(false);
     const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
+    const detail = useAppSelector((state: RootState) => state.roomReducer.detail);
+    const curentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
+    const dispatch = useAppDispatch();
     const nav = useNavigate();
 
-    const handleLeaveRoom = () => {
-        const data: LeaveRoom = {
-            roomId: roomId,
-        };
-        socket.emit(`leaveRoom`, data);
-        nav("/play/online");
+    const  handleLeavingRoom =  async () => {
+        dispatch(roomAction.requestLeaveRoom({
+            rId: detail?.id || "",
+            uId: curentUser._id
+        }));
     };
 
     return (
@@ -48,7 +51,7 @@ export const Sidebar: FC<{
                         <div className="container-sidebar-button">
                             {/* <button onClick={reset}>Reset</button>
                             <button onClick={() => undo()}>Undo</button> */}
-                            <button onClick={handleLeaveRoom}>Thoát</button>
+                            <button onClick={handleLeavingRoom}>Thoát</button>
                             <button onClick={() => {}}>Hoà cờ</button>
                         </div>
                     </>

@@ -56,6 +56,17 @@
     }
 }
 
+.btn__close {
+    background-color: #ff5959;
+    box-shadow: 0px 4px #ff3b3b;
+    border-radius: 5px;
+    color: #fff;
+
+    &:hover {
+        background-color: #f77c7c;
+    }
+}
+
 .textbox__container {
     .textbox__style {
       width: 100%;

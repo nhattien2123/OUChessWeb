@@ -101,11 +101,11 @@ class Board {
         this.allPieceLists[WhitePiece.WhiteQueen] = this.Queens[Board.WhiteIndex];
         this.allPieceLists[WhitePiece.WhiteKing] = new PieceList(1);
 
-        this.allPieceLists[BlackPiece.BlackPawn] = this.Pawns[Board.WhiteIndex];
-        this.allPieceLists[BlackPiece.BlackKnight] = this.Knights[Board.WhiteIndex];
-        this.allPieceLists[BlackPiece.BlackBishop] = this.Bishops[Board.WhiteIndex];
-        this.allPieceLists[BlackPiece.BlackRook] = this.Rooks[Board.WhiteIndex];
-        this.allPieceLists[BlackPiece.BlackQueen] = this.Queens[Board.WhiteIndex];
+        this.allPieceLists[BlackPiece.BlackPawn] = this.Pawns[Board.BlackIndex];
+        this.allPieceLists[BlackPiece.BlackKnight] = this.Knights[Board.BlackIndex];
+        this.allPieceLists[BlackPiece.BlackBishop] = this.Bishops[Board.BlackIndex];
+        this.allPieceLists[BlackPiece.BlackRook] = this.Rooks[Board.BlackIndex];
+        this.allPieceLists[BlackPiece.BlackQueen] = this.Queens[Board.BlackIndex];
         this.allPieceLists[BlackPiece.BlackKing] = new PieceList(1);
         this.TotalPieceCountWithoutPawnsAndKings = 0;
 
@@ -133,6 +133,7 @@ class Board {
             targetSquare,
         );
 
+        console.log(PieceFunc.GetSymbol(piece), piece);
         this.allPieceLists[piece].MovePiece(startSquare, targetSquare);
         this.Square[startSquare] = PieceType.None;
         this.Square[targetSquare] = piece;
@@ -208,39 +209,39 @@ class Board {
                 newZobristKey ^= Zobrist.piecesArray[rookPiece][castlingRookFromIndex];
                 newZobristKey ^= Zobrist.piecesArray[rookPiece][castlingRookToIndex];
             }
+        }
 
-            if (isPromotion) {
-                this.TotalPieceCountWithoutPawnsAndKings++;
-                let promotionTypePiece = PieceType.None;
+        if (isPromotion) {
+            this.TotalPieceCountWithoutPawnsAndKings++;
+            let promotionTypePiece = PieceType.None;
 
-                switch (moveFlag) {
-                    case MoveFlag.PromoteToBishopFlag:
-                        promotionTypePiece = PieceType.Bishop;
-                        break;
-                    case MoveFlag.PromoteToKnightFlag:
-                        promotionTypePiece = PieceType.Knight;
-                        break;
-                    case MoveFlag.PromoteToQueenFlag:
-                        promotionTypePiece = PieceType.Queen;
-                        break;
-                    case MoveFlag.PromoteToRookFlag:
-                        promotionTypePiece = PieceType.Rook;
-                        break;
-                    default:
-                        promotionTypePiece = PieceType.None;
-                }
-
-                const promotionPiece = PieceFunc.MakePiece(promotionTypePiece, this.MoveColour());
-                this.pieceBitBoards[movedPiece] = ToggleSquare(this.pieceBitBoards[movedPiece], targetSquare);
-                this.pieceBitBoards[promotionPiece] = ToggleSquare(this.pieceBitBoards[promotionPiece], targetSquare);
-                this.allPieceLists[movedPiece].RemovePieceAtSquare(targetSquare);
-                this.allPieceLists[promotionPiece].AddPieceAtSquare(targetSquare);
-                this.Square[targetSquare] = promotionPiece;
+            switch (moveFlag) {
+                case MoveFlag.PromoteToBishopFlag:
+                    promotionTypePiece = PieceType.Bishop;
+                    break;
+                case MoveFlag.PromoteToKnightFlag:
+                    promotionTypePiece = PieceType.Knight;
+                    break;
+                case MoveFlag.PromoteToQueenFlag:
+                    promotionTypePiece = PieceType.Queen;
+                    break;
+                case MoveFlag.PromoteToRookFlag:
+                    promotionTypePiece = PieceType.Rook;
+                    break;
+                default:
+                    promotionTypePiece = PieceType.None;
             }
+
+            const promotionPiece = PieceFunc.MakePiece(promotionTypePiece, this.MoveColour());
+            this.pieceBitBoards[movedPiece] = ToggleSquare(this.pieceBitBoards[movedPiece], targetSquare);
+            this.pieceBitBoards[promotionPiece] = ToggleSquare(this.pieceBitBoards[promotionPiece], targetSquare);
+            this.allPieceLists[movedPiece].RemovePieceAtSquare(targetSquare);
+            this.allPieceLists[promotionPiece].AddPieceAtSquare(targetSquare);
+            this.Square[targetSquare] = promotionPiece;
         }
 
         if (moveFlag === MoveFlag.PawnTwoUpFlag) {
-            const file = 1 + 1;
+            const file = BoardHelper.FileIndex(startSquare) + 1;
             newEnPassantFile = file;
             newZobristKey ^= Zobrist.enPassantFile[file];
         }
@@ -265,7 +266,6 @@ class Board {
             newZobristKey ^= Zobrist.castlingRights[prevCastleState]; // remove old castling rights state
             newZobristKey ^= Zobrist.castlingRights[newCastlingRights]; // add new castling rights state
         }
-
         this.IsWhiteToMove = !this.IsWhiteToMove;
         this.PlyCount++;
         let newFiftyMoveCounter = this.CurrentGameState.fiftyMoveCounter + 1;
@@ -275,7 +275,7 @@ class Board {
 
         if (movedPieceType === PieceType.Pawn || capturedPieceType !== PieceType.None) {
             if (!inSearch) {
-                this.RepetitionPositionHistory = [];
+                this.RepetitionPositionHistory = [] as bigint[];
             }
             newFiftyMoveCounter = 0;
         }
@@ -341,8 +341,8 @@ class Board {
             }
 
             this.pieceBitBoards[capturedPiece] = ToggleSquare(this.pieceBitBoards[capturedPiece], captureSquare);
-            this.pieceBitBoards[this.OpponentColourIndex()] = ToggleSquare(
-                this.pieceBitBoards[this.OpponentColourIndex()],
+            this.colourBitBoards[this.OpponentColourIndex()] = ToggleSquare(
+                this.colourBitBoards[this.OpponentColourIndex()],
                 captureSquare,
             );
             this.allPieceLists[capturedPiece].AddPieceAtSquare(captureSquare);
@@ -353,7 +353,7 @@ class Board {
             this.KingSquare[this.MoveColourIndex()] = movedFrom;
             if (moveFlag === MoveFlag.CastleFlag) {
                 const rookPiece = PieceFunc.MakePiece(PieceType.Rook, this.MoveColour());
-                const kingSide = movedTo === 1 || movedTo === 8;
+                const kingSide = movedTo === BoardHelper.SquareNames.g1 || movedTo === BoardHelper.SquareNames.g8;
                 const rookSquareBeforeCastling = kingSide ? movedTo + 1 : movedTo - 2;
                 const rookSquareAfterCastling = kingSide ? movedTo - 1 : movedTo + 1;
 
@@ -369,6 +369,8 @@ class Board {
                     rookSquareAfterCastling,
                     rookSquareBeforeCastling,
                 );
+                this.Square[rookSquareAfterCastling] = Piece.PieceType.None;
+                this.Square[rookSquareBeforeCastling] = rookPiece;
                 this.allPieceLists[rookPiece].MovePiece(rookSquareAfterCastling, rookSquareBeforeCastling);
             }
         }
@@ -413,7 +415,7 @@ class Board {
         );
         this.CurrentGameState = newState;
         this.gameStateHistory.push(this.CurrentGameState);
-        this.UpdateSliderBitboards();
+        this.UpdateSliderBitboards();   
         this.hasCachedInCheckValue = true;
         this.cachedInCheckValue = false;
     };
@@ -510,7 +512,16 @@ class Board {
             const castlingRights = whiteCastle | blackCastle;
 
             this.PlyCount = (posInfo.moveCount - 1) * 2 + (this.IsWhiteToMove ? 0 : 1);
+            this.CurrentGameState = new GameState(
+                PieceType.None,
+                posInfo.epFile,
+                castlingRights,
+                posInfo.fiftyMovePlyCount,
+                BigInt(0),
+            );
+
             const zobristKey = Zobrist.CalculateZobristKey(this);
+
             this.CurrentGameState = new GameState(
                 PieceType.None,
                 posInfo.epFile,
@@ -518,10 +529,8 @@ class Board {
                 posInfo.fiftyMovePlyCount,
                 zobristKey,
             );
-            // const zobristKey: bigint = Zobrist.CalculateZobristKey(this);
-            // // this.CurrentGameState = new GameState(PieceType.None, posInfo.epFile, castlingRights, posInfo.fiftyMovePlyCount);
 
-            // this.RepetitionPositionHistory.push(zobristKey);
+            this.RepetitionPositionHistory.push(zobristKey);
 
             this.gameStateHistory.push(this.CurrentGameState);
         }
@@ -567,11 +576,11 @@ class Board {
         this.allPieceLists[WhitePiece.WhiteQueen] = this.Queens[Board.WhiteIndex];
         this.allPieceLists[WhitePiece.WhiteKing] = new PieceList(1);
 
-        this.allPieceLists[BlackPiece.BlackPawn] = this.Pawns[Board.WhiteIndex];
-        this.allPieceLists[BlackPiece.BlackKnight] = this.Knights[Board.WhiteIndex];
-        this.allPieceLists[BlackPiece.BlackBishop] = this.Bishops[Board.WhiteIndex];
-        this.allPieceLists[BlackPiece.BlackRook] = this.Rooks[Board.WhiteIndex];
-        this.allPieceLists[BlackPiece.BlackQueen] = this.Queens[Board.WhiteIndex];
+        this.allPieceLists[BlackPiece.BlackPawn] = this.Pawns[Board.BlackIndex];
+        this.allPieceLists[BlackPiece.BlackKnight] = this.Knights[Board.BlackIndex];
+        this.allPieceLists[BlackPiece.BlackBishop] = this.Bishops[Board.BlackIndex];
+        this.allPieceLists[BlackPiece.BlackRook] = this.Rooks[Board.BlackIndex];
+        this.allPieceLists[BlackPiece.BlackQueen] = this.Queens[Board.BlackIndex];
         this.allPieceLists[BlackPiece.BlackKing] = new PieceList(1);
 
         this.TotalPieceCountWithoutPawnsAndKings = 0;

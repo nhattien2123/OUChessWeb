@@ -165,6 +165,16 @@ const userReposity = {
     deleteUserFromAdmin: async (username) => {
         return await user.findOneAndUpdate({ username: username }, { $set: { deletedAt: Date.now() } }, { new: true });
     },
+    isExistEmail: async (email) => {
+        try {
+            const User = await user.findOne({
+                email: email,
+            });
+            return User;
+        } catch (error) {
+            return null;
+        }
+    }
 };
 
 module.exports = userReposity;

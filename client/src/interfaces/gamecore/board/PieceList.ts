@@ -16,6 +16,7 @@ class PieceList {
     AddPieceAtSquare = (square: number): void => {
         this.ocuupiedSquared[this.numPieces] = square;
         this.map[square] = this.numPieces;
+        this.numPieces++;
     };
 
     RemovePieceAtSquare = (square: number): void => {

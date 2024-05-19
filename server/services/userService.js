@@ -81,6 +81,9 @@ const userService = {
     deleteUserFromAdmin: async (username) => {
         return await userReposity.deleteUserFromAdmin(username);
     },
+    isExistEmail: async (email) => {
+        return userReposity.isExistEmail(email);
+    }
 };
 
 module.exports = userService;

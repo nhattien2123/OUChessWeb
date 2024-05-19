@@ -21,10 +21,11 @@ class TranspositionTable {
 
         const ttEntrySizeBytes = GetSize(new Entry());
         const desiredTableSizeInBytes = sizeMB * 1024 * 1024;
-        const numEntries = desiredTableSizeInBytes / ttEntrySizeBytes;
+        let numEntries = desiredTableSizeInBytes / ttEntrySizeBytes;
+        numEntries = Number(numEntries.toFixed());
 
         this.count = BigInt(numEntries);
-        this.entries = new Array<Entry>(numEntries);
+        this.entries = new Array<Entry>(numEntries).fill(new Entry());
     }
 
     Clear = () => {
@@ -34,7 +35,7 @@ class TranspositionTable {
     };
 
     Index = (): bigint => {
-        return this.board.CurrentGameState.zobristKey % this.count;
+        return BigInt(this.board.CurrentGameState.zobristKey) % BigInt(this.count);
     };
 
     TryGetStoredMove = (): Move => {
@@ -60,7 +61,6 @@ class TranspositionTable {
         }
 
         const entry = this.entries[Number(this.Index())];
-
         if (entry.key === this.board.CurrentGameState.zobristKey) {
             // Only use stored evaluation if it has been searched to at least the same depth as would be searched now
             if (entry.depth >= depth) {
@@ -162,6 +162,8 @@ export const GetSize = (instace: Entry) => {
             bytes += value.length * 2; // Assuming each character is 2 bytes (UTF-16)
         } else if (typeof value === "number") {
             bytes += 8; // Assuming 8 bytes for a number
+        } else if (typeof value === "bigint") {
+            bytes += 8
         } else if (typeof value === "object" && !objectList.includes(value)) {
             objectList.push(value);
             for (const prop in value) {

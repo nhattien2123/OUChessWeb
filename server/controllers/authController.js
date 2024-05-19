@@ -22,7 +22,6 @@ const authController = {
     signIn: async (req, res) => {
         try {
             const curUser = await userService.getUser(req.body.username);
-            console.log(req.body.username);
             if (!curUser) {
                 httpHandler.Fail(res, {}, "Tài khoản không đúng");
                 return;
@@ -127,6 +126,23 @@ const authController = {
             httpHandler.Servererror(res, {}, "Đã có lỗi xảy ra");
         }
     },
+    isExistEmail: async (req, res) => {
+        try {
+            const {email} = req.body;
+            const isExist = await userService.isExistEmail(email);
+            if(isExist !== null){
+                const curUser = await userService.getUser(email);
+                const token = jwtHandler.createToken(curUser);
+                const refreshToken = jwtHandler.createToken(curUser);
+                httpHandler.Success(res, { token, refreshToken }, "Đăng nhập thành công");
+            }else {
+                httpHandler.Fail(res, {}, "Email chưa tồn tại");
+            }
+        } catch (error) {
+            console.log(error);
+            httpHandler.Servererror(res, {}, "Đã có lỗi xảy ra");
+        }
+    }
 };
 
 module.exports = authController;

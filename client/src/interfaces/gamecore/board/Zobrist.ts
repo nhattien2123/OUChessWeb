@@ -41,6 +41,8 @@ class Zobrist {
             for (let i = 0; i < Zobrist.enPassantFile.length; i++) {
                 Zobrist.enPassantFile[i] = i === 0 ? BigInt(0) : Zobrist.RandomUnsigned64BitNumber(rng);
             }
+
+            this.sideToMove = Zobrist.RandomUnsigned64BitNumber(rng);
         }
     };
 

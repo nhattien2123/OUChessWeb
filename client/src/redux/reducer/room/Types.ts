@@ -9,6 +9,7 @@ export interface Moving {
     target: number;
     flag?: number;
     promotionPiece?: string;
+    moveString?: string;
 }
 
 export interface Room {
@@ -18,7 +19,6 @@ export interface Room {
         player: UserType.User[];
     } | null;
     gameState: {
-        board?: Board;
         turn: number;
         isStarted: boolean;
         playerColor: number;
@@ -39,6 +39,7 @@ export interface Room {
     type: number;
     lastTime: number;
     isProcessing: boolean;
+    board?: Board
 }
 
 export type CreateRoomRequest = PayloadAction<{
@@ -67,6 +68,10 @@ export type JoinRoomResponse = PayloadAction<{
     board?: Board;
     history?: Moving[];
 }>;
+export type LeaveRoomRequest = PayloadAction<{
+    rId: string,
+    uId: string
+}>
 export type MovingRequest = PayloadAction<{
     rId: string;
     timer: number;

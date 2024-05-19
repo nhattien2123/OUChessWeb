@@ -13,6 +13,8 @@ import Messenger from "src/components/messenger/Messenger";
 import Base from "src/share/base/Base";
 import Players from "src/components/players/Players";
 import Admin from "src/components/admin/Admin";
+import BotChess from "src/components/bot/BotChess";
+import Tutorial from "src/components/tutorial/Tutorial";
 
 interface RouterProps { }
 
@@ -39,6 +41,9 @@ const Router: React.FC<RouterProps> = () => {
                 <Route path="/play/online" element={<PrivateRouter component={<Matches />} />} />
                 <Route path="/forget" element={<ForgetPassword />} />
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/bot" element={<BotChess />} />
+                <Route path="/tutorial" element={<Base component={<Tutorial />} />} />
+                <Route path="/tutorial/:id/:title" element={<Tutorial />} />
             </Routes>
         </BrowserRouter>
     );

@@ -7,10 +7,6 @@ export const StatusBar: FC = () => {
     const detail = useAppSelector((state: RootState) => state.roomReducer.detail);
     const gameState = useAppSelector((state: RootState) => state.roomReducer.gameState);
 
-    useEffect(() => {
-        console.log("Turn: ", gameState.turn);
-    }, [gameState.turn]);
-
     return (
         <div className="status-bar">
             {detail && (

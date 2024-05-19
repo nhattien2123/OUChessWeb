@@ -98,76 +98,85 @@ const RegisterForm = (props: Props) => {
         <>
             <div className="container">
                 <div className="main">
-                    <div className="login-title">Đăng ký</div>
+                    <div className="login-title">ĐĂNG KÝ</div>
                     <div className="login-container">
                         <form className="login-input" onSubmit={form.handleSubmit(submitHandler)}>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="email"
-                                    placeholder="Email"
-                                    {...form.register("email")}
-                                />
-                                <ErrorMessage
-                                    name="email"
-                                    errors={form.formState.errors}
-                                    render={({ message }) => <div className="error-msg">{message}</div>}
-                                />
+                            <div className="input__container">
+                                <div className="textbox__container">
+                                    <input
+                                        className="textbox__style"
+                                        type="email"
+                                        placeholder="Email"
+                                        {...form.register("email")}
+                                    />
+                                    <ErrorMessage
+                                        name="email"
+                                        errors={form.formState.errors}
+                                        render={({ message }) => <div className="error-msg">{message}</div>}
+                                    />
+                                </div>
                             </div>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="text"
-                                    placeholder="Phone"
-                                    {...form.register("phone")}
-                                />
-                                <ErrorMessage
-                                    name="phone"
-                                    errors={form.formState.errors}
-                                    render={({ message }) => <div className="error-msg">{message}</div>}
-                                />
+                            <div className="input__container">
+                                <div className="textbox__container">
+                                    <input
+                                        className="textbox__style"
+                                        type="text"
+                                        placeholder="Phone"
+                                        {...form.register("phone")}
+                                    />
+                                    <ErrorMessage
+                                        name="phone"
+                                        errors={form.formState.errors}
+                                        render={({ message }) => <div className="error-msg">{message}</div>}
+                                    />
+                                </div>
                             </div>
-
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="text"
-                                    placeholder="Tài khoản"
-                                    {...form.register("username")}
-                                />
-                                <ErrorMessage
-                                    name="username"
-                                    errors={form.formState.errors}
-                                    render={({ message }) => <div className="error-msg">{message}</div>}
-                                />
+                            <div className="input__container">
+                                <div className="textbox__container">
+                                    <input
+                                        className="textbox__style"
+                                        type="text"
+                                        placeholder="Tài khoản"
+                                        {...form.register("username")}
+                                    />
+                                    <ErrorMessage
+                                        name="username"
+                                        errors={form.formState.errors}
+                                        render={({ message }) => <div className="error-msg">{message}</div>}
+                                    />
+                                </div>
                             </div>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="password"
-                                    placeholder="Mật khẩu"
-                                    {...form.register("password")}
-                                />
-                                <ErrorMessage
-                                    name="password"
-                                    errors={form.formState.errors}
-                                    render={({ message }) => <div className="error-msg">{message}</div>}
-                                />
+                            <div className="input__container">
+                                <div className="textbox__container">
+                                    <input
+                                        className="textbox__style"
+                                        type="password"
+                                        placeholder="Mật khẩu"
+                                        {...form.register("password")}
+                                    />
+                                    <ErrorMessage
+                                        name="password"
+                                        errors={form.formState.errors}
+                                        render={({ message }) => <div className="error-msg">{message}</div>}
+                                    />
+                                </div>
                             </div>
-                            <div className="input-container">
-                                <input
-                                    className="input-style"
-                                    type="password"
-                                    placeholder="Xác nhận mật khẩu"
-                                    {...form.register("confirmPassword")}
-                                />
-                                <ErrorMessage
-                                    name="confirmPassword"
-                                    errors={form.formState.errors}
-                                    render={({ message }) => <div className="error-msg">{message}</div>}
-                                />
+                            <div className="input__container">
+                                <div className="textbox__container">
+                                    <input
+                                        className="textbox__style"
+                                        type="password"
+                                        placeholder="Xác nhận mật khẩu"
+                                        {...form.register("confirmPassword")}
+                                    />
+                                    <ErrorMessage
+                                        name="confirmPassword"
+                                        errors={form.formState.errors}
+                                        render={({ message }) => <div className="error-msg">{message}</div>}
+                                    />
+                                </div>
                             </div>
-                            <button disabled={isLoading} className="btn-style btn-form btn-form-save">
+                            <button disabled={isLoading} className="btn__register btn__style btn__create">
                                 Đăng ký
                             </button>
                         </form>

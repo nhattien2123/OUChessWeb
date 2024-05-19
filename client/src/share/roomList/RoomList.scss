@@ -1,22 +1,37 @@
+$green-1: #81b64c;
+$left: 0%;
+$right: 50%;
+$line-width: 8px;
+$line-color: rgba(255,255,255,1);
+$top-line-color: linear-gradien(to right, $green-1, #fff);
+
+@keyframes textclip {
+    to {
+      background-position: 200% center;
+    }
+  }
+
 .room-list {
+    width: 80%;
+    margin-left: 10px;
     table {
         width: 100%;
         border-collapse: collapse;
+        margin: 10px 0 0 0;
+        color: #fff;
 
         th,
         td {
-            border: 1px solid #ccc;
+            // border: 1px solid #ccc;
             padding: 8px;
             text-align: center;
+            border-bottom: 1px solid $green-1;
+            white-space: 5px 0;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: $green-1;
             font-weight: bold;
-        }
-
-        tr:hover {
-            background-color: #f5f5f5;
         }
 
         td button {
@@ -33,13 +48,49 @@
             background-color: #a3d160;
         }
     }
+
+    h2 {
+        color: #fff;
+        text-transform: uppercase;
+        padding: 10px 0;
+        border-bottom: 2px solid $green-1;
+    }
 }
 
 .buttons-room {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
+    width: 20%;
+
+    .btn-room-left {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-right: 10px;
+        
+        button {
+            padding: 10px;
+            margin: 5px;
+        }
+    }
+
+    .btn-room-right {
+        display: flex;
+        width: 100%;
+        align-items: center;
+
+        input {
+            width: 60%;
+        }
+
+        button {
+            width: 25%;
+            font-size: 18px;
+        }
+    }
 }
 
 input[type="text"] {
@@ -104,10 +155,12 @@ input[type="text"] {
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: #262421;
     padding: 20px;
     border-radius: 5px;
     text-align: center;
+    color: #fff;
+    position: relative;
 
     h2 {
         font-size: 24px;
@@ -168,15 +221,73 @@ input[type="text"] {
             cursor: default;
         }
     }
+
+    .box__line {
+        position: absolute;
+        background: $line-color;
+        &--top,
+        &--bottom {
+          height: $line-width;
+          width: 100%;
+          &::before,
+          &::after {
+            content: "";
+            position: absolute;
+            width: $line-width;
+            height: $line-width;
+            background: $line-color;
+          }
+        }
+        &--top {
+            left:0;
+          top: -$line-width;
+          &::before {
+            left: 0;
+            bottom: -$line-width;      
+          }
+          &::after {
+            right: 0;
+            bottom: -$line-width;
+          }
+        }
+        &--bottom {
+          bottom: -$line-width;
+          left:0;
+          &::before {
+            left: 0;
+            top: -$line-width;      
+          }
+          &::after {
+            right: 0;
+            top: -$line-width;
+          }
+        }
+        &--left,
+        &--right {
+            top:0;
+          width: $line-width;
+          height: 100%;
+        }
+        &--left {
+          left: -$line-width;
+        }
+        &--right {
+          right: -$line-width;
+        }
+      }
 }
 
 .content {
     padding: 20px;
-    margin: 20px 20px 20px 210px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    height: 100vh;
+    margin-left: auto;
+    margin-right: 15px;
+    background-color: #262421;
+    // border: 1px solid #ccc;
+    // border-radius: 5px;
+    // box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
 
     h1 {
         font-size: 24px;

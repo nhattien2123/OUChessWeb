@@ -78,7 +78,7 @@ const ChatItem: React.FC<Props> = ({ chat: chat, kw: kw }) => {
                     </div>
                     <div className="item-profile">
                         <div className="item-username">{user?.username}</div>
-                        <div className="item-msg" style={chat.data.sent ? { color: "#fff", fontWeight: "bold" }: {color: "#ffffffaa"}} >{">> "+ chatInfo[1]?.data}</div>
+                        <div className="item-msg" style={chat.data.sent ? { color: "#fff", fontWeight: "bold" }: {color: "#ffffffaa"}} >{chatInfo[1]?.data}</div>
                     </div>
                 </div>
             )}
