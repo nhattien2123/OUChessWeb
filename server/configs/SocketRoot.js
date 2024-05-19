@@ -203,24 +203,25 @@ const rootSocket = (io) => {
                     wakizashiRotation: clients[i].wakizashiRotation
                 };
 
+                console.log("Player Connected: " + clients[i].name);
+                console.log("Connected Left Hand: " + connectedLeftHand.name);
                 socket.emit('other player connected', playerConnected);
                 socket.emit('other player head', connectedHead);
                 socket.emit('other player right hand', connectedRightHand);
                 socket.emit('other player left hand', connectedLeftHand);
+                // for (var i = 0; i < enemySpawnPoints.length; i++) {
+                //     console.log('enemySpawnPoints[', i, '] info : ', enemySpawnPoints[i]);
+                //     var othersEnemy = {
+                //         name: enemySpawnPoints[i].name,
+                //         enemyPosition: enemySpawnPoints[i].enemyPosition,
+                //         enemyRotation: enemySpawnPoints[i].enemyRotation,
+                //         health: enemySpawnPoints[i].health
+                //     };
+                //     socket.emit('others enemy', othersEnemy);
+                //     console.log(currentPlayer.name + ' emit: others enemy: ' + JSON.stringify(othersEnemy));
+                // }
 
-                for (var i = 0; i < enemySpawnPoints.length; i++) {
-                    console.log('enemySpawnPoints[', i, '] info : ', enemySpawnPoints[i]);
-                    var othersEnemy = {
-                        name: enemySpawnPoints[i].name,
-                        enemyPosition: enemySpawnPoints[i].enemyPosition,
-                        enemyRotation: enemySpawnPoints[i].enemyRotation,
-                        health: enemySpawnPoints[i].health
-                    };
-                    socket.emit('others enemy', othersEnemy);
-                    console.log(currentPlayer.name + ' emit: others enemy: ' + JSON.stringify(othersEnemy));
-                }
-
-                socket.emit('others wakizashi', othersWakizashi);
+                // socket.emit('others wakizashi', othersWakizashi);
 
                 console.log(currentPlayer.name + ' emit: other player connected: ' + JSON.stringify(playerConnected));
                 console.log(currentPlayer.name + ' emit: other player head: ' + JSON.stringify(connectedHead));

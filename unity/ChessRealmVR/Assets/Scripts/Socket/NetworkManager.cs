@@ -63,7 +63,6 @@ public class NetworkManager : MonoBehaviour
         SpawnPoint playerSpawnPoint = ps.playerSpawnPoint;
         Vector3 playerSpawnPosition = playerSpawnPoint.spawnPosition;
         Quaternion playerSpawnRotation = playerSpawnPoint.spawnRotation;
-        GameObject startMenuCamera = GetComponent<GameObject>();
 
         PlayerJSON playerJSON = new PlayerJSON(playerName, playerSpawnPosition, playerSpawnRotation);
         string data = JsonUtility.ToJson(playerJSON);
@@ -222,6 +221,7 @@ public class NetworkManager : MonoBehaviour
         LeftHandJSON leftHandJSON = LeftHandJSON.CreateFromJSON(data);
         Vector3 leftHandPosition = new Vector3(leftHandJSON.leftHandPosition[0], leftHandJSON.leftHandPosition[1], leftHandJSON.leftHandPosition[2]);
         Quaternion leftHandRotation = Quaternion.Euler(leftHandJSON.leftHandRotation[0], leftHandJSON.leftHandRotation[1], leftHandJSON.leftHandRotation[2]);
+        Debug.Log(leftHandJSON.name);
         GameObject o = GameObject.Find(leftHandJSON.name) as GameObject;
         if (o != null)
         {

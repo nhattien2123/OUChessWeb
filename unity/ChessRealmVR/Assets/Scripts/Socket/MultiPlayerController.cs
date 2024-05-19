@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor.XR.LegacyInputHelpers;
 
 public class MultiPlayerController : MonoBehaviour
 {
@@ -41,17 +42,17 @@ public class MultiPlayerController : MonoBehaviour
 
     void Reset()
     {
-        //oldHead = GetComponentInChildren<OVRCameraRig>().transform.Find("TrackingSpace/CenterEyeAnchor");
-        //oldHeadPosition = oldHead.position;
-        //oldHeadRotation = oldHead.rotation;
+        oldHead = GetComponentInChildren<CameraOffset>().transform.Find("Head/Cube");
+        oldHeadPosition = oldHead.position;
+        oldHeadRotation = oldHead.rotation;
         oldPosition = transform.position;
         oldRotation = transform.rotation;
-        //oldRightHand = GetComponentInChildren<OVRCameraRig>().transform.Find("DistanceGrabHandRight");
-        //oldRightHandPosition = oldRightHand.position;
-        //oldRightHandRotation = oldRightHand.rotation;
-        //oldLeftHand = GetComponentInChildren<OVRCameraRig>().transform.Find("DistanceGrabHandLeft");
-        //oldLeftHandPosition = oldLeftHand.position;
-        //oldLeftHandRotation = oldLeftHand.rotation;
+        oldRightHand = GetComponentInChildren<CameraOffset>().transform.Find("Right Grab Hand");
+        oldRightHandPosition = oldRightHand.position;
+        oldRightHandRotation = oldRightHand.rotation;
+        oldLeftHand = GetComponentInChildren<CameraOffset>().transform.Find("Left Grab Hand");
+        oldLeftHandPosition = oldLeftHand.position;
+        oldLeftHandRotation = oldLeftHand.rotation;
 
         currentHeadPosition = oldHead.position;
         currentHeadRotation = oldHead.rotation;
@@ -72,17 +73,17 @@ public class MultiPlayerController : MonoBehaviour
             return;
         }
 
-        //currentHead = GetComponentInChildren<OVRCameraRig>().transform.Find("TrackingSpace/CenterEyeAnchor");
-        //currentHeadPosition = currentHead.position;
-        //currentHeadRotation = currentHead.rotation;
+        currentHead = GetComponentInChildren<CameraOffset>().transform.Find("Head/Cube");
+        currentHeadPosition = currentHead.position;
+        currentHeadRotation = currentHead.rotation;
         currentPosition = transform.position;
         currentRotation = transform.rotation;
-        //currentRightHand = GetComponentInChildren<OVRCameraRig>().transform.Find("DistanceGrabHandRight");
-        //currentRightHandPosition = currentRightHand.position;
-        //currentRightHandRotation = currentRightHand.rotation;
-        //currentLeftHand = GetComponentInChildren<OVRCameraRig>().transform.Find("DistanceGrabHandLeft");
-        //currentLeftHandPosition = currentLeftHand.position;
-        //currentLeftHandRotation = currentLeftHand.rotation;
+        currentRightHand = GetComponentInChildren<CameraOffset>().transform.Find("Right Grab Hand");
+        currentRightHandPosition = currentRightHand.position;
+        currentRightHandRotation = currentRightHand.rotation;
+        currentLeftHand = GetComponentInChildren<CameraOffset>().transform.Find("Left Grab Hand");
+        currentLeftHandPosition = currentLeftHand.position;
+        currentLeftHandRotation = currentLeftHand.rotation;
 
         if (currentHeadPosition != oldHeadPosition)
         {

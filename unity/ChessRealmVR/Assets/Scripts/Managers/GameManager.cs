@@ -405,7 +405,7 @@ namespace Managers
             else xrOrigin.transform.rotation = Quaternion.Euler(0, 90, 0);
             xrOrigin.transform.position = new Vector3(position.x, position.y,
                 position.z);
-            xrOrigin.GetComponent<ActionBasedContinuousMoveProvider>().enabled = false;
+            xrOrigin.GetComponent<ActionBasedContinuousMoveProvider>().enabled = true;
         }
         
         public bool IsChessPieceInHistory(ChessPiece chessPiece)
