@@ -2,6 +2,14 @@
   box-sizing: border-box;
 }
 
+$angel: 0deg !default;
+
+@keyframes rotate {
+  to {
+    $angel: 360deg;
+  }
+}
+
 .error__block {
   text-align: center;
   padding: 10px 0;
@@ -29,11 +37,16 @@
 .login__container {
   width: 100%;
   height: 70%;
-  margin: 15% 0;
+  margin: 10% 0;
   display:flex;
   flex-direction: column;
   align-items: center;
   background-color: #3b3b3b83;
+  border-radius: 5px;
+  $angle: 0deg;
+  /* … */
+  border-image: linear-gradient($angel, green, yellow) 1;
+  animation: 10s rotate linear infinite;
 
   .login__title {
     font-size: 50px;
@@ -67,6 +80,8 @@
         }
       }
     }
+
+    
   }
 
   .login__feature {
@@ -111,9 +126,38 @@
 
   a {
     color: #646464;
+    
 
     &:hover {
       color: #dddddd;
     }
   }
 }
+
+.login__third__auth{
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 0 0;
+
+    .third__auth__google {
+        width: 15%;
+        height: 50px;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+
+        &:hover {
+          cursor: pointer;
+        }
+    }
+}
+
+
+.border-gradient {
+  border: 3px solid;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+}
+

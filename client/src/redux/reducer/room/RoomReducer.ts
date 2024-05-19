@@ -1,21 +1,50 @@
 import Board from "src/interfaces/gamecore/board/Board";
 import { createSlice } from "@reduxjs/toolkit";
 import * as Types from "src/redux/reducer/room/Types";
+import * as MoveUtility from "src/interfaces/gamecore/helper/MoveUtility";
+import Move, { MoveFlag } from "src/interfaces/gamecore/board/Move";
+
 
 const currentRoom = sessionStorage.getItem("room");
+const currentState = sessionStorage.getItem("state");
+const history = sessionStorage.getItem("history");
+
+const loadBoardDefault = (): Board => {
+    const board = new Board();
+    board.LoadStartPostion();
+    return board;
+}
+
+const baseRoom: Types.Room = {
+    detail: null,
+    gameState: {
+        turn: 0,
+        isStarted: false,
+        playerColor: -1,
+        whiteTimer: 600000,
+        blackTimer: 600000,
+    },
+    gameAction: {
+        move: {
+            start: null,
+            target: null,
+        },
+        isPromotion: false,
+        promotionPiece: "",
+        isAction: false,
+    },
+    history: [],
+    type: 0,
+    lastTime: 0,
+    isProcessing: false,
+    board: loadBoardDefault(),
+};
 
 const initialState: Types.Room =
-    currentRoom !== null
-        ? (JSON.parse(currentRoom) as Types.Room)
-        : {
-              detail: null,
-              gameState: {
-                  turn: 0,
-                  isStarted: false,
-                  playerColor: -1,
-                  whiteTimer: 600000,
-                  blackTimer: 600000,
-              },
+    currentRoom !== null && currentState !== null && history !== null
+        ? {
+              detail: JSON.parse(currentRoom),
+              gameState: JSON.parse(currentState),
               gameAction: {
                   move: {
                       start: null,
@@ -25,11 +54,13 @@ const initialState: Types.Room =
                   promotionPiece: "",
                   isAction: false,
               },
-              history: [],
+              history: JSON.parse(history),
               type: 0,
               lastTime: 0,
               isProcessing: false,
-          };
+              board: new Board(),
+          }
+        : baseRoom;
 
 const roomSlice = createSlice({
     name: "roomSlice",
@@ -54,20 +85,27 @@ const roomSlice = createSlice({
             state.detail = detail;
             state.gameState.playerColor = color;
         },
-        requestLeaveRoom: (state) => {
+        requestLeaveRoom: (state, action: Types.LeaveRoomRequest) => {
             state.isProcessing = true;
         },
         responseLeaveRoom: (state) => {
-            state = initialState;
+            sessionStorage.removeItem("room");
+            sessionStorage.removeItem("state");
+            sessionStorage.removeItem("history");
+            state.detail = null;
+            state = baseRoom;
         },
         // game action
         resquestStarting: (state) => {
             state.gameState.isStarted = true;
             const board = new Board();
-            state.gameState.board = board;
+            board.LoadStartPostion();
+            state.board = board;
             state.lastTime = Date.now();
 
-            sessionStorage.setItem("room", JSON.stringify(state));
+            sessionStorage.setItem("room", JSON.stringify(state.detail));
+            sessionStorage.setItem("state", JSON.stringify(state.gameState));
+            sessionStorage.setItem("history", JSON.stringify(state.history));
         },
         requestMoving: (state, action: Types.MovingRequest) => {
             state.gameAction.isAction = true;
@@ -80,16 +118,25 @@ const roomSlice = createSlice({
         responseMoving: (state, action: Types.MovingResponse) => {
             state.gameAction.isAction = false;
             const { moving } = action.payload;
+            const newMove = new Move(moving.start, moving.target, moving.flag ? moving.flag : MoveFlag.NoFlag);
+
+            if(state.board){
+                const str = MoveUtility.GetMoveNameSAN(newMove, state.board);
+                moving.moveString = str;
+            }
             state.gameAction.move = {
                 start: moving.start,
                 target: moving.target,
                 flag: moving.flag,
             };
 
+            console.log("redux", moving);
             state.history.push(moving);
             state.lastTime = Date.now();
             state.gameState.turn = 1 - state.gameState.turn;
-            sessionStorage.setItem("room", JSON.stringify(state));
+            sessionStorage.setItem("room", JSON.stringify(state.detail));
+            sessionStorage.setItem("state", JSON.stringify(state.gameState));
+            sessionStorage.setItem("board", JSON.stringify(state.board?.Square));
         },
         resClearMoving: (state) => {
             state.gameAction = {
@@ -101,7 +148,10 @@ const roomSlice = createSlice({
                 promotionPiece: "",
                 isAction: false,
             };
-            sessionStorage.setItem("room", JSON.stringify(state));
+            sessionStorage.setItem("room", JSON.stringify(state.detail));
+            sessionStorage.setItem("state", JSON.stringify(state.gameState));
+            sessionStorage.setItem("board", JSON.stringify(state.board?.Square));
+            sessionStorage.setItem("history", JSON.stringify(state.history));
         },
     },
 });

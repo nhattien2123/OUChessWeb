@@ -60,11 +60,10 @@ const CommentInfoList = (props: Props) => {
         console.log(comments.length);
     }, [comments]);
 
-    if (comments.length === 0) <div style={{ textAlign: "center" }}>...</div>;
-
     return (
         <>
             <div style={{ overflow: "auto", maxHeight: "240px" }}>
+                {comments.length === 0 && <div style={{ color: "#9e9e9e", padding: "5px", margin: "auto" }} >Không có bất kỳ lời nhận xét nào</div>}
                 {comments.map((m) => {
                     return <CommentInfoItem key={m.sender._id} comment={m} />;
                 })}

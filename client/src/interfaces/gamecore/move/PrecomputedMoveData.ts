@@ -62,7 +62,6 @@ class PrecomputedMoveData {
             this.numSquaresToEdge = Array<number>(8).map(() => [] as number[]);
             this.knightMoves = Array<number>(64).map(() => [] as number[]);
             this.kingMoves = Array<number>(64).map(() => [] as number[]);
-            this.numSquaresToEdge = Array<number>(64).map(() => [] as number[]);
 
             this.rookMoves = Array<bigint>(64).fill(BigInt(0));
             this.bishopMoves = Array<bigint>(64).fill(BigInt(0));
@@ -87,7 +86,7 @@ class PrecomputedMoveData {
                 this.numSquaresToEdge[squareIndex][1] = south;
                 this.numSquaresToEdge[squareIndex][2] = west;
                 this.numSquaresToEdge[squareIndex][3] = east;
-                this.numSquaresToEdge[squareIndex][4] = Math.min(north, south);
+                this.numSquaresToEdge[squareIndex][4] = Math.min(north, west);
                 this.numSquaresToEdge[squareIndex][5] = Math.min(south, east);
                 this.numSquaresToEdge[squareIndex][6] = Math.min(north, east);
                 this.numSquaresToEdge[squareIndex][7] = Math.min(south, west);
@@ -192,6 +191,28 @@ class PrecomputedMoveData {
 
                 this.directionLookUp[i] = absDir * Math.sign(offset);
             }
+
+            // Distance lookup
+			this.OrthogonalDistance = Array.from({ length: 64 }, () => new Array(64).fill(0));
+			this.kingDistance = Array.from({ length: 64 }, () => new Array(64).fill(0));
+			this.CentreManhattanDistance = new Array<number>(64).fill(0);
+			for (let squareA = 0; squareA < 64; squareA++)
+			{
+				const coordA: Coord = BoardHelper.CoordFromIndex(squareA);
+				const fileDstFromCentre = Math.max(3 - coordA.fileIndex, coordA.fileIndex - 4);
+				const rankDstFromCentre = Math.max(3 - coordA.rankIndex, coordA.rankIndex - 4);
+				this.CentreManhattanDistance[squareA] = fileDstFromCentre + rankDstFromCentre;
+
+				for (let squareB = 0; squareB < 64; squareB++)
+				{
+
+					const coordB: Coord = BoardHelper.CoordFromIndex(squareB);
+					const rankDistance = Math.abs(coordA.rankIndex - coordB.rankIndex);
+					const fileDistance = Math.abs(coordA.fileIndex - coordB.fileIndex);
+					this.OrthogonalDistance[squareA][squareB] = fileDistance + rankDistance;
+					this.kingDistance[squareA][squareB] = Math.max(fileDistance, rankDistance);
+				}
+			}
 
             this.alignMask = Array<bigint>(64)
                 .fill(BigInt(0))

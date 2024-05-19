@@ -81,7 +81,7 @@ const rootSocket = (io) => {
                         status: 1,
                         color: 0,
                     });
-                    console.log('Player create');
+                    
                     io.expert(rooms).emit('req-get-rooms', rooms);
                 } else if (detail.type === 'join') {
                     const room = rooms.filter((r) => r.id === detail.rID)[0];
@@ -100,7 +100,6 @@ const rootSocket = (io) => {
                             status: 1,
                             color: 1,
                         });
-                        console.log(socket.rooms);
 
                         io.expert(rooms).emit('req-get-rooms', rooms);
                     }
@@ -118,28 +117,21 @@ const rootSocket = (io) => {
                     color: null,
                 });
             }
-
-            console.log(rooms);
         });
 
         socket.on('get-rooms', async () => {
-            console.log(rooms);
             socket.emit('rep-get-rooms', rooms);
         });
 
         // on
         // - roomID
         socket.on('leave-room', async (request) => {
-            const room = rooms[request.roomID];
-            room.players.remove((p) => p.player._id === socket.userId);
-            io.to(room.id).emit('req-leave-room');
+            const room = request.rId;
+            io.to(room).emit('req-leave-room', {
+                uId: request.uId
+            });
             socket.leave(room.id);
-            console.log('Player left');
-
-            if (room.players.length === 0) {
-                rooms.remove(room.id);
-                io.emit('req-get-rooms', rooms);
-            }
+            rooms = rooms.filter((r) => r.id !== room);
         });
 
         // on

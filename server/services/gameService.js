@@ -1,7 +1,6 @@
 const cameraMove = (socket, io) => {
     socket.on(`cameraMove`, (data) => {
         io.sockets.in(data.roomId).emit(`cameraMoved`, data)
-        // console.log(data)
     })
 };
 

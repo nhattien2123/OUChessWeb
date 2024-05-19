@@ -19,6 +19,13 @@ function* joinRoom(action: TypesAction.JoinRoomRequest) {
     });
 }
 
+function* leavingRoom(action: TypesAction.LeaveRoomRequest) {
+    yield socket.emit("leave-room", {
+        rId: action.payload.rId,
+        uId: action.payload.uId
+    });
+}
+
 function* moving(action: TypesAction.MovingRequest) {
     yield socket.emit("send-move", {
         rId: action.payload.rId,
@@ -27,8 +34,11 @@ function* moving(action: TypesAction.MovingRequest) {
     });
 }
 
+
+
 export function* watchRoom() {
     yield takeLatest(roomAction.requestCreateRoom.type, createRoom);
     yield takeLatest(roomAction.requestJoinRoom.type, joinRoom);
+    yield takeLatest(roomAction.requestLeaveRoom.type, leavingRoom)
     yield takeLatest(roomAction.requestMoving.type, moving);
 }

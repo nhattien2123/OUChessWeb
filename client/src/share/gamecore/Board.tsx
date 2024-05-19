@@ -1,16 +1,16 @@
-import { OrbitControls } from '@react-three/drei';
-import React, { FC, useEffect, useState } from 'react';
-import { Color, EndGameType, Position, Tile } from 'src/interfaces/gameplay/chess';
-import { animated, useSpring } from '@react-spring/three';
-import { checkIfPositionsMatch, copyBoard, createBoard } from '../game/logic/Board';
-import { MeshWrapper, ModelProps } from 'src/models';
-import { TileModel } from 'src/models/Tile';
-import { WhitePawnModel } from 'src/models/whitePieces/WhitePawn';
-import { WhiteRookModel } from 'src/models/whitePieces/WhiteRook';
-import { WhiteKnightModel } from 'src/models/whitePieces/WhiteKnight';
-import { WhiteBishopModel } from 'src/models/whitePieces/WhiteBishop';
-import { WhiteQueenModel } from 'src/models/whitePieces/WhiteQueen';
-import { WhiteKingModel } from 'src/models/whitePieces/WhiteKing';
+import { OrbitControls } from "@react-three/drei";
+import React, { FC, useCallback, useEffect, useState } from "react";
+import { Color, EndGameType, Position, Tile } from "src/interfaces/gameplay/chess";
+import { animated, useSpring } from "@react-spring/three";
+import { checkIfPositionsMatch, copyBoard, createBoard } from "../game/logic/Board";
+import { MeshWrapper, ModelProps } from "src/models";
+import { TileModel } from "src/models/Tile";
+import { WhitePawnModel } from "src/models/whitePieces/WhitePawn";
+import { WhiteRookModel } from "src/models/whitePieces/WhiteRook";
+import { WhiteKnightModel } from "src/models/whitePieces/WhiteKnight";
+import { WhiteBishopModel } from "src/models/whitePieces/WhiteBishop";
+import { WhiteQueenModel } from "src/models/whitePieces/WhiteQueen";
+import { WhiteKingModel } from "src/models/whitePieces/WhiteKing";
 import {
     checkIfSelectedPieceCanMoveHere,
     createId,
@@ -18,28 +18,36 @@ import {
     getTile,
     movesForPiece,
     shouldPromotePawn,
-} from '../game/logic/pieces';
-import { MovingTo, ThreeMouseEvent, useHistoryState } from 'src/components/game/Game';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { RootState } from 'src/app/store';
-import { isPawn } from '../game/logic/pieces/Pawn';
-import { isKing } from '../game/logic/pieces/King';
-import { isRook } from '../game/logic/pieces/Rook';
-import { MakeMoveClient } from '../game/board/Board';
-import { Exception } from 'sass';
+} from "../game/logic/pieces";
+import { MovingTo, ThreeMouseEvent, useHistoryState } from "src/components/game/Game";
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
+import { isPawn } from "../game/logic/pieces/Pawn";
+import { isKing } from "../game/logic/pieces/King";
+import { isRook } from "../game/logic/pieces/Rook";
+import { MakeMoveClient } from "../game/board/Board";
+import { Exception } from "sass";
 
-import Board from 'src/interfaces/gamecore/board/Board';
-import * as BoardHelper from 'src/interfaces/gamecore/helper/BoardHelper';
-import * as PieceFunc from 'src/share/gamecore/board/Piece';
-import * as Piece from 'src/interfaces/gamecore/board/Piece';
+import Board from "src/interfaces/gamecore/board/Board";
+import * as BoardHelper from "src/interfaces/gamecore/helper/BoardHelper";
+import * as PieceFunc from "src/share/gamecore/board/Piece";
+import * as Piece from "src/interfaces/gamecore/board/Piece";
+import * as MoveUtility from "src/interfaces/gamecore/helper/MoveUtility";
 
-import Move from 'src/interfaces/gamecore/board/Move';
-import MoveGenerator from 'src/interfaces/gamecore/move/MoveGenerator';
-import { connectStorageEmulator } from 'firebase/storage';
+import Move from "src/interfaces/gamecore/board/Move";
+import MoveGenerator from "src/interfaces/gamecore/move/MoveGenerator";
+import { connectStorageEmulator } from "firebase/storage";
+import Searcher from "src/interfaces/gamecore/botChess/search/Searcher";
+import * as GameResult from "src/interfaces/gamecore/result/GameResult";
 
 interface Props {
     board: Board;
     setBoard: React.Dispatch<React.SetStateAction<Board>>;
+    setMove?: (str: string) => void;
+    moving?: Move | null;
+    setMoving?: (move: Move | null) => void;
+    turning?: number | null;
+    setTurning?: (turn: number) => void;
 }
 
 const moveGenerator = new MoveGenerator();
@@ -51,18 +59,17 @@ const IsHightLigt = (board: Board, start: number | null, target: number) => {
     for (let i = 0; i < moves.length; i++) {
         const move = moves[i];
         if (move.StartSquare() === start && move.TargetSquare() === target) {
-
             return {
                 target: move.TargetSquare(),
-                flag: move.MoveFlag()
-            }
+                flag: move.MoveFlag(),
+            };
         }
     }
 
     return null;
 };
 
-export const BoardDefault: FC<Props> = ({ board, setBoard }) => {
+export const BoardDefault: FC<Props> = ({ board, setBoard, setMove, moving, setMoving, setTurning }) => {
     const [redLightPosition, setRedLightPosition] = useState<Position>({
         x: 0,
         y: 0,
@@ -76,7 +83,7 @@ export const BoardDefault: FC<Props> = ({ board, setBoard }) => {
 
     const { intensity } = useSpring({
         intensity: selected ? 0.35 : 0,
-    })
+    });
 
     const selectThisPiece = (e: ThreeMouseEvent, squareIndex: number | null) => {
         e.stopPropagation();
@@ -90,29 +97,34 @@ export const BoardDefault: FC<Props> = ({ board, setBoard }) => {
             setSelected(null);
             return;
         }
-        console.log("selected");
 
         setPrevSelected(() => {
             return prevSelected !== squareIndex ? selected : null;
         });
         setSelected(squareIndex);
         setRedLightPosition({
-            x: BoardHelper.FileIndex(squareIndex),
-            y: BoardHelper.RankIndex(squareIndex),
+            x: BoardHelper.RankIndex(squareIndex),
+            y: BoardHelper.FileIndex(squareIndex),
         });
     };
 
     const startMovingPiece = (e: ThreeMouseEvent, target: number) => {
-        console.log("targeted");
-        if(selected && target){
+        if (selected && target) {
             setTargeted(target);
+            setStep(getStep(selected, target, board.IsWhiteToMove));
             return;
         }
         setTargeted(null);
     };
 
     const finishMovingPiece = (start: number | null, target: number | null, flag: number | null) => {
-        if(!target && !start) return;
+        if (!target && !start) return;
+
+        const str = MoveUtility.GetMoveNameSAN(new Move(Number(start), Number(target), Number(flag)), board);
+
+        if (setMove) {
+            setMove(str);
+        }
 
         board.MakeMove(new Move(Number(start), Number(target), Number(flag)), false);
 
@@ -121,21 +133,63 @@ export const BoardDefault: FC<Props> = ({ board, setBoard }) => {
         setPrevSelected(null);
         setStep(null);
         setTurn(1 - turn);
+        if(setTurning){
+            setTurning(1 - turn);
+        }
+        if(setMoving){
+            setMoving(null);
+        }
     };
 
     const getStep = (start: number, target: number, isWhite: boolean) => {
-        console.log(start, target);
         const movingTo = {
-            x: BoardHelper.FileIndex(Number(target)) - BoardHelper.FileIndex(Number(start)),
-            y: BoardHelper.RankIndex(Number(target)) - BoardHelper.RankIndex(Number(start)),
-        }
+            x: BoardHelper.RankIndex(Number(target)) - BoardHelper.RankIndex(Number(start)),
+            y: BoardHelper.FileIndex(Number(target)) - BoardHelper.FileIndex(Number(start)),
+        };
 
-        if(isWhite){
-            movingTo.y = movingTo.y * -1;
-        }
+        // if(!isWhite){
+        //     movingTo.y = movingTo.y * -1;
+        // }
 
         return movingTo;
-    }
+    };
+
+    useEffect(() => {
+        const gameResult = GameResult.GetGameState(board);
+
+        if(setMove){
+            return;
+        }
+
+        if (gameResult) {
+            if (
+                gameResult === GameResult.GameResult.Stalemate ||
+                gameResult === GameResult.GameResult.InsufficientMaterial
+            ) {
+                alert("Stalement | Insu");
+            }
+
+            if (gameResult === GameResult.GameResult.Repetition) {
+                alert("Repetition");
+            }
+
+            if (
+                gameResult === GameResult.GameResult.WhiteIsMated ||
+                gameResult === GameResult.GameResult.BlackIsMated
+            ) {
+                alert("Game End");
+            }
+        }
+        return;
+    }, [turn]);
+
+    useEffect(() => {
+        if(moving && moving !== null){
+            setSelected(moving.StartSquare());
+            setTargeted(moving.TargetSquare());
+            setStep(getStep(moving.StartSquare(), moving.TargetSquare(), board.IsWhiteToMove));
+        }
+    }, [moving])
 
     return (
         <>
@@ -150,34 +204,46 @@ export const BoardDefault: FC<Props> = ({ board, setBoard }) => {
                 />
                 <hemisphereLight intensity={0.5} color="#ffa4a4" groundColor="#d886b7" />
 
-                <animated.pointLight intensity={intensity} color="red" position={[redLightPosition.x, 1, redLightPosition.y]} />
+                <animated.pointLight
+                    intensity={intensity}
+                    color="red"
+                    position={[redLightPosition.y, 1, redLightPosition.x]}
+                />
                 {board.Square.map((square, i) => {
                     const file = BoardHelper.FileIndex(i);
                     const rank = BoardHelper.RankIndex(i);
                     const bg = (file + rank) % 2 === 0 ? `white` : `black`;
-
                     const isHightLight = IsHightLigt(board, selected, i);
                     const wasSelected = prevSelected === i;
                     const isSelected = selected && selected === i ? true : false;
-                    console.log(isSelected);
                     let canMoveHere: Position | null = null;
+
                     if (isHightLight !== null) {
                         canMoveHere = {
-                            x: BoardHelper.FileIndex(isHightLight.target),
-                            y: BoardHelper.RankIndex(isHightLight.target),
+                            x: BoardHelper.RankIndex(isHightLight.target),
+                            y: BoardHelper.FileIndex(isHightLight.target),
                         };
                     }
 
-                    // const pieceIsBeingReplaced =
-                    // movingTo?.move.piece && tile.piece && movingTo?.move.capture
-                    //     ? tileId === createId(movingTo?.move.capture)
-                    //     : false;
+                    const pieceIsBeingReplaced =
+                        selected &&
+                        targeted &&
+                        board.Square[targeted] !== Piece.PieceType.None &&
+                        checkIfPositionsMatch(
+                            { x: BoardHelper.FileIndex(i), y: BoardHelper.RankIndex(i) },
+                            {
+                                x: BoardHelper.FileIndex(Number(targeted)),
+                                y: BoardHelper.RankIndex(Number(targeted)),
+                            },
+                        )
+                            ? true
+                            : false;
 
                     const handleClick = (e: ThreeMouseEvent) => {
+                        if (selected && targeted) return;
 
-                        if(selected && targeted) return;
-
-                        const tileContainsOtherPlayersPiece = square !== 0 && PieceFunc.PieceColour(square) !== turn * 8;
+                        const tileContainsOtherPlayersPiece =
+                            square !== 0 && PieceFunc.PieceColour(square) !== turn * 8;
 
                         if (tileContainsOtherPlayersPiece && !canMoveHere) {
                             setSelected(null);
@@ -188,35 +254,37 @@ export const BoardDefault: FC<Props> = ({ board, setBoard }) => {
                     };
 
                     const props: ModelProps = {
-                        position: [file, 0.5, rank],
+                        position: [rank, 0.5, file],
                         scale: [0.5, 0.5, 0.5],
                         color: PieceFunc.PieceColour(square) === 0 ? `white` : `black`,
                         onClick: handleClick,
-                        isSelected: isSelected,
+                        isSelected: turn === 0 ? isSelected : false,
                         wasSelected: wasSelected,
                         canMoveHere: canMoveHere,
                         movingTo:
-                            selected !== null && targeted !== null &&
+                            selected !== null &&
+                            targeted !== null &&
                             checkIfPositionsMatch(
                                 { x: BoardHelper.FileIndex(i), y: BoardHelper.RankIndex(i) },
                                 {
-                                    x: BoardHelper.FileIndex(Number(targeted)),
-                                    y: BoardHelper.RankIndex(Number(targeted)),
+                                    x: BoardHelper.FileIndex(Number(selected)),
+                                    y: BoardHelper.RankIndex(Number(selected)),
                                 },
                             )
-                                ? getStep(selected, targeted, true)
+                                ? step
                                 : null,
-                        pieceIsBeingReplaced: false,
-                        finishMovingPiece: () => finishMovingPiece(selected, targeted, isHightLight !== null ? isHightLight.flag : null),
+                        pieceIsBeingReplaced: pieceIsBeingReplaced,
+                        finishMovingPiece: () => pieceIsBeingReplaced ? null :
+                            finishMovingPiece(selected, targeted, isHightLight !== null ? isHightLight.flag : null),
                     };
 
                     return (
                         <group key={i}>
                             <TileModel
                                 color={bg}
-                                position={[file, 0.25, rank]}
+                                position={[rank, 0.25, file]}
                                 onClick={handleClick}
-                                canMoveHere={canMoveHere}
+                                canMoveHere={turn === 0 ? canMoveHere : null}
                             />
                             <MeshWrapper key={i} {...props}>
                                 {PieceFunc.PieceType(square) === 1 && <WhitePawnModel />}

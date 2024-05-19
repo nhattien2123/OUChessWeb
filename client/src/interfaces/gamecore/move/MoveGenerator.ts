@@ -153,6 +153,10 @@ class MoveGenerator {
             const targetSquare = popResult.i;
             kingMoves = popResult.b;
 
+            if(PieceFunc.PieceType(this.board.Square[this.friendlyKingSquare]) === PieceType.None){
+                continue;
+            }
+
             moves[this.currMoveIndex++] = new Move(this.friendlyKingSquare, targetSquare);
         }
 
@@ -472,6 +476,7 @@ class MoveGenerator {
             startDirIndex = this.board.Rooks[this.enemyIndex].Count() > 0 ? 0 : 4;
             endDirIndex = this.board.Bishops[this.enemyIndex].Count() > 0 ? 8 : 4;
         }
+
         for (let dir = startDirIndex; dir < endDirIndex; dir++) {
             const isDiagonal = dir > 3;
             const slider = isDiagonal ? this.board.EnemyDiagonalSliders : this.board.EnemyOrthogonalSliders;
@@ -488,47 +493,34 @@ class MoveGenerator {
                 const squareIndex = this.friendlyKingSquare + directionOffset * (i + 1);
                 rayMask |= BigInt(1) << BigInt(squareIndex);
                 const piece = this.board.Square[squareIndex];
-
-                // This square contains a piece
+       
                 if (piece !== PieceType.None) {
                     if (PieceFunc.IsColour(piece, this.friendlyColour)) {
-                        // First friendly piece we have come across in this direction, so it might be pinned
                         if (!isFriendlyPieceAlongRay) {
                             isFriendlyPieceAlongRay = true;
-                        }
-                        // This is the second friendly piece we've found in this direction, therefore pin is not possible
-                        else {
+                        } else {
                             break;
                         }
-                    }
-                    // This square contains an enemy piece
-                    else {
+                    } else {
                         const pieceType = PieceFunc.PieceType(piece);
-
-                        // Check if piece is in bitmask of pieces able to move in current direction
                         if (
-                            (isDiagonal && PieceFunc.IsDiagonalSlider(pieceType)) ||
-                            (!isDiagonal && PieceFunc.IsOrthogonalSlider(pieceType))
+                            isDiagonal && PieceFunc.IsDiagonalSlider(pieceType) ||
+                            !isDiagonal && PieceFunc.IsOrthogonalSlider(pieceType)
                         ) {
-                            // Friendly piece blocks the check, so this is a pin
                             if (isFriendlyPieceAlongRay) {
                                 this.pinRays |= rayMask;
-                            }
-                            // No friendly piece blocking the attack, so this is a check
-                            else {
+                            } else {
                                 this.checkRayBitmask |= rayMask;
-                                this.inDoubleCheck = this.inCheck; // if already in check, then this is double check
+                                this.inDoubleCheck = this.inCheck;
                                 this.inCheck = true;
                             }
                             break;
                         } else {
-                            // This enemy piece is not able to move in the current direction, and so is blocking any checks/pins
                             break;
                         }
                     }
                 }
             }
-            // Stop searching for pins if in double check, as the king is the only piece able to move in that case anyway
             if (this.inDoubleCheck) {
                 break;
             }
@@ -560,7 +552,7 @@ class MoveGenerator {
             this.board.pieceBitBoards[PieceFunc.MakePiece(PieceType.Pawn, this.board.OpponentColour())];
         this.opponentPawnAttackMap = PawnAttacks(opponentPawnsBoard, !this.isWhiteToMove);
         if (ContainsSquare(this.opponentPawnAttackMap, this.friendlyKingSquare)) {
-            this.inDoubleCheck = this.inCheck; // if already in check, then this is double check
+            this.inDoubleCheck = this.inCheck; 
             this.inCheck = true;
             const possiblePawnAttackOrigins = this.board.IsWhiteToMove
                 ? BitBoardUtility.WhitePawnAttacks[this.friendlyKingSquare]

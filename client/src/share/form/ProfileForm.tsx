@@ -73,7 +73,7 @@ const ProfileForm = (props: Props) => {
             <div className="information-container">
                 <div className="information-title">THÔNG TIN NGƯỜI DÙNG</div>
                 <div className="information-content">
-                    {errorMsg && (
+                    {/* {errorMsg && (
                         <div
                             style={{
                                 width: "50%",
@@ -85,7 +85,7 @@ const ProfileForm = (props: Props) => {
                         >
                             {errorMsg}
                         </div>
-                    )}
+                    )} */}
                     <form onSubmit={form.handleSubmit(submitHandle)} className="information-form">
                         <div className="input-form-container">
                             <label className="label-form" htmlFor="firstName">

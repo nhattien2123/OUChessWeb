@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { Color, PieceType } from "src/interfaces/gameplay/chess";
 import { RootState } from "src/app/store";
 import { LeaveRoom } from "src/share/game/board/Sidebar";
-import { roomAction } from "src/redux/reducer/room/RoomReducer";
+import RoomReducer, { roomAction } from "src/redux/reducer/room/RoomReducer";
 import { matchActions } from "src/redux/reducer/match/MatchReducer";
 import { socket } from "src";
 import { Moving } from "src/redux/reducer/room/Types";
@@ -101,8 +101,8 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
                 });
                 dispatch(opponentActions.setName({ name: split[0] }));
                 dispatch(opponentActions.setAvatar({ avatar: data.avatar }));
-                if (playerColor === `black`) dispatch(opponentActions.setColor({ color: `white` }));
-                else dispatch(opponentActions.setColor({ color: `black` }));
+                // if (playerColor === `black`) dispatch(opponentActions.setColor({ color: `white` }));
+                // else dispatch(opponentActions.setColor({ color: `black` }));
             }
         });
 
@@ -182,6 +182,7 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
         socket.on("rep-join-room", (req: rResult) => {
             const { detail, status } = req;
             if (status === 1) {
+                console.log(detail.player.findIndex((player) => player._id === userId));
                 dispatch(
                     roomAction.responseCreateRoom({
                         detail: {
@@ -201,6 +202,7 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
                             color: detail.player.findIndex((player) => player._id !== userId) === 1 ? "black" : "white",
                         }),
                     );
+                    dispatch(roomAction.resquestStarting());
                     const message: Message = {
                         author: `System`,
                         message: `${opponent.username} has joined room`,
@@ -227,6 +229,7 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
             // Clear player state.
             // Clear opponent state.
             // Clear session.
+            dispatch(roomAction.responseLeaveRoom());
             toast.info("Player left");
         });
 
@@ -236,7 +239,6 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
             timer: number;
         }
         socket.on("req-send-move", (req: mResult) => {
-            console.log(req.moving);
             dispatch(
                 roomAction.responseMoving({
                     moving: req.moving,

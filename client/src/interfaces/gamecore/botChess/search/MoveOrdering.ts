@@ -33,7 +33,7 @@ class MoveOrdering {
         this.moveScores = new Array<number>(maxMoveCount);
         this.transpositionTable = tt;
         this.invalidMove = Move.NullMove();
-        this.killerMoves = new Array<Killers>(maxKillerMovePly);
+        this.killerMoves = new Array<Killers>(maxKillerMovePly).fill(new Killers());
         this.History = Array.from({ length: 2 }, () => Array.from({ length: 64 }, () => new Array<number>(64).fill(0)));
     }
 
@@ -75,7 +75,6 @@ class MoveOrdering {
             let score = 0;
             const startSquare = move.StartSquare();
             const targetSquare = move.TargetSquare();
-
             const movePiece = board.Square[startSquare];
             const movePieceType = PieceFunc.PieceType(movePiece);
             const capturePieceType = PieceFunc.PieceType(board.Square[targetSquare]);
@@ -99,7 +98,7 @@ class MoveOrdering {
                 if (flag === MoveFlag.PromoteToQueenFlag && !isCapture) {
                     score += promoteBias;
                 }
-            } else if (movePieceType === Piece.PieceType.King) {
+            } else if (movePieceType === Piece.PieceType.King || movePieceType === Piece.PieceType.None) {
                 const empty = 1;
             } else {
                 const toScore = PieceSquareTable.ReadTables(movePiece, targetSquare);
@@ -163,6 +162,7 @@ class MoveOrdering {
     };
 
     static QuickSort = (values: Move[], scores: number[], low: number, high: number) => {
+        console.log(scores, low, high);
         if (low < high) {
             const pivotIndex = MoveOrdering.Partition(values, scores, low, high);
             MoveOrdering.QuickSort(values, scores, low, pivotIndex - 1);

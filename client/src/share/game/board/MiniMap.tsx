@@ -6,7 +6,7 @@ import "src/share/game/board/Board.scss";
 import Board from "src/interfaces/gamecore/board/Board";
 
 export const MiniMap: FC<{
-    board: Board;
+    board?: Board;
     selected: number | null;
     moves: number[];
 }> = ({ board, selected, moves }) => {

@@ -69,6 +69,9 @@ class Bits {
                 const whiteForwardMask = ~(BigInt("18446744073709551615") >> BigInt(64 - 8 * (rank + 1)));
                 const blackForwardMask = (BigInt(1) << BigInt(8 * rank)) - BigInt(1);
 
+                this.WhitePassedPawnMask[square] = (FileA << BigInt(file) | adjacentFiles) & whiteForwardMask;
+                this.BlackPassedPawnMask[square] = (FileA << BigInt(file) | adjacentFiles) & blackForwardMask;
+
                 const adjacent =
                     ((BigInt(1) << BigInt(square - 1)) | (BigInt(1) << BigInt(square + 1))) & adjacentFiles;
                 this.WhitePawnSupportMask[square] = adjacent | Shift(adjacent, -8);

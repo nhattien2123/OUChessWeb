@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FC } from "react";
 import type { Position } from "src/interfaces/gameplay/chess";
 import { useSpring, animated } from "@react-spring/three";
 import type { AnimationControls, TargetAndTransition, VariantLabels, Transition } from "framer-motion";
 import { motion } from "framer-motion-3d";
+import { IsSlidingPiece } from "src/share/gamecore/board/Piece";
 
 export const PieceMaterial: FC<
     JSX.IntrinsicElements[`meshPhysicalMaterial`] & {
@@ -61,13 +62,22 @@ export const MeshWrapper: FC<ModelProps> = ({
                 receiveShadow
                 initial={false}
                 animate={
-                    movingTo
+                    movingTo !== null
                         ? variants.move({ movingTo, isSelected })
                         : pieceIsBeingReplaced
                         ? variants.replace({ movingTo, isSelected })
                         : isSelected
                         ? variants.select({ movingTo, isSelected })
                         : variants.initial({ movingTo, isSelected })
+                }
+                transition={
+                    movingTo !== null
+                        ? transitions.moveTo
+                        : pieceIsBeingReplaced
+                        ? transitions.replace
+                        : isSelected
+                        ? transitions.select
+                        : transitions.initial
                 }
                 onAnimationComplete={() => {
                     if (movingTo) {
@@ -87,7 +97,9 @@ export const MeshWrapper: FC<ModelProps> = ({
 };
 
 export const FRAMER_MULTIPLIER = 2;
-export const getDistance = (px?: number): number => (px ? px * FRAMER_MULTIPLIER : 0);
+export const getDistance = (px?: number): number => {
+    return (px ? px * FRAMER_MULTIPLIER : 0);
+};
 
 export const transitions: {
     select: Transition;
@@ -101,7 +113,7 @@ export const transitions: {
         stiffness: 200,
         damping: 30,
         duration: 0.5,
-        y: { delay: 0.15, stiffness: 120, damping: 5 },
+        y: { delay: 0.25, stiffness: 120, damping: 5 },
     },
     select: {
         type: `spring`,
@@ -143,7 +155,7 @@ export const variants: {
     }),
     move: ({ movingTo }: VariantProps) => ({
         x: getDistance(movingTo?.x),
-        y: [0, 1.2, 1.4],
+        y: 0,
         z: getDistance(movingTo?.y),
     }),
     replace: () => ({

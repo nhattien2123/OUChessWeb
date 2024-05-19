@@ -10,6 +10,7 @@ import { matchActions } from "src/redux/reducer/match/MatchReducer";
 import { roomAction } from "src/redux/reducer/room/RoomReducer";
 import { Room } from "src/util/Socket";
 import "src/share/roomList/RoomList.scss";
+import Mode from "../bot/Mode";
 
 export type JoinRoomClient = {
     roomId: string | null | undefined;
@@ -33,6 +34,7 @@ export const RoomListComponent: FC<{
     const [searchRoomId, setSearchRoomId] = useState("");
     const [isSearch, setIsSearch] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isModeModalOpen, setModeModalOpen] = useState(false);
     const matchesPerPage = 8;
     const nav = useNavigate();
     const dispatch = useAppDispatch();
@@ -86,8 +88,8 @@ export const RoomListComponent: FC<{
         setSearchRoomId(e.target.value);
     };
 
-    const checkCanCreateRoom = (selectedMode: string | undefined, roomName: string | undefined) => {
-        if (selectedMode && roomName) {
+    const checkCanCreateRoom = (roomName: string | undefined) => {
+        if (roomName && roomName !== "") {
             return true;
         } else {
             return false;
@@ -121,6 +123,10 @@ export const RoomListComponent: FC<{
         );
     };
 
+    const handleBotMode = () => {
+        setModeModalOpen(!isModeModalOpen);
+    };
+
     useEffect(() => {
         if (detail !== null) {
             nav(`/game/live/${detail?.id}`);
@@ -134,7 +140,10 @@ export const RoomListComponent: FC<{
                     <button onClick={handleCreateModal} className="btn-form-create">
                         Tạo Phòng
                     </button>
-                    <button className="btn-form-random-matches">Chơi Nhanh</button>
+                    {/* <button className="btn-form-create">Chơi Nhanh</button> */}
+                    <button onClick={handleBotMode} className="btn-form-create">
+                        Chơi với máy
+                    </button>
                 </div>
                 <div className="btn-room-right">
                     <input
@@ -144,7 +153,7 @@ export const RoomListComponent: FC<{
                         onChange={handleSearchRoomIdChange}
                     />
                     <button onClick={handleSearchRoom} className="btn-form-search">
-                        Tìm Kiếm Phòng
+                        <i className="fa-solid fa-right-to-bracket"></i>
                     </button>
                 </div>
             </div>
@@ -152,6 +161,10 @@ export const RoomListComponent: FC<{
             {isCreateModalOpen && (
                 <div className="create-room-modal">
                     <div className="modal-content">
+                        <div className="box__line box__line--top"></div>
+                        <div className="box__line box__line--right"></div>
+                        <div className="box__line box__line--bottom"></div>
+                        <div className="box__line box__line--left"></div>
                         <h2>Tạo Phòng</h2>
                         <label>Tên Phòng:</label>
                         <input
@@ -159,10 +172,10 @@ export const RoomListComponent: FC<{
                             value={newMatch.matchName}
                             onChange={(e) => {
                                 setNewMatch({ ...newMatch, matchName: e.target.value });
-                                checkCanCreateRoom(e.target.value, newMatch.matchName);
+                                checkCanCreateRoom(e.target.value);
                             }}
                         />
-                        <label>Chế Độ:</label>
+                        {/* <label>Chế Độ:</label>
                         <select
                             value={newMatch.mode}
                             onChange={(e) => {
@@ -175,18 +188,24 @@ export const RoomListComponent: FC<{
                             <option value="Siêu chớp">Siêu chớp</option>
                             <option value="Chớp">Chớp</option>
                             <option value="Nhanh">Nhanh</option>
-                        </select>
+                        </select> */}
                         <button onClick={handleCreateModal} className="decline-button">
                             Huỷ
                         </button>
                         <button
                             onClick={createRoomHandle}
-                            disabled={!checkCanCreateRoom(newMatch.matchName, newMatch.mode)}
+                            disabled={!checkCanCreateRoom(newMatch.matchName)}
                             className="create-button"
                         >
                             Tạo
                         </button>
                     </div>
+                </div>
+            )}
+
+            {isModeModalOpen && (
+                <div className="create-room-modal">
+                    <Mode SetShowDialog={handleBotMode} />
                 </div>
             )}
 

@@ -19,6 +19,7 @@ class PieceSquareTable {
     };
 
     static ReadTables = (piece: number, square: number): number => {
+        // console.log(`piece: ${piece} - square: ${square}`);
         return this.Tables[piece][square];
     };
 

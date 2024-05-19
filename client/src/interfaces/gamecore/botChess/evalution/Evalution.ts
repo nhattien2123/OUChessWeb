@@ -189,7 +189,6 @@ class Evalution {
 
             const friendlyKingSquare = this.board.KingSquare[friendlyIndex];
             const opponentKingSquare = this.board.KingSquare[opponentIndex];
-
             mopUpScore += 14 - PrecomputedMoveData.OrthogonalDistance[friendlyKingSquare][opponentKingSquare];
             mopUpScore += PrecomputedMoveData.CentreManhattanDistance[opponentKingSquare] * 10;
 

@@ -16,6 +16,7 @@ export const enum GameResult {
     BlackTimeout,
     WhiteIllegalMove,
     BlackIllegalMove,
+    GameResult,
 }
 
 export const IsDrawResult = (result: GameResult): boolean => {
@@ -116,10 +117,10 @@ export const GetGameState = (board: Board): GameResult => {
     }
 
     // Threefold repetition
-    // const repCount = board.RepetitionPositionHistory.filter(x => x === board.ZobristKey);
-    // if (repCount === 3) {
-    //     return GameResult.Repetition;
-    // }
+    const repCount = board.RepetitionPositionHistory.filter(x => x === board.ZobristKey()).length;
+    if (repCount === 3) {
+        return GameResult.Repetition;
+    }
 
     // Look for insufficient material
     if (InsufficentMaterial(board)) {

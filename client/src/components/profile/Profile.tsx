@@ -13,7 +13,7 @@ import CommentInfoList from "src/share/comment/CommentInfoList";
 import MessageService from "src/services/message/MessageService";
 import "src/components/profile/Profile.scss";
 
-interface ProfileProps { }
+interface ProfileProps {}
 
 const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
@@ -122,8 +122,8 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
 
     return (
         <>
-            <div className="profile-container">
-                <div className="avatar-container">
+            <div className="profile__container">
+                <div className="avatar__container">
                     <div className="avatar-img ">
                         <img src={profile?.avatar} alt={profile?.username} />
                     </div>
@@ -149,15 +149,20 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                             </div>
                         )}
                     </div>
-                    <div className="toEdit w-10">
+                    <div className="toEdit">
                         {currentUser.username === profile?.username && (
-                            <Link to={`/profile/${username}/edit`}>Chỉnh sửa</Link>
+                            <Link to={`/profile/${username}/edit`}>
+                                <i className="fa-solid fa-pen-to-square"></i>
+                            </Link>
                         )}
                     </div>
                 </div>
                 <div className="infomation-container">
                     <div className="information-title">Bạn bè</div>
                     <div className="information-content friend-list">
+                        {friends.length === 0 && (
+                            <div style={{ color: "#9e9e9e", padding: "5px", margin: "auto" }}>Hiện không có bạn bè</div>
+                        )}
                         {friends.map((f: Friend) => {
                             return (
                                 <div
@@ -176,43 +181,44 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                 <br></br>
                 <div>
                     <div className="notes-toggle-button">
-                        <button
-                            className={
-                                (option === "history" && "notes-button-active ") +
-                                " notes-button w-50 notes-match-button"
-                            }
+                        <div
+                            className={(option === "history" && "notes-button-active ") + " notes-button"}
                             onClick={(evt) => setOption("history")}
                         >
                             Lịch sử đấu
-                        </button>
-                        <button
-                            className={
-                                (option === "comment" && "notes-button-active ") +
-                                " notes-button w-50 notes-comment-button"
-                            }
+                        </div>
+                        <div
+                            className={(option === "comment" && "notes-button-active ") + " notes-button"}
                             onClick={(evt) => setOption("comment")}
                         >
                             Nhận xét
-                        </button>
+                        </div>
                     </div>
-                    {option === "history" && (
-                        <>
-                            {matches.length === 0 ? (
-                                <div>Không có bất kỳ trận đấu nào</div>
-                            ) : (
+                    <div className="information-content">
+                        {option === "history" && (
+                            <>
                                 <div className="matches-list">
+                                    {matches.length === 0 && (
+                                        <div style={{ color: "#9e9e9e", padding: "5px", margin: "auto" }}>
+                                            Không có bất kỳ trận đấu nào
+                                        </div>
+                                    )}
                                     {matches.map((m: Match) => {
                                         return (
                                             <>
                                                 <div
                                                     className={
-                                                        (m.whiteId?._id === currentUser._id && m.state === 1) || (m.blackId?._id === currentUser._id && m.state === -1)
+                                                        (m.whiteId?._id === currentUser._id && m.state === 1) ||
+                                                        (m.blackId?._id === currentUser._id && m.state === -1)
                                                             ? "match-item win"
                                                             : "match-item lose" + (m.state === 0 ? " draw" : "")
                                                     }
                                                 >
-                                                    <div className="white-profile" onClick={evt => nav(`/profile/${m.whiteId?.username}`)}>
-                                                        <div>Người chơi trắng</div>
+                                                    <div
+                                                        className="white-profile"
+                                                        onClick={(evt) => nav(`/profile/${m.whiteId?.username}`)}
+                                                    >
+                                                        <div>QUÂN TRẮNG</div>
                                                         <div className="white-img">
                                                             <img src={m.whiteId?.avatar} alt={m.whiteId?.username} />
                                                         </div>
@@ -225,8 +231,11 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                                                         {m.state === -1 && <div>0-1</div>}
                                                     </div>
 
-                                                    <div className="black-profile" onClick={evt => nav(`/profile/${m.blackId?.username}`)}>
-                                                        <div>Người chơi đen</div>
+                                                    <div
+                                                        className="black-profile"
+                                                        onClick={(evt) => nav(`/profile/${m.blackId?.username}`)}
+                                                    >
+                                                        <div>QUÂN ĐEN</div>
                                                         <div className="black-img">
                                                             <img src={m.blackId?.avatar} alt={m.blackId?.username} />
                                                         </div>
@@ -237,10 +246,10 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                                         );
                                     })}
                                 </div>
-                            )}
-                        </>
-                    )}
-                    {option === "comment" && <CommentInfoList />}
+                            </>
+                        )}
+                        {option === "comment" && <CommentInfoList />}
+                    </div>
                 </div>
             </div>
         </>

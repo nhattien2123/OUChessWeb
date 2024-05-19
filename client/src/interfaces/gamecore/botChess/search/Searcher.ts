@@ -66,7 +66,7 @@ class Searcher {
         this.Search(1, 0, negativeInfinity, positiveInfinity, 0, new Move(0), false);
     }
 
-    StartSearch = () => {
+    StartSearch = (depth: number) => {
         this.bestEvalThisIteration = this.bestEval = 0;
         this.bestMoveThisIteration = this.bestMove = Move.NullMove();
 
@@ -77,7 +77,7 @@ class Searcher {
 
         this.CurrentDepth = 0;
 
-        this.RunIterativeDeepeningSearch();
+        this.RunIterativeDeepeningSearch(depth);
 
         if (this.bestMove.IsNull()) {
             this.bestMove = this.moveGenerator.GenerateMoves(this.board)[0];
@@ -86,8 +86,8 @@ class Searcher {
         this.searchCancelled = false;
     };
 
-    RunIterativeDeepeningSearch = () => {
-        for (let searchDepth = 1; searchDepth <= 256; searchDepth++) {
+    RunIterativeDeepeningSearch = (depth: number) => {
+        for (let searchDepth = 1; searchDepth <= depth; searchDepth++) {
             this.hasSearchedAtLeastOneMove = false;
 
             this.Search(searchDepth, 0, negativeInfinity, positiveInfinity, 0, new Move(0), false);
@@ -122,7 +122,7 @@ class Searcher {
         alpha: number,
         beta: number,
         numExtenstion: number,
-        move: Move,
+        prevMove : Move,
         prevWasCapture: boolean,
     ): number => {
         if (this.searchCancelled) {
@@ -157,13 +157,11 @@ class Searcher {
 
         if (plyRemaining === 0) {
             const evaluation = this.QuiescenceSearch(alpha, beta);
-
             return evaluation;
         }
 
         let moves: Move[] = new Array<Move>(256);
         moves = this.moveGenerator.GenerateMoves(this.board, false);
-
         const prevBestMove = plyFromRoot === 0 ? this.bestMove : this.transpositionTable.TryGetStoredMove();
         this.moveOrderer.OrderMoves(
             prevBestMove,
@@ -186,20 +184,22 @@ class Searcher {
 
         if (plyFromRoot > 0) {
             const wasPawnMove =
-                PieceFunc.PieceType(this.board.Square[prevBestMove.TargetSquare()]) === Piece.PieceType.Pawn;
+                PieceFunc.PieceType(this.board.Square[prevMove.TargetSquare()]) === Piece.PieceType.Pawn;
             this.repetitionTable.Push(this.board.CurrentGameState.zobristKey, prevWasCapture || wasPawnMove);
         }
 
         let evaluationBound = TranspositionTable.upperBound;
         let bestMoveInThisPosition = Move.NullMove();
-
         for (let i = 0; i < moves.length; i++) {
             const move = moves[i];
             const capturedPieceType = PieceFunc.PieceType(this.board.Square[move.TargetSquare()]);
             const isCapture = capturedPieceType !== Piece.PieceType.None;
 
-            this.board.MakeMove(moves[i], true);
+            if(PieceFunc.PieceType(this.board.Square[moves[i].StartSquare()]) === Piece.PieceType.None){
+                continue;
+            }
 
+            this.board.MakeMove(moves[i], true);
             let extension = 0;
 
             if (numExtenstion < maxExtentions) {
@@ -329,6 +329,9 @@ class Searcher {
             0,
         );
         for (let i = 0; i < moves.length; i++) {
+            if(PieceFunc.PieceType(this.board.Square[moves[i].StartSquare()]) === Piece.PieceType.None){
+                continue;
+            }
             this.board.MakeMove(moves[i], true);
             _eval = -this.QuiescenceSearch(-beta, -alpha);
             this.board.UnMakeMove(moves[i], true);

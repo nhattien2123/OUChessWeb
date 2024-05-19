@@ -9,7 +9,7 @@ import MessageService from "src/services/message/MessageService";
 import useDocuments from "src/share/firestore/DocumentsHook";
 import "src/components/messenger/Messenger.scss";
 
-interface Props { }
+interface Props {}
 
 const Messenger = (props: Props) => {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
@@ -119,17 +119,20 @@ const Messenger = (props: Props) => {
             <div className="chat-container">
                 <ChatList />
                 <div className="chat-field">
-                    <div className="chat-header">
-                        <div className="header-container">
-                            {selectedUser?.avatar !== "" && (
-                                <img className="header-image" src={selectedUser?.avatar} alt="avatar"></img>
-                            )}
-                            <div className="active">
-                                <p>{selectedUser?.username}</p>
+                    {selectedChat !== "" && (
+                        <>
+                            <div className="chat-header">
+                                <div className="header-container">
+                                    {selectedUser?.avatar !== "" && (
+                                        <img className="header-image" src={selectedUser?.avatar} alt="avatar"></img>
+                                    )}
+                                    <div className="active">
+                                        <p>{selectedUser?.username}</p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
+                        </>
+                    )}
                     <div className="chat-page">
                         <div className="chat-inbox">
                             <div className="chat-msg">
@@ -186,54 +189,60 @@ const Messenger = (props: Props) => {
                         </div>
                     </div>
 
-                    <div className="chat-footer">
-                        <div className="chat-inputs">
-                            <input
-                                type="text"
-                                className="input-msg"
-                                placeholder="Aa..."
-                                value={message}
-                                onChange={(evt) => setMessage(evt.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") sendMessage();
-                                }}
-                            />
-                            <div className="chat-inputs-feature">
-                                <div className="chat-inputs-image">
-                                    <input type="file" id="image" onChange={imageHandler}></input>
-                                    <label htmlFor="image">IMG</label>
-                                </div>
-                                <div className="chat-inputs-emoji">
-                                    <div
-                                        className="emoji-toggle"
-                                        onClick={(evt) => {
-                                            evt.stopPropagation();
-                                            setShowEmoji(!showEmoji);
+                    {selectedChat !== "" && (
+                        <>
+                            <div className="chat-footer">
+                                <div className="chat-inputs">
+                                    <input
+                                        type="text"
+                                        className="input-msg"
+                                        placeholder="Aa..."
+                                        value={message}
+                                        onChange={(evt) => setMessage(evt.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") sendMessage();
                                         }}
-                                    >
-                                        Emoji
-                                    </div>
-                                    {showEmoji && (
-                                        <div className="emoji-box">
-                                            <Picker
-                                                locale="vi"
-                                                previewPosition="none"
-                                                data={data}
-                                                navPosition="bottom"
-                                                onClickOutside={() => {
-                                                    setShowEmoji(false);
-                                                }}
-                                                onEmojiSelect={emojiHandler}
-                                            />
+                                    />
+                                    <div className="chat-inputs-feature">
+                                        <div className="chat-inputs-image">
+                                            <input type="file" id="image" onChange={imageHandler}></input>
+                                            <label htmlFor="image">
+                                                <i className="fa-regular fa-image"></i>
+                                            </label>
                                         </div>
-                                    )}
-                                </div>
-                                <div className="chat-inputs-text" onClick={sendMessage}>
-                                    Gửi
+                                        <div className="chat-inputs-emoji">
+                                            <div
+                                                className="emoji-toggle"
+                                                onClick={(evt) => {
+                                                    evt.stopPropagation();
+                                                    setShowEmoji(!showEmoji);
+                                                }}
+                                            >
+                                                <i className="fa-solid fa-icons"></i>
+                                            </div>
+                                            {showEmoji && (
+                                                <div className="emoji-box">
+                                                    <Picker
+                                                        locale="vi"
+                                                        previewPosition="none"
+                                                        data={data}
+                                                        navPosition="bottom"
+                                                        onClickOutside={() => {
+                                                            setShowEmoji(false);
+                                                        }}
+                                                        onEmojiSelect={emojiHandler}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="chat-inputs-text" onClick={sendMessage}>
+                                            <i className="fa-solid fa-paper-plane"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </>
+                    )}
                 </div>
             </div>
         </>
