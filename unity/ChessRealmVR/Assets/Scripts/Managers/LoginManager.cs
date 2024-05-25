@@ -7,7 +7,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using UnityEditor.SearchService;
 using UnityEngine.SceneManagement;
 
 public class LoginManager : MonoBehaviour
@@ -20,7 +19,7 @@ public class LoginManager : MonoBehaviour
     [SerializeField] private Button _registerButton;
 
     [Header("Parameters")]
-    [SerializeField] private string _authHost = "http://127.0.0.1";
+    [SerializeField] private string _authHost = "http://localhost:8080";
     [SerializeField] private string _authLoginRoute = "/auth/authapi-signin";
     [SerializeField] private string _authRegisterRoute = "/auth/authapi-signup";
     [SerializeField] private int _authPort = 8080;
@@ -50,10 +49,9 @@ public class LoginManager : MonoBehaviour
             if (true)
             {
                 var account = JsonUtility.FromJson<Users>(request.downloadHandler.text);
-
-                //_descLabel.text = account._id + "Welcome " + account.username;
+                PlayerPrefs.SetString("UserAccount", JsonUtility.ToJson(account));
                 SetButtonsEnabled(true);
-                SceneManager.LoadScene("Lobby VR Scene");
+                SceneManager.LoadScene("Main VR Chess");
             }
             else
             {

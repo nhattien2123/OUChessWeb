@@ -124,7 +124,6 @@ export const RoomListComponent: FC<{
             }),
         );
     };
-
     const handleBotMode = () => {
         setModeModalOpen(!isModeModalOpen);
     };

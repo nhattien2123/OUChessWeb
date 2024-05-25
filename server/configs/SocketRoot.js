@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 
+var clients = [];
 const rootSocket = (io) => {
     let userConnected = [];
     let rooms = new Array();
@@ -8,7 +9,10 @@ const rootSocket = (io) => {
 
     io.use((socket, next) => {
         const token = socket.handshake.auth.token;
-        if (token) {
+        if (socket.handshake.query.token === "UNITY") {
+            // next();
+        }
+        else if (token) {
             jwt.verify(token, process.env.JWT_SECRETKEY, (err, user) => {
                 if (err) {
                     return;
@@ -29,6 +33,7 @@ const rootSocket = (io) => {
     });
 
     io.on('connection', (socket) => {
+        // console.log("test");
         userCount += 1;
 
         socket.on('disconnect', () => {
@@ -41,6 +46,17 @@ const rootSocket = (io) => {
                 delete userConnected[socket.userId];
             }
             console.log('connection (dis): ', userConnected);
+
+            console.log(currentPlayer.name + ' recv: disconnect ' + currentPlayer.name);
+            socket.broadcast.emit('other player disconnected', JSON.stringify(currentPlayer));
+            // console.log(currentPlayer.name + ' bcst: other player disconnected ' + JSON.stringify(currentPlayer));
+            for (var i = 0; i < clients.length; i++) {
+                var client = JSON.parse(clients[i]);
+                if (client.name === currentPlayer.name) {
+                    console.log("test");
+                    clients.splice(i, 1);
+                }
+            }
         });
 
         require('../services/CommentInfoService').commentInfoSocket(socket, io, (error) => {
@@ -83,11 +99,13 @@ const rootSocket = (io) => {
                         color: detail.color,
                     });
 
+
                     socket.handshake.auth = {
                         ...socket.handshake.auth,
                         detail: room
                     };
                     io.emit('req-get-rooms', rooms);
+
                 } else if (detail.type === 'join') {
                     const room = rooms.filter((r) => r.id === detail.rID)[0];
                     if (room.player.length === 2) {
@@ -131,6 +149,10 @@ const rootSocket = (io) => {
         });
 
         socket.on('get-rooms', async () => {
+            // console.log(rooms);
+            if (socket.handshake.query.token === "UNITY") {
+            }
+            console.log("Success")
             socket.emit('rep-get-rooms', rooms);
         });
 
@@ -193,8 +215,130 @@ const rootSocket = (io) => {
         //#endregion new socket
 
         //#region old socket
-        socket.on(`existingPlayer`, (data) => {
-            io.sockets.in(data.roomId).emit(`clientExistingPlayer`, data);
+        socket.on('existingPlayer', (data) => {
+            io.sockets.in(data.roomId).emit('clientExistingPlayer', data);
+        });
+
+        var currentPlayer = {};
+        currentPlayer.name = 'unknown';
+        currentIndex = 0;
+
+        socket.on('player connect', () => {
+            console.log(currentPlayer.name + ' recv: player connect, and clients.length is ' + clients.length);
+            console.log("Now clients info : ", clients);
+            for (var i = 0; i < clients.length; i++) {
+                var client = JSON.parse(clients[i]);
+                console.log('clients[', i, '] info : ', clients[i]);
+                var playerConnected = {
+                    name: client.name,
+                    playerPosition: client.playerPosition,
+                    playerRotation: client.playerRotation
+                };
+
+                var connectedHead = {
+                    name: client.name,
+                    headPosition: client.headPosition,
+                    headRotation: client.headRotation
+                };
+
+                var connectedRightHand = {
+                    name: client.name,
+                    rightHandPosition: client.rightHandPosition,
+                    rightHandRotation: client.rightHandRotation
+                };
+
+                var connectedLeftHand = {
+                    name: client.name,
+                    leftHandPosition: client.leftHandPosition,
+                    leftHandRotation: client.leftHandRotation
+                };
+
+                console.log("Player Connected: " + client.name);
+                console.log("Connected Left Hand: " + connectedLeftHand.name);
+                socket.emit('other player connected', JSON.stringify(playerConnected));
+                socket.emit('other player head', JSON.stringify(connectedHead));
+                socket.emit('other player right hand', JSON.stringify(connectedRightHand));
+                socket.emit('other player left hand', JSON.stringify(connectedLeftHand));
+
+                console.log(currentPlayer.name + ' emit: other player connected: ' + JSON.stringify(playerConnected));
+                console.log(currentPlayer.name + ' emit: other player head: ' + JSON.stringify(connectedHead));
+                console.log(currentPlayer.name + ' emit: other player right hand: ' + JSON.stringify(connectedRightHand));
+                console.log(currentPlayer.name + ' emit: other player leftt hand: ' + JSON.stringify(connectedLeftHand));
+            }
+        });
+
+        socket.on('play', (data) => {
+            currentPlayer = JSON.parse(data);
+            console.log(currentPlayer.name + ' recv: play: ' + JSON.stringify(data));
+            console.log("old player info : ", currentPlayer);
+            console.log("data is : ", currentPlayer);
+            console.log("Data name is: " + currentPlayer.name);
+            currentPlayer.name = "desktop" + clients.length;
+            console.log("new player info : ", currentPlayer);
+            if (clients.length === 0) {
+                var playerPosition = {
+                    playerPosition: data.playerPosition
+                }
+
+                var playerRotation = {
+                    playerRotation: data.playerRotation
+                }
+            }
+            clients.push(JSON.stringify(currentPlayer));
+            console.log(currentPlayer.name + ' emit: play: ' + JSON.stringify(currentPlayer));
+            socket.emit('play', JSON.stringify(currentPlayer));
+            socket.broadcast.emit('other player connected', JSON.stringify(currentPlayer));
+        });
+
+        socket.on('head move', (data) => {
+            // console.log(currentPlayer.name + ' recv: head move: ' + JSON.stringify(data));
+            currentPlayer.headPosition = JSON.parse(data).headPosition;
+            // console.log(JSON.stringify(data));
+            // console.log(currentPlayer.headPosition);
+            socket.broadcast.emit('head move', JSON.stringify(currentPlayer));
+        });
+
+        socket.on('head turn', (data) => {
+            // console.log(currentPlayer.name + ' recv: head turn: ' + JSON.stringify(data));
+            currentPlayer.headRotation = JSON.parse(data).headRotation;
+            socket.broadcast.emit('head turn', JSON.stringify(currentPlayer));
+        });
+
+
+        socket.on('player move', (data) => {
+            // console.log(currentPlayer.name + ' recv: move: ' + JSON.stringify(data));
+            currentPlayer.playerPosition = JSON.parse(data).playerPosition;
+            socket.broadcast.emit('player move', JSON.stringify(currentPlayer));
+        });
+
+        socket.on('player turn', (data) => {
+            // console.log(currentPlayer.name + ' recv: turn: ' + JSON.stringify(data));
+            currentPlayer.playerRotation = JSON.parse(data).playerRotation;
+            socket.broadcast.emit('player turn', JSON.stringify(currentPlayer));
+        });
+
+        socket.on('right hand move', (data) => {
+            // console.log(currentPlayer.name + ' recv: right hand move: ' + JSON.stringify(data));
+            currentPlayer.rightHandPosition = JSON.parse(data).rightHandPosition;
+            socket.broadcast.emit('right hand move', JSON.stringify(currentPlayer));
+        });
+
+        socket.on('right hand turn', (data) => {
+            // console.log(currentPlayer.name + ' recv: right hand turn: ' + JSON.stringify(data));
+            currentPlayer.rightHandRotation = JSON.parse(data).rightHandRotation;
+            socket.broadcast.emit('right hand turn', JSON.stringify(currentPlayer));
+        });
+
+        socket.on('left hand move', (data) => {
+            // console.log(currentPlayer.name + ' recv: left hand move: ' + JSON.stringify(data));
+            currentPlayer.leftHandPosition = JSON.parse(data).leftHandPosition;
+            socket.broadcast.emit('left hand move', JSON.stringify(currentPlayer));
+        });
+
+        socket.on('left hand turn', (data) => {
+            // console.log(currentPlayer.name + ' recv: left hand turn: ' + JSON.stringify(data));
+            currentPlayer.leftHandRotation = JSON.parse(data).leftHandRotation;
+            socket.broadcast.emit('left hand turn', JSON.stringify(currentPlayer));
         });
 
         require('../services/GameService').cameraMove(socket, io);
