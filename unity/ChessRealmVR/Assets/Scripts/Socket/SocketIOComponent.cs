@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using System.Net.Sockets;
 
 public class SocketIOComponent : MonoBehaviour
 {
@@ -18,31 +19,7 @@ public class SocketIOComponent : MonoBehaviour
 
     private void Awake()
     {
-        Initialize(_authHost);
-    }
-
-    public static SocketManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = FindObjectOfType<SocketManager>();
-                if (instance == null)
-                {
-                    GameObject obj = new GameObject();
-                    obj.name = "SocketManager";
-                    instance = obj.AddComponent<SocketManager>();
-                    DontDestroyOnLoad(obj);
-                }
-            }
-            return instance;
-        }
-    }
-
-    public void Initialize(string authHost)
-    {
-        var uri = new Uri(authHost);
+        var uri = new Uri(_authHost);
         socket = new SocketIOUnity(uri, new SocketIOOptions
         {
             Query = new Dictionary<string, string>
@@ -58,9 +35,28 @@ public class SocketIOComponent : MonoBehaviour
         {
             Debug.Log("Connected");
         };
-
+        
         socket.Connect();
     }
+
+    //public static SocketManager Instance
+    //{
+    //    get
+    //    {
+    //        if (instance == null)
+    //        {
+    //            instance = FindObjectOfType<SocketManager>();
+    //            if (instance == null)
+    //            {
+    //                GameObject obj = new GameObject();
+    //                obj.name = "SocketManager";
+    //                instance = obj.AddComponent<SocketManager>();
+    //                DontDestroyOnLoad(obj);
+    //            }
+    //        }
+    //        return instance;
+    //    }
+    //}
 
     public void Emit(string eventName)
     {
@@ -70,6 +66,7 @@ public class SocketIOComponent : MonoBehaviour
 
     public void Emit(string eventName, object parameter)
     {
+        Debug.Log("Test Emit");
         socket.Emit(eventName, parameter);
     }
 
@@ -77,6 +74,11 @@ public class SocketIOComponent : MonoBehaviour
     {
         Debug.Log("test" + " " + socket);
         socket.On(eventName, socketIOResponse);
+    }
+
+    public void Disconnect()
+    {
+        socket.Disconnect();
     }
 
     // Add other socket-related methods as needed

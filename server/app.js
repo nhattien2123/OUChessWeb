@@ -37,4 +37,3 @@ const socketRoot = require("./configs/SocketRoot")(io);
 httpServer.listen(PORT, () => {
     console.log(`Server is running in port ${PORT}`);
 });
-

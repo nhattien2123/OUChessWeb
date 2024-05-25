@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.XR.LegacyInputHelpers;
+using Unity.XR.CoreUtils;
 
 public class MultiPlayerController : MonoBehaviour
 {
@@ -42,15 +43,18 @@ public class MultiPlayerController : MonoBehaviour
 
     void Reset()
     {
-        oldHead = GetComponentInChildren<CameraOffset>().transform.Find("Head/Cube");
+        XROrigin xrOrigin = GetComponentInChildren<XROrigin>();
+        Transform cameraOffset = xrOrigin.transform.Find("Camera Offset");
+
+        oldHead = cameraOffset.Find("Main Camera");
         oldHeadPosition = oldHead.position;
         oldHeadRotation = oldHead.rotation;
         oldPosition = transform.position;
         oldRotation = transform.rotation;
-        oldRightHand = GetComponentInChildren<CameraOffset>().transform.Find("Right Grab Hand");
+        oldRightHand = cameraOffset.Find("Right Controller");
         oldRightHandPosition = oldRightHand.position;
         oldRightHandRotation = oldRightHand.rotation;
-        oldLeftHand = GetComponentInChildren<CameraOffset>().transform.Find("Left Grab Hand");
+        oldLeftHand = cameraOffset.Find("Left Controller");
         oldLeftHandPosition = oldLeftHand.position;
         oldLeftHandRotation = oldLeftHand.rotation;
 
@@ -73,15 +77,18 @@ public class MultiPlayerController : MonoBehaviour
             return;
         }
 
-        currentHead = GetComponentInChildren<CameraOffset>().transform.Find("Head/Cube");
+        XROrigin xrOrigin = GetComponentInChildren<XROrigin>();
+        Transform cameraOffset = xrOrigin.transform.Find("Camera Offset");
+
+        currentHead = cameraOffset.Find("Main Camera");
         currentHeadPosition = currentHead.position;
         currentHeadRotation = currentHead.rotation;
         currentPosition = transform.position;
         currentRotation = transform.rotation;
-        currentRightHand = GetComponentInChildren<CameraOffset>().transform.Find("Right Grab Hand");
+        currentRightHand = cameraOffset.Find("Right Controller");
         currentRightHandPosition = currentRightHand.position;
         currentRightHandRotation = currentRightHand.rotation;
-        currentLeftHand = GetComponentInChildren<CameraOffset>().transform.Find("Left Grab Hand");
+        currentLeftHand = cameraOffset.Find("Left Controller");
         currentLeftHandPosition = currentLeftHand.position;
         currentLeftHandRotation = currentLeftHand.rotation;
 
