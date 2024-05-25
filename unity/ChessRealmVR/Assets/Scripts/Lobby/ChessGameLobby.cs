@@ -9,7 +9,6 @@ using Unity.Services.Lobbies;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using ChessPieces;
-using UnityEditor.MemoryProfiler;
 
 public class LobbyGameManager : MonoBehaviour
 {

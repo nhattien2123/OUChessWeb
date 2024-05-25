@@ -23,6 +23,7 @@ namespace Managers
         public MovementManager movementManager;
         public TileManager tileManager;
         public GameObject xrOrigin;
+        public GameObject otherPlayer;
         public BotPlayer botPlayer;
         public EndGameHandler endGameHandler;
         public bool IsWhiteTurn { get; private set; }

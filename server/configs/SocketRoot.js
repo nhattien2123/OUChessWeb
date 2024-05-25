@@ -9,9 +9,8 @@ const rootSocket = (io) => {
 
     io.use((socket, next) => {
         const token = socket.handshake.auth.token;
-
         if (socket.handshake.query.token === "UNITY") {
-            next();
+            // next();
         }
         else if (token) {
             jwt.verify(token, process.env.JWT_SECRETKEY, (err, user) => {
@@ -34,9 +33,10 @@ const rootSocket = (io) => {
     });
 
     io.on('connection', (socket) => {
+        // console.log("test");
         userCount += 1;
-        // console.log('connection - (con): ', userConnected);
-        // console.log('rooms: ', rooms);
+        console.log('connection - (con): ', userConnected);
+        console.log('rooms: ', rooms);
 
         socket.on('disconnect', () => {
             userCount -= 1;
@@ -44,6 +44,17 @@ const rootSocket = (io) => {
                 delete userConnected[socket.userId];
             }
             console.log('connection (dis): ', userConnected);
+
+            console.log(currentPlayer.name + ' recv: disconnect ' + currentPlayer.name);
+            socket.broadcast.emit('other player disconnected', JSON.stringify(currentPlayer));
+            // console.log(currentPlayer.name + ' bcst: other player disconnected ' + JSON.stringify(currentPlayer));
+            for (var i = 0; i < clients.length; i++) {
+                var client = JSON.parse(clients[i]);
+                if (client.name === currentPlayer.name) {
+                    console.log("test");
+                    clients.splice(i, 1);
+                }
+            }
         });
 
         socket.on('reconnect', () => { });
@@ -160,85 +171,66 @@ const rootSocket = (io) => {
         //#endregion new socket
 
         //#region old socket
-        socket.on(`existingPlayer`, (data) => {
-            io.sockets.in(data.roomId).emit(`clientExistingPlayer`, data);
+        socket.on('existingPlayer', (data) => {
+            io.sockets.in(data.roomId).emit('clientExistingPlayer', data);
         });
 
         var currentPlayer = {};
         currentPlayer.name = 'unknown';
+        currentIndex = 0;
 
-
-        socket.on('player connect', function () {
+        socket.on('player connect', () => {
             console.log(currentPlayer.name + ' recv: player connect, and clients.length is ' + clients.length);
-            console.log("Now cliants info : ", clients);
+            console.log("Now clients info : ", clients);
             for (var i = 0; i < clients.length; i++) {
+                var client = JSON.parse(clients[i]);
                 console.log('clients[', i, '] info : ', clients[i]);
                 var playerConnected = {
-                    name: clients[i].name,
-                    playerPosition: clients[i].playerPosition,
-                    playerRotation: clients[i].playerRotation
+                    name: client.name,
+                    playerPosition: client.playerPosition,
+                    playerRotation: client.playerRotation
                 };
 
                 var connectedHead = {
-                    name: clients[i].name,
-                    headPosition: clients[i].headPosition,
-                    headRotation: clients[i].headRotation
+                    name: client.name,
+                    headPosition: client.headPosition,
+                    headRotation: client.headRotation
                 };
 
                 var connectedRightHand = {
-                    name: clients[i].name,
-                    rightHandPosition: clients[i].rightHandPosition,
-                    rightHandRotation: clients[i].rightHandRotation
+                    name: client.name,
+                    rightHandPosition: client.rightHandPosition,
+                    rightHandRotation: client.rightHandRotation
                 };
 
                 var connectedLeftHand = {
-                    name: clients[i].name,
-                    leftHandPosition: clients[i].leftHandPosition,
-                    leftHandRotation: clients[i].leftHandRotation
+                    name: client.name,
+                    leftHandPosition: client.leftHandPosition,
+                    leftHandRotation: client.leftHandRotation
                 };
 
-                var othersWakizashi = {
-                    name: clients[i].name,
-                    wakizashiPosition: clients[i].wakizashiPosition,
-                    wakizashiRotation: clients[i].wakizashiRotation
-                };
-
-                console.log("Player Connected: " + clients[i].name);
+                console.log("Player Connected: " + client.name);
                 console.log("Connected Left Hand: " + connectedLeftHand.name);
-                socket.emit('other player connected', playerConnected);
-                socket.emit('other player head', connectedHead);
-                socket.emit('other player right hand', connectedRightHand);
-                socket.emit('other player left hand', connectedLeftHand);
-                // for (var i = 0; i < enemySpawnPoints.length; i++) {
-                //     console.log('enemySpawnPoints[', i, '] info : ', enemySpawnPoints[i]);
-                //     var othersEnemy = {
-                //         name: enemySpawnPoints[i].name,
-                //         enemyPosition: enemySpawnPoints[i].enemyPosition,
-                //         enemyRotation: enemySpawnPoints[i].enemyRotation,
-                //         health: enemySpawnPoints[i].health
-                //     };
-                //     socket.emit('others enemy', othersEnemy);
-                //     console.log(currentPlayer.name + ' emit: others enemy: ' + JSON.stringify(othersEnemy));
-                // }
-
-                // socket.emit('others wakizashi', othersWakizashi);
+                socket.emit('other player connected', JSON.stringify(playerConnected));
+                socket.emit('other player head', JSON.stringify(connectedHead));
+                socket.emit('other player right hand', JSON.stringify(connectedRightHand));
+                socket.emit('other player left hand', JSON.stringify(connectedLeftHand));
 
                 console.log(currentPlayer.name + ' emit: other player connected: ' + JSON.stringify(playerConnected));
                 console.log(currentPlayer.name + ' emit: other player head: ' + JSON.stringify(connectedHead));
                 console.log(currentPlayer.name + ' emit: other player right hand: ' + JSON.stringify(connectedRightHand));
                 console.log(currentPlayer.name + ' emit: other player leftt hand: ' + JSON.stringify(connectedLeftHand));
-                console.log(currentPlayer.name + ' emit: other wakizashi : ' + JSON.stringify(othersWakizashi));
             }
         });
 
-        socket.on('play', function (data) {
+        socket.on('play', (data) => {
+            currentPlayer = JSON.parse(data);
             console.log(currentPlayer.name + ' recv: play: ' + JSON.stringify(data));
             console.log("old player info : ", currentPlayer);
-            console.log("data is : ", data);
-            currentPlayer = data;
+            console.log("data is : ", currentPlayer);
+            console.log("Data name is: " + currentPlayer.name);
             currentPlayer.name = "desktop" + clients.length;
             console.log("new player info : ", currentPlayer);
-
             if (clients.length === 0) {
                 var playerPosition = {
                     playerPosition: data.playerPosition
@@ -248,157 +240,61 @@ const rootSocket = (io) => {
                     playerRotation: data.playerRotation
                 }
             }
-
-            clients.push(currentPlayer);
+            clients.push(JSON.stringify(currentPlayer));
             console.log(currentPlayer.name + ' emit: play: ' + JSON.stringify(currentPlayer));
-            socket.emit('play', currentPlayer);
-            socket.broadcast.emit('other player connected', currentPlayer);
+            socket.emit('play', JSON.stringify(currentPlayer));
+            socket.broadcast.emit('other player connected', JSON.stringify(currentPlayer));
         });
 
-        socket.on('enemy', function (enemyData) {
-            enemyData.enemySpawnPoints.forEach(function (_enemySpawnPoint) {
-                var enemySpawnPoint = {
-                    name: (currentPlayer.name + ' s ememy : ' + guid()),
-                    enemyPosition: _enemySpawnPoint.enemyPosition,
-                    enemyRotation: _enemySpawnPoint.enemyRotation,
-                    health: 100
-                };
-                enemySpawnPoints.push(enemySpawnPoint);
-                socket.emit('enemy', enemySpawnPoint);
-                console.log('enemySpawnPoint : ', enemySpawnPoint);
-            });
-            console.log('enemySpawnPoints info : ', enemySpawnPoints);
+        socket.on('head move', (data) => {
+            // console.log(currentPlayer.name + ' recv: head move: ' + JSON.stringify(data));
+            currentPlayer.headPosition = JSON.parse(data).headPosition;
+            // console.log(JSON.stringify(data));
+            // console.log(currentPlayer.headPosition);
+            socket.broadcast.emit('head move', JSON.stringify(currentPlayer));
         });
 
-        socket.on('wakizashi', function (wakizashiData) {
-            wakizashiSpawnPoints = [];
-            wakizashiData.wakizashiSpawnPoints.forEach(function (_wakizashiSpawnPoint) {
-                var wakizashiSpawnPoint = {
-                    name: guid(),
-                    wakizashiPosition: _wakizashiSpawnPoint.wakizashiPosition,
-                    wakizashiRotation: _wakizashiSpawnPoint.wakizashiRotation,
-                    health: 100
-                };
-                wakizashiSpawnPoints.push(wakizashiSpawnPoint);
-            });
-            console.log(currentPlayer.name + ' wakizashi genarated');
-        });
-
-        socket.on('head move', function (data) {
-            console.log(currentPlayer.name + ' recv: head move: ' + JSON.stringify(data));
-            currentPlayer.headPosition = data.headPosition;
-            socket.broadcast.emit('head move', currentPlayer);
-        });
-
-        socket.on('head turn', function (data) {
-            console.log(currentPlayer.name + ' recv: head turn: ' + JSON.stringify(data));
-            currentPlayer.headRotation = data.headRotation;
-            socket.broadcast.emit('head turn', currentPlayer);
+        socket.on('head turn', (data) => {
+            // console.log(currentPlayer.name + ' recv: head turn: ' + JSON.stringify(data));
+            currentPlayer.headRotation = JSON.parse(data).headRotation;
+            socket.broadcast.emit('head turn', JSON.stringify(currentPlayer));
         });
 
 
-        socket.on('player move', function (data) {
-            console.log(currentPlayer.name + ' recv: move: ' + JSON.stringify(data));
-            currentPlayer.playerPosition = data.playerPosition;
-            socket.broadcast.emit('player move', currentPlayer);
+        socket.on('player move', (data) => {
+            // console.log(currentPlayer.name + ' recv: move: ' + JSON.stringify(data));
+            currentPlayer.playerPosition = JSON.parse(data).playerPosition;
+            socket.broadcast.emit('player move', JSON.stringify(currentPlayer));
         });
 
-        socket.on('player turn', function (data) {
-            console.log(currentPlayer.name + ' recv: turn: ' + JSON.stringify(data));
-            currentPlayer.playerRotation = data.playerRotation;
-            socket.broadcast.emit('player turn', currentPlayer);
+        socket.on('player turn', (data) => {
+            // console.log(currentPlayer.name + ' recv: turn: ' + JSON.stringify(data));
+            currentPlayer.playerRotation = JSON.parse(data).playerRotation;
+            socket.broadcast.emit('player turn', JSON.stringify(currentPlayer));
         });
 
-        socket.on('right hand move', function (data) {
-            console.log(currentPlayer.name + ' recv: right hand move: ' + JSON.stringify(data));
-            currentPlayer.rightHandPosition = data.rightHandPosition;
-            socket.broadcast.emit('right hand move', currentPlayer);
+        socket.on('right hand move', (data) => {
+            // console.log(currentPlayer.name + ' recv: right hand move: ' + JSON.stringify(data));
+            currentPlayer.rightHandPosition = JSON.parse(data).rightHandPosition;
+            socket.broadcast.emit('right hand move', JSON.stringify(currentPlayer));
         });
 
-        socket.on('right hand turn', function (data) {
-            console.log(currentPlayer.name + ' recv: right hand turn: ' + JSON.stringify(data));
-            currentPlayer.rightHandRotation = data.rightHandRotation;
-            socket.broadcast.emit('right hand turn', currentPlayer);
+        socket.on('right hand turn', (data) => {
+            // console.log(currentPlayer.name + ' recv: right hand turn: ' + JSON.stringify(data));
+            currentPlayer.rightHandRotation = JSON.parse(data).rightHandRotation;
+            socket.broadcast.emit('right hand turn', JSON.stringify(currentPlayer));
         });
 
-        socket.on('left hand move', function (data) {
-            console.log(currentPlayer.name + ' recv: left hand move: ' + JSON.stringify(data));
-            currentPlayer.leftHandPosition = data.leftHandPosition;
-            socket.broadcast.emit('left hand move', currentPlayer);
+        socket.on('left hand move', (data) => {
+            // console.log(currentPlayer.name + ' recv: left hand move: ' + JSON.stringify(data));
+            currentPlayer.leftHandPosition = JSON.parse(data).leftHandPosition;
+            socket.broadcast.emit('left hand move', JSON.stringify(currentPlayer));
         });
 
-        socket.on('left hand turn', function (data) {
-            console.log(currentPlayer.name + ' recv: left hand turn: ' + JSON.stringify(data));
-            currentPlayer.leftHandRotation = data.leftHandRotation;
-            socket.broadcast.emit('left hand turn', currentPlayer);
-        });
-
-        socket.on('enemy move', function (data) {
-            console.log(currentPlayer.name + ' recv: enemy move: ' + JSON.stringify(data));
-            currentPlayer.enemyPosition = data.enemyPosition;
-            socket.broadcast.emit('enemy move', currentPlayer);
-        });
-
-        socket.on('enemy turn', function (data) {
-            console.log(currentPlayer.name + ' recv: enemy turn: ' + JSON.stringify(data));
-            currentPlayer.enemyRotation = data.enemyRotation;
-            socket.broadcast.emit('enemy turn', currentPlayer);
-        });
-
-        socket.on('wakizashi move', function (data) {
-            console.log(currentPlayer.name + ' recv: wakizashi move: ' + JSON.stringify(data));
-            currentPlayer.wakizashiPosition = data.wakizashiPosition;
-            socket.broadcast.emit('wakizashi move', currentPlayer);
-        });
-
-        socket.on('wakizashi turn', function (data) {
-            console.log(currentPlayer.name + ' recv: wakizashi turn: ' + JSON.stringify(data));
-            currentPlayer.wakizashiRotation = data.wakizashiRotation;
-            socket.broadcast.emit('wakizashi turn', currentPlayer);
-        });
-
-        socket.on('disconnect', function () {
-            console.log(currentPlayer.name + ' recv: disconnect ' + currentPlayer.name);
-            socket.broadcast.emit('other player disconnected', currentPlayer);
-            console.log(currentPlayer.name + ' bcst: other player disconnected ' + JSON.stringify(currentPlayer));
-            for (var i = 0; i < clients.length; i++) {
-                if (clients[i].name === currentPlayer.name) {
-                    clients.splice(i, 1);
-                }
-            }
-        });
-
-        socket.on('health', function (data) {
-            console.log(currentPlayer.name + ' bcst: health: ' + JSON.stringify(data));
-            if (data.from === currentPlayer.name) {
-                var indexDamaged = 0;
-                if (!data.isEnemy) {
-                    clients = clients.map(function (client, index) {
-                        if (client.name === data.name) {
-                            indexDamaged = index;
-                            client.health -= data.healthChange;
-                        }
-                        return client;
-                    });
-                } else {
-                    enemies = enemies.map(function (enemy, index) {
-                        if (enemy.name === data.name) {
-                            indexDamaged = index;
-                            enemy.health -= data.healthChange;
-                        }
-                        return enemy;
-                    });
-                }
-
-                var responce = {
-                    name: (!data.isEnemy) ? clients[indexDamaged].name : enemies[indexDamaged].name,
-                    health: (!data.isEnemy) ? clients[indexDamaged].health : enemies[indexDamaged].health
-                };
-                console.log(currentPlayer.name + ' bcst: health: ' + JSON.stringify(responce));
-                socket.emit('health', response);
-                socket.broadcast.emit('health', response);
-            }
-
+        socket.on('left hand turn', (data) => {
+            // console.log(currentPlayer.name + ' recv: left hand turn: ' + JSON.stringify(data));
+            currentPlayer.leftHandRotation = JSON.parse(data).leftHandRotation;
+            socket.broadcast.emit('left hand turn', JSON.stringify(currentPlayer));
         });
 
         require('../services/GameService').cameraMove(socket, io);
