@@ -22,6 +22,7 @@ const rootSocket = (io) => {
                     userConnected[user._id] = {
                         detail: { ...socket.handshake.auth.userInfo },
                         socket: socket.id,
+                        type: socket.handshake.auth.type
                     };
                 }
             });

@@ -17,6 +17,7 @@ function App() {
             socket.auth = {
                 token: token,
                 userInfo: currentUser,
+                type: "Web"
             };
 
             socket.connect();
