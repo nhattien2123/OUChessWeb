@@ -77,6 +77,9 @@
     "@types/uuid": "^9.0.4",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^9.0.0",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "raw-loader": "^4.0.2",
+    "react-app-rewired": "^2.2.1",
+    "worker-loader": "^3.0.8"
   }
 }

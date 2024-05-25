@@ -9,20 +9,24 @@ import { RootState } from "src/app/store";
 
 function App() {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
-
     useEffect(() => {
         const token = Cookies.get("token");
+        const detail = Cookies.get("room");
+
         if (token && currentUser) {
             socket.auth = {
                 token: token,
                 userInfo: currentUser,
             };
+
             socket.connect();
+
+            if (detail) {
+                socket.emit("reconnect", JSON.parse(detail));
+            }
         }
         return;
     }, []);
-
-    useSockets({ reset: () => {} });
 
     return (
         <>

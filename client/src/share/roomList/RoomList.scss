@@ -161,6 +161,7 @@ input[type="text"] {
     text-align: center;
     color: #fff;
     position: relative;
+    width: 30%;
 
     h2 {
         font-size: 24px;
@@ -274,6 +275,29 @@ input[type="text"] {
         &--right {
           right: -$line-width;
         }
+      }
+
+      .color__team{
+        width: 50%;
+        margin: 5px auto 20px auto;
+        padding: 20px;
+
+        &:hover {
+            cursor: pointer;
+            background-color: $green-1;
+        }
+      }
+
+      .color__white {
+        background-color: #ffffff;
+        color: #262421;
+
+
+      }
+
+      .color__black {
+        background-color: #818181;
+        color: #ffffff;
       }
 }
 

@@ -1,4 +1,3 @@
-
 import Move from "src/interfaces/gamecore/board/Move";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -43,13 +42,12 @@ export type OpponentUser = {
 export interface Room {
     id: string;
     title: string;
-    player: UserTypes.User[];
+    player: (UserTypes.User & { color: number })[];
 }
 
-export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
+export const useSockets = (playerColor: number): void => {
     const dispatch = useAppDispatch();
     const userId = useAppSelector((state: RootState) => state.userReducer.currentUser._id);
-    const playerColor = useAppSelector((state: RootState) => state.playerReducer.playerColor);
     const username = useAppSelector((state: RootState) => state.userReducer.currentUser.username);
     const avatar = useAppSelector((state: RootState) => state.userReducer.currentUser.avatar);
     const opponentColor = useAppSelector((state: RootState) => state.opponentReducer.color);
@@ -109,7 +107,6 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
         socket.on(`leftRoom`, (data: LeaveRoom) => {
             console.log("Left Room");
             dispatch(playerActions.setJoinedRoom({ joinedRoom: false }));
-            reset();
         });
 
         socket.on(`clientExistingPlayer`, (data: OpponentUser) => {
@@ -128,18 +125,11 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
         });
 
         socket.on(`cameraMoved`, (data: CameraMove) => {
-            if (playerColor === data.color) {
-                return;
-            }
             dispatch(opponentActions.setPosition({ position: data.position }));
         });
 
         socket.on(`moveMade`, (data: MovingTo) => {
             dispatch(gameSettingActions.setMovingTo({ movingTo: data }));
-        });
-
-        socket.on(`gameReset`, () => {
-            reset();
         });
 
         socket.on(`playersInRoom`, (data: number) => {
@@ -182,7 +172,6 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
         socket.on("rep-join-room", (req: rResult) => {
             const { detail, status } = req;
             if (status === 1) {
-                console.log(detail.player.findIndex((player) => player._id === userId));
                 dispatch(
                     roomAction.responseCreateRoom({
                         detail: {
@@ -190,7 +179,7 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
                             title: detail.title,
                             player: detail.player,
                         },
-                        color: detail.player.findIndex((player) => player._id === userId),
+                        color: detail.player.filter((player) => player._id === userId)[0].color,
                     }),
                 );
                 if (detail.player.length === 2) {
@@ -199,7 +188,10 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
                         opponentActions.setDetail({
                             name: opponent.username,
                             avatar: opponent.avatar,
-                            color: detail.player.findIndex((player) => player._id !== userId) === 1 ? "black" : "white",
+                            color:
+                                detail.player.filter((player) => player._id !== userId)[0].color === 0
+                                    ? "black"
+                                    : "white",
                         }),
                     );
                     dispatch(roomAction.resquestStarting());
@@ -232,6 +224,36 @@ export const useSockets = ({ reset }: { reset: VoidFunction }): void => {
             dispatch(roomAction.responseLeaveRoom());
             toast.info("Player left");
         });
+
+        socket.on("res-draw", () => {
+            console.log("res-draw");
+        });
+
+        socket.on("req-draw-result", () => {
+            console.log("req-draw-result");
+        });
+
+        socket.on("game-end", () => {
+            console.log("Game End");
+        });
+
+        socket.on("reconnect-room", () => {
+            console.log("Opponent Reconected");
+            toast.info("Opponent Reconected");
+            dispatch(roomAction.initializing());
+        })
+
+        socket.on("opponent-disconnect", () => {
+            console.log("Opponent disconect");
+            toast.info("Opponent disconect");
+            dispatch(roomAction.opponentDisconnected());
+        });
+
+        socket.on("initializing-detail", (payload) => {
+            console.log(payload);
+            toast.info("init");
+            dispatch(roomAction.opponentReconneccted(payload));
+        })
 
         //interface
         interface mResult {

@@ -122,7 +122,7 @@ class Searcher {
         alpha: number,
         beta: number,
         numExtenstion: number,
-        prevMove : Move,
+        prevMove: Move,
         prevWasCapture: boolean,
     ): number => {
         if (this.searchCancelled) {
@@ -195,7 +195,7 @@ class Searcher {
             const capturedPieceType = PieceFunc.PieceType(this.board.Square[move.TargetSquare()]);
             const isCapture = capturedPieceType !== Piece.PieceType.None;
 
-            if(PieceFunc.PieceType(this.board.Square[moves[i].StartSquare()]) === Piece.PieceType.None){
+            if (PieceFunc.PieceType(this.board.Square[moves[i].StartSquare()]) === Piece.PieceType.None) {
                 continue;
             }
 
@@ -329,7 +329,7 @@ class Searcher {
             0,
         );
         for (let i = 0; i < moves.length; i++) {
-            if(PieceFunc.PieceType(this.board.Square[moves[i].StartSquare()]) === Piece.PieceType.None){
+            if (PieceFunc.PieceType(this.board.Square[moves[i].StartSquare()]) === Piece.PieceType.None) {
                 continue;
             }
             this.board.MakeMove(moves[i], true);

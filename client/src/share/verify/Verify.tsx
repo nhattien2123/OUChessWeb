@@ -103,12 +103,12 @@ const Verify: React.FC<verifyProps> = ({
                 </form>
                 <div
                     style={{ margin: "10px auto", padding: "10px", textAlign: "center" }}
-                    className="w-10 btn-form"
+                    className="w-20 btn-form"
                     onClick={(evt) => {
                         setNextStep((prev) => prev - 1);
                     }}
                 >
-                    back
+                    Trở về
                 </div>
             </div>
         </>

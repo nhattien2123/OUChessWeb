@@ -70,8 +70,8 @@
 
 .mini-map {
     display: flex;
+    flex-wrap: wrap;
     position: relative;
-    flex-direction: column;
     z-index: 1;
     width: 200px;
     height: 200px;
@@ -80,16 +80,8 @@
     border-radius: 7px;
     opacity: 0.8;
 
-    .white svg {
-        color: #ffffff;
-    }
 
-    .black svg {
-        color: #000000;
-    }
 
-    .mini-map-row {
-        display: flex;
 
         .mini-map-tile-move {
             height: 25px;
@@ -126,7 +118,7 @@
         .can-move {
             background-color: red;
         }
-    }
+    
 }
 
 .promotion-dialog {
@@ -275,13 +267,13 @@
 }
 
 .message-game-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    // display: flex;
+    // flex-direction: column;
+    height: 30%;
     position: relative;
-    overflow-y: hidden;
+    overflow-y: auto;
     // breaks overflow-y: scroll
-    justify-content: flex-end;
+    // justify-content: flex-end;
     padding: 0 15px;
 }
 
@@ -439,3 +431,4 @@
     font-weight: bold;
     background-color: #84ff73af;
 }
+

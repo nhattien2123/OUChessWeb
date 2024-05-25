@@ -35,6 +35,7 @@ export const RoomListComponent: FC<{
     const [isSearch, setIsSearch] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [isModeModalOpen, setModeModalOpen] = useState(false);
+    const [color, setColor] = useState<number>(0);
     const matchesPerPage = 8;
     const nav = useNavigate();
     const dispatch = useAppDispatch();
@@ -110,6 +111,7 @@ export const RoomListComponent: FC<{
             roomAction.requestCreateRoom({
                 title: title,
                 own: userId,
+                color: color,
             }),
         );
     };
@@ -174,6 +176,14 @@ export const RoomListComponent: FC<{
                                 checkCanCreateRoom(e.target.value);
                             }}
                         />
+
+                        <div
+                            className={`color__team ${color === 1 ? "color__black" : "color__white"}`}
+                            onClick={() => setColor(1 - color)}
+                        >
+                            {color ? "Đen" : "Trắng"}
+                        </div>
+
                         {/* <label>Chế Độ:</label>
                         <select
                             value={newMatch.mode}

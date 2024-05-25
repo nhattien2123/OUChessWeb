@@ -35,6 +35,9 @@ export interface Room {
         promotionPiece: string;
         isAction: boolean;
     };
+    opponent: {
+        state: number,
+    }
     history: Moving[];
     type: number;
     lastTime: number;
@@ -45,6 +48,7 @@ export interface Room {
 export type CreateRoomRequest = PayloadAction<{
     title: string;
     own: string;
+    color: number
 }>;
 export type CreatRoomResponse = PayloadAction<{
     detail: {
@@ -79,4 +83,19 @@ export type MovingRequest = PayloadAction<{
 }>;
 export type MovingResponse = PayloadAction<{
     moving: Moving;
+}>;
+export type Reconnected = PayloadAction<{
+    detail: {
+        id: string;
+        title: string;
+        player: UserType.User[];
+    },
+    gameState: {
+        turn: number;
+        isStarted: boolean;
+        playerColor: number;
+        whiteTimer: number;
+        blackTimer: number;
+    },
+    history: Moving[],
 }>;

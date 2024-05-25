@@ -68,7 +68,7 @@ const Register: React.FC<RegisterProps> = () => {
                 </div>
             </div> */}
             <div className="register__container">
-                {(nextStep === 1) ? (
+                {!(nextStep === 1) ? (
                     <RegisterForm registerData={info} onSubmit={verifyFormHandle} />
                 ) : (
                     <Verify

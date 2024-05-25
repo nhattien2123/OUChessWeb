@@ -133,7 +133,6 @@ class Board {
             targetSquare,
         );
 
-        console.log(PieceFunc.GetSymbol(piece), piece);
         this.allPieceLists[piece].MovePiece(startSquare, targetSquare);
         this.Square[startSquare] = PieceType.None;
         this.Square[targetSquare] = piece;
@@ -534,6 +533,28 @@ class Board {
 
             this.gameStateHistory.push(this.CurrentGameState);
         }
+    };
+
+    CreateNewBoard = (source: Board) => {
+        const newBoard = new Board();
+        newBoard.LoadPositionByFen(source.StartPositionInfo.fen);
+
+        for (let i = 0; i < source.AllGameMoves.length; i++)
+        {
+            newBoard.MakeMove(source.AllGameMoves[i]);
+        }
+        return newBoard;
+    };
+
+    LoadPositionByMove = (moves: Move[]) => {
+        const newBoard = new Board();
+        newBoard.LoadStartPostion();
+
+        for (let i = 0; i < moves.length; i++)
+        {
+            newBoard.MakeMove(moves[i]);
+        }
+        return newBoard;
     };
 
     UpdateSliderBitboards = () => {

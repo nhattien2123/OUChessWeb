@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import Board from "src/interfaces/gamecore/board/Board";
 import MoveGenerator from "src/interfaces/gamecore/move/MoveGenerator";
-import Move from "src/interfaces/gamecore/board/Move";
+import Move, { MoveFlag } from "src/interfaces/gamecore/board/Move";
 
 import { checkIfPositionsMatch } from "src/share/game/logic/Board";
 import type { ModelProps } from "src/models";
@@ -25,10 +25,13 @@ import { RootState } from "src/app/store";
 import { Color, Position } from "src/interfaces/gameplay/chess";
 import { roomAction } from "src/redux/reducer/room/RoomReducer";
 
+
 import * as GameResult from "src/interfaces/gamecore/result/GameResult";
 import * as BoardHelper from "src/interfaces/gamecore/helper/BoardHelper";
 import * as PieceFunc from "src/share/gamecore/board/Piece";
 import * as Piece from "src/interfaces/gamecore/board/Piece";
+import * as MoveUtility from "src/interfaces/gamecore/helper/MoveUtility";
+
 import { Moving } from "src/redux/reducer/room/Types";
 
 export type MakeMoveClient = {
@@ -87,6 +90,7 @@ export const BoardComponent: FC<{
     });
 
     const moveGenerator = new MoveGenerator();
+
     const IsHightLigt = (board: Board, start: number | null, target: number) => {
         if (start === null) return null;
         const moves = moveGenerator.GenerateMoves(board, false);
@@ -103,12 +107,12 @@ export const BoardComponent: FC<{
 
         return null;
     };
-    const getStep = (start: number, target: number, isWhite: boolean) => {
+
+    const getStep = (start: number, target: number, isWhite: number) => {
         const movingTo = {
             x: BoardHelper.RankIndex(Number(target)) - BoardHelper.RankIndex(Number(start)),
             y: BoardHelper.FileIndex(Number(target)) - BoardHelper.FileIndex(Number(start)),
         };
-
         return movingTo;
     };
 
@@ -116,16 +120,20 @@ export const BoardComponent: FC<{
         e.stopPropagation();
         if (!board) return;
         const isPlayersTurn = playerColor === board.MoveColourIndex();
-        if (!isStarted) return;
-        if (!isPlayersTurn) return;
-        if (!squareIndex) return;
+        // if (!isStarted) return;
+        // if (!isPlayersTurn) return;
 
-        if (PieceFunc.PieceType(board.Square[squareIndex]) === Piece.PieceType.None && !selected) return;
+        if (squareIndex === null) return;
+
+        if (PieceFunc.PieceType(board.Square[squareIndex]) === Piece.PieceType.None && selected === null) return;
 
         if (PieceFunc.PieceType(board.Square[squareIndex]) === Piece.PieceType.None) {
             setSelected(null);
             return;
         }
+
+        console.log(PieceFunc.PieceType(board.Square[squareIndex]));
+
 
         setLastSelected(lastSelected !== squareIndex ? selected : null);
         setSelected(squareIndex);
@@ -138,8 +146,7 @@ export const BoardComponent: FC<{
     const startMovingPiece = (e: ThreeMouseEvent, target: number) => {
         if (!socket) return;
         if (!board) return;
-
-        if (selected && target) {
+        if (selected !== null && target !== null) {
             if (PieceFunc.PieceType(board.Square[selected]) === Piece.PieceType.Pawn) {
                 if (BoardHelper.RankIndex(target) === 7 || BoardHelper.RankIndex(target) === 0) {
                     setTargeted(target);
@@ -170,13 +177,30 @@ export const BoardComponent: FC<{
 
         if (moving.start === null && moving.target === null) return;
 
-        board.MakeMove(new Move(Number(start), Number(target), Number(flag)), false);
+        const newMove = new Move(Number(start), Number(target), Number(flag));
+
+        const str = MoveUtility.GetMoveNameSAN(newMove, board);
+
+        board.MakeMove(newMove, false);
 
         setSelected(null);
-        dispatch(roomAction.resClearMoving());
+        setTargeted(null);
+        const endMoving = {
+            start: Number(start),
+            target: Number(target),
+            flag: Number(flag),
+            moveString: str
+        } as Moving;
+
+        dispatch(
+            roomAction.endMoving({
+                moving: endMoving,
+            }),
+        );
     };
 
     useEffect(() => {
+        if (!isStarted) return;
         if (!board) return;
 
         const gameResult = GameResult.GetGameState(board);
@@ -335,7 +359,7 @@ export const BoardComponent: FC<{
             socket?.emit(`cameraMove`, {
                 position: [x, y, z],
                 roomId: detail?.id,
-                color: playerColor === 1 ? "black" : 'white',
+                color: playerColor === 1 ? "black" : "white",
             } satisfies CameraMove);
         }, 500);
         return () => clearInterval(interval);
@@ -394,7 +418,7 @@ export const BoardComponent: FC<{
                     const bg = (file + rank) % 2 === 0 ? `white` : `black`;
 
                     const isHightLight = IsHightLigt(board, selected, i);
-                    const isSelected = selected && selected === i ? true : false;
+                    const isSelected = selected !== null && selected === i ? true : false;
                     let canMoveHere: Position | null = null;
                     if (isHightLight !== null) {
                         canMoveHere = {
@@ -404,8 +428,8 @@ export const BoardComponent: FC<{
                     }
 
                     const pieceIsBeingReplaced =
-                        moving.start &&
-                        moving.target &&
+                        moving.start !== null &&
+                        moving.target !== null &&
                         board.Square[moving.target] !== Piece.PieceType.None &&
                         checkIfPositionsMatch(
                             { x: BoardHelper.RankIndex(i), y: BoardHelper.FileIndex(i) },
@@ -418,7 +442,7 @@ export const BoardComponent: FC<{
                             : false;
 
                     const handleClick = (e: ThreeMouseEvent) => {
-                        if (!isStarted) return;
+                        // if (!isStarted) return;
 
                         if (moving.start && moving.target) return;
 
@@ -426,7 +450,6 @@ export const BoardComponent: FC<{
 
                         const tileContainsOtherPlayersPiece =
                             square !== 0 && PieceFunc.PieceColour(square) !== turn * 8;
-                        console.log(playerColor, canMoveHere);
                         if (tileContainsOtherPlayersPiece && !canMoveHere) {
                             setSelected(null);
                             return;
@@ -454,7 +477,7 @@ export const BoardComponent: FC<{
                                     y: BoardHelper.FileIndex(Number(moving.start)),
                                 },
                             )
-                                ? getStep(moving.start, moving.target, board.IsWhiteToMove)
+                                ? getStep(moving.start, moving.target, i)
                                 : null,
                         pieceIsBeingReplaced: pieceIsBeingReplaced,
                         finishMovingPiece: () =>
