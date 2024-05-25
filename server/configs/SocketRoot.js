@@ -30,18 +30,19 @@ const rootSocket = (io) => {
 
     io.on('connection', (socket) => {
         userCount += 1;
-        console.log('connection - (con): ', userConnected);
-        console.log('rooms: ', rooms);
 
         socket.on('disconnect', () => {
             userCount -= 1;
+            if (socket.handshake.auth.detail) {
+                socket.broadcast.to(socket.handshake.auth.detail.id).emit('opponent-disconnect');
+            }
+
             if (socket.userId) {
                 delete userConnected[socket.userId];
             }
             console.log('connection (dis): ', userConnected);
         });
 
-        socket.on('reconnect', () => {});
         require('../services/CommentInfoService').commentInfoSocket(socket, io, (error) => {
             socket.emit('error_msg', { error });
         });
@@ -67,7 +68,7 @@ const rootSocket = (io) => {
                     }
 
                     const player = new Array();
-                    player.push(userConnected[socket.userId].detail);
+                    player.push({ ...userConnected[socket.userId].detail, color: detail.color });
                     const room = {
                         id: rID,
                         title: detail.title,
@@ -79,10 +80,14 @@ const rootSocket = (io) => {
                     socket.emit('rep-join-room', {
                         detail: room,
                         status: 1,
-                        color: 0,
+                        color: detail.color,
                     });
-                    
-                    io.expert(rooms).emit('req-get-rooms', rooms);
+
+                    socket.handshake.auth = {
+                        ...socket.handshake.auth,
+                        detail: room
+                    };
+                    io.emit('req-get-rooms', rooms);
                 } else if (detail.type === 'join') {
                     const room = rooms.filter((r) => r.id === detail.rID)[0];
                     if (room.player.length === 2) {
@@ -92,16 +97,22 @@ const rootSocket = (io) => {
                             color: null,
                         });
                     } else {
-                        room.player.push(userConnected[socket.userId].detail);
+                        const color = 1 - room.player[0].color;
+                        room.player.push({ ...userConnected[socket.userId].detail, color: color });
                         rooms[rooms.findIndex((r) => r.id === room.id)] = room;
                         socket.join(room.id);
                         io.to(room.id).emit('rep-join-room', {
                             detail: room,
                             status: 1,
-                            color: 1,
+                            color: color,
                         });
 
-                        io.expert(rooms).emit('req-get-rooms', rooms);
+                        socket.handshake.auth = {
+                            ...socket.handshake.auth,
+                            detail: room
+                        };
+
+                        io.emit('req-get-rooms', rooms);
                     }
                 } else {
                     socket.emit('rep-join-room', {
@@ -128,7 +139,7 @@ const rootSocket = (io) => {
         socket.on('leave-room', async (request) => {
             const room = request.rId;
             io.to(room).emit('req-leave-room', {
-                uId: request.uId
+                uId: request.uId,
             });
             socket.leave(room.id);
             rooms = rooms.filter((r) => r.id !== room);
@@ -147,6 +158,37 @@ const rootSocket = (io) => {
                 timer: timer,
             });
         });
+
+        socket.on('res-draw', async (request) => {
+            const { roomID } = request;
+            socket.broadcast.to(roomID).emit('res-draw');
+        });
+
+        socket.on('req-draw', async (request) => {
+            const { isDraw, roomID } = request;
+            if (isDraw) {
+                io.to(roomID).emit('game-end');
+            } else {
+                socket.broadcast.to(roomID).emit('req-draw');
+            }
+        });
+
+        socket.on('reconnect', (detail) => {
+            console.log("reconnecting");
+            socket.join(detail.id);
+            console.log(detail.id);
+            socket.broadcast.to(detail.id).emit('reconnect-room');
+        });
+
+        socket.on('initializing-detail', (payload) => {
+            console.log("send initilzied");
+            const pack = {
+                detail: payload.detail,
+                gameState: payload.gameState,
+                history: payload.history
+            };
+            socket.broadcast.to(payload.detail.id).emit("initializing-detail", pack);
+        })
 
         //#endregion new socket
 

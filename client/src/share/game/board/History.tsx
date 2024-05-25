@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from "react";
+import { CSSProperties, useEffect, useState, type FC } from "react";
 
 import type { Board, Position, MoveTypes, Piece } from "src/interfaces/gameplay/chess";
 import { useHistoryState } from "src/components/game/Game";
@@ -46,30 +46,48 @@ const getLastFive = (arr: History[]) => {
 };
 
 export const HistoryPanel: FC = () => {
-    const history = useHistoryState((state) => state.history);
-    const [historys, setHistory] = useState<string[]>([]);
     const allGameMove = useAppSelector((root: RootState) => root.roomReducer.history);
-    const board = useAppSelector((root: RootState) => root.roomReducer.board);
-    const turn = useAppSelector((root: RootState) => root.roomReducer.gameState.turn);
 
-    useEffect(() => {
-        if (board) {
-            if (allGameMove.length > 0) {
-                console.log(allGameMove);
-            }
-        }
-    }, [turn]);
+    const whiteMove = {
+        width: "45%",
+        color: "#fff",
+        margin: "2px",
+        backgroudColor: "green"
+    };
+
+    const blackMove = {
+        width: "45%",
+        color: "rgb(128 128 128)",
+        margin: "2px",
+        backgroudColor: "green"
+
+    };
+
+    const historyPanel: CSSProperties = {
+        display: "flex",
+        flexWrap: "wrap",
+        overflow: "auto",
+        height: "100%",
+        width: "100%"
+    };
 
     return (
         <div className="history">
-            <h3>LỊCH SỬ NƯỚC ĐI</h3>
-            {allGameMove.map((move) => {
-                return (
-                    <>
-                        <div style={{ color: "#fff" }}>{move.moveString}</div>
-                    </>
-                );
-            })}
+            <h1>NƯỚC ĐI</h1>
+            <div style={historyPanel}>
+                {allGameMove.map((move) => {
+                    let isWhite = true;
+                    if (move.moveString) {
+                        isWhite = move.moveString[0].toUpperCase() === move.moveString[0];
+                    }
+
+                    return (
+                        <>
+                            <div style={isWhite ? whiteMove : blackMove}>{move.moveString}</div>
+                        </>
+                    );
+                })}
+            </div>
 
             {/* {getLastFive(history).map((h, i) => {
                 const from = convertCoords(h.from.x, h.from.y)

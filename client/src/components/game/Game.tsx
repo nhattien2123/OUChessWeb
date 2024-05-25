@@ -61,6 +61,7 @@ const initializeStartPos = (): Board => {
 export const Game: FC = () => {
     const playerColor = useAppSelector((state: RootState) => state.roomReducer.gameState.playerColor);
     const board = useAppSelector((state: RootState) => state.roomReducer.board);
+    const room = useAppSelector((state: RootState) => state.roomReducer.detail);
     const [showPromotionDialog, setShowPromotionDialog] = useState<boolean>(false);
     const [cameraDefault, setCameraDefault] = useState(new Vector3(0, 0, 0));
     const [selected, setSelected] = useState<number | null>(null);
@@ -68,20 +69,9 @@ export const Game: FC = () => {
     const [moves, setMoves] = useState<number[]>([]);
     const [endGame, setEndGame] = useState<EndGame | null>(null);
     const [lastSelected, setLastSelected] = useState<number | null>(null);
-    const [movingTo, setMovingTo] = useState<{start: number; target: number;} | null>(null);
-    const dispatch = useAppDispatch();
     const nav = useNavigate();
 
     const roomState = useAppSelector((state: RootState) => state.roomReducer);
-
-    const reset = () => {
-        // setBoard(createBoard())
-        // setSelected(null)
-        // setMoves([])
-        // resetHistory()
-        // resetTurn()
-        // setEndGame(null)
-    };
 
     useEffect(() => {
         if (playerColor === 0) {
@@ -99,10 +89,12 @@ export const Game: FC = () => {
         return;
     }, [roomState]);
 
+
+
     return (
         <div className="container-chess">
-            <Sidebar board={board} moves={moves} selected={selected} reset={reset} />
-            {/* {detail && <Chat />} */}
+            <Sidebar board={board} moves={moves} selected={selected} />
+            {room?.id && <Chat />}
             <StatusBar />
             <GameOverScreen endGame={endGame} />
             <Loader />

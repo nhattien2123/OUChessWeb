@@ -1,6 +1,6 @@
 const cameraMove = (socket, io) => {
     socket.on(`cameraMove`, (data) => {
-        io.sockets.in(data.roomId).emit(`cameraMoved`, data)
+        socket.broadcast.to(data.roomId).emit(`cameraMoved`, data)
     })
 };
 

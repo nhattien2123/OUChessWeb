@@ -24,7 +24,7 @@ export const GetMoveNameSAN = (move: Move, board: Board): string => {
     const moveGen = new MoveGenerator();
     let moveNotation = PieceFunc.GetSymbol(movePieceType);
 
-    moveNotation = board.IsWhiteToMove ? moveNotation : moveNotation.toUpperCase();
+    moveNotation = board.IsWhiteToMove ? moveNotation : moveNotation.toLowerCase();
 
     if (movePieceType !== PieceType.Pawn || movePieceType !== PieceType.King) {
         const allMove = moveGen.GenerateMoves(board) as Move[];
@@ -36,7 +36,7 @@ export const GetMoveNameSAN = (move: Move, board: Board): string => {
                 if (PieceFunc.PieceType(board.Square[altMove.StartSquare()]) === movePieceType) {
                     const fromFileIndex = BoardHelper.FileIndex(move.StartSquare());
                     const alternateFromFileIndex = BoardHelper.FileIndex(altMove.TargetSquare());
-                    const fromRankIndex = BoardHelper.RankIndex(move.StartSquare());
+                    const fromRankIndex = BoardHelper.RankIndex(move.TargetSquare());
                     const alternateFromRankIndex = BoardHelper.RankIndex(altMove.StartSquare());
 
                     if (fromFileIndex !== alternateFromFileIndex) {

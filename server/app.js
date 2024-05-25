@@ -3,7 +3,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv").config();
 const { createServer } = require("http");
-const { Server } = require("socket.io");
+const { Server, Socket } = require("socket.io");
 const db = require("./configs/MongoDB");
 const upload = require("./configs/MulterConfig");
 
@@ -11,7 +11,6 @@ const upload = require("./configs/MulterConfig");
 const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 8082;
-// socketController(httpServer);
 
 app.use(cors({}));
 app.use(cookieParser());
@@ -29,7 +28,12 @@ const io = new Server(httpServer, {
     cors: {
         origin: "http://localhost:3000",
     },
+    transports: ["websocket"],
+    allowUpgrades: false,
+    pingTimeout: 5000,
+    pingInterval: 1000,
 });
+
 const socketRoot = require("./configs/SocketRoot")(io);
 
 httpServer.listen(PORT, () => {
