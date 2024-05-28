@@ -45,7 +45,7 @@ export interface Room {
     player: (UserTypes.User & { color: number })[];
 }
 
-export const useSockets = (playerColor: number): void => {
+export const useSockets = (): void => {
     const dispatch = useAppDispatch();
     const userId = useAppSelector((state: RootState) => state.userReducer.currentUser._id);
     const username = useAppSelector((state: RootState) => state.userReducer.currentUser.username);
@@ -59,7 +59,6 @@ export const useSockets = (playerColor: number): void => {
 
         return () => {
             if (Socket) {
-                // Socket.emit(`playerLeft`, { roomId: roomId });
                 Socket.disconnect();
             }
         };
@@ -94,7 +93,7 @@ export const useSockets = (playerColor: number): void => {
                     roomId: data.roomId,
                     name: `${username}#${userId}`,
                     avatar: `${avatar}`,
-                    color: `${playerColor}`,
+                    color: `white`,
                     playerCount: data.playerCount,
                 });
                 dispatch(opponentActions.setName({ name: split[0] }));
@@ -170,6 +169,7 @@ export const useSockets = (playerColor: number): void => {
         }
 
         socket.on("rep-join-room", (req: rResult) => {
+            console.log("Created");
             const { detail, status } = req;
             if (status === 1) {
                 dispatch(
@@ -233,8 +233,9 @@ export const useSockets = (playerColor: number): void => {
             console.log("req-draw-result");
         });
 
-        socket.on("game-end", () => {
-            console.log("Game End");
+        socket.on("game-end", (result) => {
+            dispatch(roomAction.endGame({result: result}));
+            toast.info("Game Draw");
         });
 
         socket.on("reconnect-room", () => {

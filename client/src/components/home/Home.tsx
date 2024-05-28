@@ -17,12 +17,14 @@ const Home = (props: Props) => {
         if (currentUser) {
             Cookies.set("user", JSON.stringify(currentUser));
         }
-        socket.auth = {
-            token: token,
-            userInfo: currentUser,
-        };
+        
+        // socket.auth = {
+        //     token: token,
+        //     userInfo: currentUser,
+        //     type: "Web"
+        // };
 
-        socket.connect();
+        // socket.connect();
     }, [currentUser]);
 
     return (

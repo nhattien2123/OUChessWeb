@@ -13,8 +13,6 @@ import "./index.css";
 
 export const socket = io(ROOT_URL, {
     autoConnect: false,
-    transports: ["websocket"],
-    timeout: 5000,
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
