@@ -16,6 +16,7 @@ import { matchActions } from "src/redux/reducer/match/MatchReducer";
 import { socket } from "src";
 import { Moving } from "src/redux/reducer/room/Types";
 import * as UserTypes from "src/redux/reducer/user/Types";
+import { GameResult } from "src/interfaces/gamecore/result/GameResult";
 
 export type playerJoinedServer = {
     roomId: string;
@@ -47,7 +48,7 @@ export interface Room {
 
 export const useSockets = (): void => {
     const dispatch = useAppDispatch();
-    const userId = useAppSelector((state: RootState) => state.userReducer.currentUser._id);
+    const currentUser = useAppSelector((state:RootState) => state.userReducer.currentUser);
     const username = useAppSelector((state: RootState) => state.userReducer.currentUser.username);
     const avatar = useAppSelector((state: RootState) => state.userReducer.currentUser.avatar);
     const opponentColor = useAppSelector((state: RootState) => state.opponentReducer.color);
@@ -55,16 +56,16 @@ export const useSockets = (): void => {
     const Socket = socket;
 
     useEffect(() => {
-        socketInitializer();
-
+        socketInitializer(currentUser._id);
         return () => {
+            Socket.removeAllListeners();
             if (Socket) {
                 Socket.disconnect();
             }
         };
-    }, [socket]);
+    }, [currentUser, Socket]);
 
-    const socketInitializer = async () => {
+    const socketInitializer = (userId: string) => {
         socket.on(`newIncomingMessage`, (msg: Message) => {
             dispatch(messageMatchActions.addMessage({ messages: msg }));
         });
@@ -172,6 +173,9 @@ export const useSockets = (): void => {
             console.log("Created");
             const { detail, status } = req;
             if (status === 1) {
+                console.log(detail.player.filter((player) => player._id === userId));
+                console.log(detail.player);
+                console.log(userId);
                 dispatch(
                     roomAction.responseCreateRoom({
                         detail: {
@@ -234,8 +238,8 @@ export const useSockets = (): void => {
         });
 
         socket.on("game-end", (result) => {
-            dispatch(roomAction.endGame({result: result}));
-            toast.info("Game Draw");
+            dispatch(roomAction.endGame({result: GameResult.DrawByArbiter}));
+            toast.info(`Game Draw ${2}`);
         });
 
         socket.on("reconnect-room", () => {
