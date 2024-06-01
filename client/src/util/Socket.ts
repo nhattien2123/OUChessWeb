@@ -238,7 +238,7 @@ export const useSockets = (): void => {
         });
 
         socket.on("game-end", (result) => {
-            dispatch(roomAction.endGame({result: GameResult.DrawByArbiter}));
+            // dispatch(roomAction.endGame({result: GameResult.DrawByArbiter}));
             toast.info(`Game Draw ${2}`);
         });
 

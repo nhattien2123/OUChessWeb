@@ -11,7 +11,6 @@ import Board from "src/interfaces/gamecore/board/Board";
 import { useParams, useSearchParams } from "react-router-dom";
 import Move from "src/interfaces/gamecore/board/Move";
 import Searcher from "src/interfaces/gamecore/botChess/search/Searcher";
-import { useChessWorker } from "src/interfaces/gamecore/botChess/worker/ChessWorker";
 
 const initializeStartPos = (): Board => {
     const board = new Board();
@@ -47,8 +46,6 @@ const BotChess = () => {
             setDiff(20);
         }
     }, [params]);
-
-    useChessWorker(board);
 
     useEffect(() => {
         // const worker = new Worker("src/interfaces/gamecore/botChess/worker/ChessWorker.ts");
