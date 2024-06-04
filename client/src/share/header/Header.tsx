@@ -63,13 +63,10 @@ const Header = (props: Props) => {
 
         socket.on("addRequest", (friend: Friend) => {
             const newList = [...friends, friend];
-            console.log(newList);
             dispatch(userActions.reqSetFriends({ friends: newList }));
         });
 
         socket.on("removeRequest", (friend: Friend) => {
-            console.log("remove");
-            console.log(friend.recipient._id);
             const newList = friends.filter((f: Friend) => {
                 return f.recipient._id !== friend.recipient._id;
             });

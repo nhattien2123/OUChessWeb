@@ -62,6 +62,8 @@ export const Game: FC = () => {
     const playerColor = useAppSelector((state: RootState) => state.roomReducer.gameState.playerColor);
     const board = useAppSelector((state: RootState) => state.roomReducer.board);
     const room = useAppSelector((state: RootState) => state.roomReducer.detail);
+    const whiteTimer = useAppSelector((state: RootState) => state.roomReducer.gameState.whiteTimer);
+    const blackTimer = useAppSelector((state: RootState) => state.roomReducer.gameState.blackTimer);
     const [showPromotionDialog, setShowPromotionDialog] = useState<boolean>(false);
     const [cameraDefault, setCameraDefault] = useState(new Vector3(0, 0, 0));
     const [selected, setSelected] = useState<number | null>(null);
@@ -89,8 +91,6 @@ export const Game: FC = () => {
         return;
     }, [roomState]);
 
-
-
     return (
         <div className="container-chess">
             <Sidebar board={board} moves={moves} selected={selected} />
@@ -98,7 +98,7 @@ export const Game: FC = () => {
             <StatusBar />
             <GameOverScreen endGame={endGame} />
             <Loader />
-            <StatusUser />
+            <StatusUser whiteTimer={whiteTimer} blackTimer={blackTimer} />
             <PromoteDialog
                 showPromotionDialog={showPromotionDialog}
                 setShowPromotionDialog={setShowPromotionDialog}
@@ -123,6 +123,8 @@ export const Game: FC = () => {
                     setShowPromotionDialog={setShowPromotionDialog}
                     lastSelected={lastSelected}
                     setLastSelected={setLastSelected}
+                    blackTimer={blackTimer}
+                    whiteTimer={whiteTimer}
                 />
             </Canvas>
         </div>

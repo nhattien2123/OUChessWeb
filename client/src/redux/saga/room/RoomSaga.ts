@@ -31,8 +31,7 @@ function* leavingRoom(action: TypesAction.LeaveRoomRequest) {
 function* moving(action: TypesAction.MovingRequest) {
     yield socket.emit("send-move", {
         rId: action.payload.rId,
-        moving: action.payload.moving,
-        time: action.payload.timer,
+        moving: action.payload.moving
     });
 }
 

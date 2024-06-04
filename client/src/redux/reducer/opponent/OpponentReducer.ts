@@ -7,6 +7,7 @@ const initialState: Types.OpponentState = {
     name: ``,
     avatar: ``,
     color: null,
+    status: -1,
 };
 
 const opponentSlice = createSlice({
@@ -29,11 +30,16 @@ const opponentSlice = createSlice({
             state.color = action.payload.color;
         },
         setDetail: (state, action: Types.ActionSetDetail) => {
-            const { name, avatar, color } = action.payload;
+            const { name, avatar, color, status } = action.payload;
             state.color = color;
             state.name = name;
             state.avatar = avatar;
+            state.status = status;
         },
+        setStatus: (state, action: Types.ActionSetStatus) => {
+            const {status} = action.payload;
+            state.status = status;
+        }
     },
 });
 

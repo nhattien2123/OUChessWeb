@@ -60,6 +60,8 @@ export const BoardComponent: FC<{
     lastSelected: number | null;
     setLastSelected: (lastSelected: number | null) => void;
     movingTo?: Move;
+    whiteTimer: number;
+    blackTimer: number;
 }> = ({
     selected,
     setSelected,
@@ -74,6 +76,8 @@ export const BoardComponent: FC<{
     setShowPromotionDialog,
     lastSelected,
     setLastSelected,
+    blackTimer,
+    whiteTimer,
 }) => {
     const playerColor = useAppSelector((state: RootState) => state.roomReducer.gameState.playerColor);
     const detail = useAppSelector((state: RootState) => state.roomReducer.detail);
@@ -158,7 +162,6 @@ export const BoardComponent: FC<{
             dispatch(
                 roomAction.requestMoving({
                     rId: detail?.id || "",
-                    timer: board.IsWhiteToMove ? whiteCounter : blackCounter,
                     moving: {
                         startPiece: PieceFunc.PieceType(board.Square[selected]),
                         targetPiece: PieceFunc.PieceType(board.Square[target]),

@@ -4,20 +4,28 @@ import { playerActions } from "src/redux/reducer/player/PlayerReducer";
 import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsReducer";
 import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
+import { roomAction } from "src/redux/reducer/room/RoomReducer";
+import { GameResult } from "src/interfaces/gamecore/result/GameResult";
 
-export const StatusUser: FC = () => {
+interface StatusUserParametar {
+    whiteTimer: number;
+    blackTimer: number;
+}
+
+export const StatusUser: FC<StatusUserParametar> = ({ whiteTimer, blackTimer }) => {
     const username = useAppSelector((state: RootState) => state.userReducer.currentUser.username);
     const usernameOpponent = useAppSelector((state: RootState) => state.opponentReducer.name);
     const avatar = useAppSelector((state: RootState) => state.userReducer.currentUser.avatar);
     const avatarOpponent = useAppSelector((state: RootState) => state.opponentReducer.avatar);
+    const status = useAppSelector((state: RootState) => state.opponentReducer.status);
 
-    const blackTimer = useAppSelector((state: RootState) => state.roomReducer.gameState.blackTimer);
-    const whiteTimer = useAppSelector((state: RootState) => state.roomReducer.gameState.blackTimer);
     const color = useAppSelector((state: RootState) => state.roomReducer.gameState.playerColor);
     const turn = useAppSelector((state: RootState) => state.roomReducer.gameState.turn);
     const isStarted = useAppSelector((state: RootState) => state.roomReducer.gameState.isStarted);
     const [whiteCounter, setWhiteCounter] = useState<number>(whiteTimer / 1000);
     const [blackCounter, setBlackCounter] = useState<number>(blackTimer / 1000);
+    const [disconnectCounter, setDisconectCounter] = useState<number>(90);
+    const dispatch = useAppDispatch();
 
     const MilisecondsToHourMinutes = (ms: number) => {
         // Convert milliseconds to seconds
@@ -52,16 +60,46 @@ export const StatusUser: FC = () => {
     useEffect(() => {
         if (isStarted) {
             const counter = setInterval(() => {
+                if (whiteCounter === 0) {
+                    dispatch(roomAction.endGame({ EndType: GameResult.WhiteTimeout }));
+                }
+                if (blackCounter === 0) {
+                    dispatch(roomAction.endGame({ EndType: GameResult.BlackTimeout }));
+                }
+
                 if (turn === 0) {
                     setWhiteCounter((prev) => prev - 1);
                 } else {
                     setBlackCounter((prev) => prev - 1);
                 }
+                dispatch(roomAction.tickTimer());
             }, 1000);
 
             return () => clearInterval(counter);
         }
     }, [turn, isStarted]);
+
+    useEffect(() => {
+        if (status === 0) {
+            const counter = setInterval(() => {
+                if (disconnectCounter >= 0) {
+                    if (disconnectCounter === 0) {
+                        dispatch(
+                            roomAction.endGame({
+                                EndType: color === 0 ? GameResult.BlackTimeout : GameResult.WhiteTimeout,
+                            }),
+                        );
+                    }
+
+                    setDisconectCounter((prev) => prev - 1);
+                }
+            }, 1000);
+
+            return () => clearInterval(counter);
+        }else {
+            setDisconectCounter(90);
+        }
+    }, [status]);
 
     return (
         <>
@@ -79,6 +117,16 @@ export const StatusUser: FC = () => {
                 </div>
             </div>
             <div className="opponent-container">
+                {status === 0 && (
+                    <>
+                        <div>
+                            <div style={{ color: "red", position: "fixed", bottom: 0, left: "30%" }}>
+                                Người chơi đã bị mất kết nối{" "}
+                                <span style={{ fontWeight: "bold" }}>[{Clocker(disconnectCounter || 0)}]</span>
+                            </div>
+                        </div>
+                    </>
+                )}
                 <div className="opponent-bar">
                     <div className="opponent-avatar">
                         <img src={avatarOpponent} alt={usernameOpponent} />
