@@ -174,11 +174,10 @@ const rootSocket = (io) => {
         // - flag
         // - promo
         socket.on('send-move', async (request) => {
-            const { rId, moving, timer } = request;
+            const { rId, moving } = request;
 
             io.to(rId).emit('req-send-move', {
                 moving: moving,
-                timer: timer,
             });
         });
 
@@ -211,6 +210,10 @@ const rootSocket = (io) => {
                 history: payload.history
             };
             socket.broadcast.to(payload.detail.id).emit("initializing-detail", pack);
+        })
+
+        socket.on('request-continue-game', (roomID) => {
+            io.to(roomID).emit("respone-continue-game");
         })
 
         //#endregion new socket

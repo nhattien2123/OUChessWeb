@@ -114,7 +114,6 @@ const userController = {
                 return;
             }
         } catch (error) {
-            console.log(error);
             httpHandler.Servererror(res, {}, "Đã có lỗi xảy ra");
         }
     },
