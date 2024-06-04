@@ -34,8 +34,9 @@ const rootSocket = (io) => {
     });
 
     io.on('connection', (socket) => {
-        // console.log("test");
         userCount += 1;
+        console.log("user: ", userConnected);
+        console.log("room: ", rooms);
 
         socket.on('disconnect', () => {
             userCount -= 1;
@@ -99,7 +100,6 @@ const rootSocket = (io) => {
                         status: 1,
                         color: detail.color,
                     });
-
 
                     socket.handshake.auth = {
                         ...socket.handshake.auth,

@@ -152,26 +152,20 @@ const roomSlice = createSlice({
             state.gameState.isStarted = false;
         },
         opponentReconneccted: (state, action: Types.Reconnected) => {
-            state.detail = action.payload.detail;
-            state.gameState = action.payload.gameState;
-            state.history = action.payload.history;
-
             const moves = [] as Move[];
-            const { history } = action.payload;
-            for (let i = 0; i < history.length; i++) {
-                const item = history[i];
-                const move = new Move(
-                    item.start,
-                    item.target,
-                    item.flag && item.flag !== null ? item.flag : MoveFlag.NoFlag,
-                );
-
-                moves[i] = move;
+            for(let i = 0; i < action.payload.history.length; i++){
+                const move = action.payload.history[i];
+                moves[i] = new Move(move.start, move.target, move.flag ? move.flag : MoveFlag.NoFlag);
             }
 
-            const newBoard = new Board();
-            newBoard.LoadPositionByMove(moves);
-            state.board = newBoard;
+            let initBoard = new Board();
+            initBoard = initBoard.LoadPositionByMove(moves);
+            state.board = initBoard;
+            state.detail = action.payload.detail;
+            state.gameState = action.payload.gameState;
+            state.gameState.playerColor = 1 - action.payload.gameState.playerColor;
+            state.history = action.payload.history;
+            console.log(initBoard);
         },
         initializing: (state) => {},
         requestGameContinue: (state) => {
@@ -187,9 +181,11 @@ const roomSlice = createSlice({
             }
         },
         endGame: (state, action: Types.GameEnd) => {
-            const { EndType } = action.payload;
+            const {EndType} = action.payload;
             state.endGame = EndType;
             state.gameState.isStarted = false;
+            state.detail = null;
+            Cookies.remove("room");
         },
         resClearMoving: (state) => {},
     },

@@ -75,6 +75,12 @@ export const StatusUser: FC<StatusUserParametar> = ({ whiteTimer, blackTimer }) 
                 dispatch(roomAction.tickTimer());
             }, 1000);
 
+            if(whiteCounter === 0){
+                dispatch(roomAction.endGame({EndType: GameResult.WhiteTimeout}));
+            }else if (blackCounter === 0){
+                dispatch(roomAction.endGame({EndType: GameResult.BlackTimeout}));
+            }
+
             return () => clearInterval(counter);
         }
     }, [turn, isStarted]);

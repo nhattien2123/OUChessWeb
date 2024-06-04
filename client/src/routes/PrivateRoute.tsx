@@ -8,6 +8,7 @@ type PrivateRouterProps = {
 
 const PrivateRouter: React.FC<PrivateRouterProps> = ({ component: Component }) => {
     const token = Cookies.get("token");
+    
     if (!token) {
         return <Navigate to={"/login"} />;
     } else {

@@ -25,7 +25,6 @@ import { RootState } from "src/app/store";
 import { Color, Position } from "src/interfaces/gameplay/chess";
 import { roomAction } from "src/redux/reducer/room/RoomReducer";
 
-
 import * as GameResult from "src/interfaces/gamecore/result/GameResult";
 import * as BoardHelper from "src/interfaces/gamecore/helper/BoardHelper";
 import * as PieceFunc from "src/share/gamecore/board/Piece";
@@ -138,7 +137,6 @@ export const BoardComponent: FC<{
 
         console.log(PieceFunc.PieceType(board.Square[squareIndex]));
 
-
         setLastSelected(lastSelected !== squareIndex ? selected : null);
         setSelected(squareIndex);
         setRedLightPosition({
@@ -192,7 +190,7 @@ export const BoardComponent: FC<{
             start: Number(start),
             target: Number(target),
             flag: Number(flag),
-            moveString: str
+            moveString: str,
         } as Moving;
 
         dispatch(
@@ -209,23 +207,8 @@ export const BoardComponent: FC<{
         const gameResult = GameResult.GetGameState(board);
 
         if (gameResult) {
-            // setEndGame({ type: gameOverType, winner: oppositeColor(turn) });
-            if (
-                gameResult === GameResult.GameResult.Stalemate ||
-                gameResult === GameResult.GameResult.InsufficientMaterial
-            ) {
-                // dispatch(matchActions.reqPutMatchById({ matchId: detail?.id, match: { state: 0 } }));
-                console.log("Stalement | Insu");
-            }
-
-            if (
-                gameResult === GameResult.GameResult.WhiteIsMated ||
-                gameResult === GameResult.GameResult.BlackIsMated
-            ) {
-                // if (board.IsWhiteToMove)
-                //     dispatch(matchActions.reqPutMatchById({ matchId:  detail?.id, match: { state: 1 } }));
-                // else dispatch(matchActions.reqPutMatchById({ matchId:  detail?.id, match: { state: -1 } }));
-                console.log("Game End");
+            if (gameResult !== GameResult.GameResult.InProgress) {
+                dispatch(roomAction.endGame({ result: gameResult }));
             }
         }
         return;

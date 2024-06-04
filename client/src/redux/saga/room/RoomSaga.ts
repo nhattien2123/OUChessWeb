@@ -37,7 +37,7 @@ function* moving(action: TypesAction.MovingRequest) {
 
 function* initializingRoom(action: TypesAction.Reconnected) {
     let detail = Cookies.get("room");
-    let gameState = sessionStorage.getItem("gameState");
+    let gameState = sessionStorage.getItem("state");
     let history = sessionStorage.getItem("history"); 
 
     detail = detail ?  JSON.parse(detail) : null;
@@ -50,8 +50,6 @@ function* initializingRoom(action: TypesAction.Reconnected) {
         history: history
     });
 }
-
-
 
 export function* watchRoom() {
     yield takeLatest(roomAction.requestCreateRoom.type, createRoom);

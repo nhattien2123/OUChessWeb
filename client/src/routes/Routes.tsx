@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import PrivateRouter from "src/routes/PrivateRoute";
 import Login from "src/components/login/Login";
 import Home from "src/components/home/Home";
@@ -15,6 +15,9 @@ import Players from "src/components/players/Players";
 import Admin from "src/components/admin/Admin";
 import BotChess from "src/components/bot/BotChess";
 import Tutorial from "src/components/tutorial/Tutorial";
+import { GameOverScreen } from "src/share/game/board/GameOverScreen";
+import { useAppSelector } from "src/app/hooks";
+import { RootState } from "src/app/store";
 
 interface RouterProps { }
 
