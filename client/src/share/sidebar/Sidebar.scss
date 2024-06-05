@@ -326,3 +326,60 @@ body.dark .switch::before {
 body.dark .home .text {
     color: var(--text-color);
 }
+
+.friend__request {
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    background-color: red;
+    top: 0;
+    right: 0;
+    padding: 1px 5px;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    color: white;
+}
+
+.request-list {
+    position: fixed;
+    left: 30%;
+    top: 20%;
+    width: 40%;
+    max-height: 500px;
+    background-color: #575757;
+    overflow: auto;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    z-index: 999999999;
+
+    .request__header {
+        text-align: center;
+        padding: 10px;
+        color: #fff;
+        background-color: #81b64c;
+    }
+
+    .request-item {
+        margin: 10px 0;
+        border-bottom: 1px solid #8a8a8a96;
+        color: #fff;
+        text-align: center;
+
+        .request-choose {
+            display: flex;
+            justify-content: center;
+        }
+
+        .request-choose div {
+            width: 30%;
+            margin: 15px 5px;
+            padding: 10px 0;
+            font-size: 15px;
+        }
+    }
+
+
+}

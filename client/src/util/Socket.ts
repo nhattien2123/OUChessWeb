@@ -1,5 +1,4 @@
 import Move from "src/interfaces/gamecore/board/Move";
-import { useEffect } from "react";
 import { toast } from "react-toastify";
 import type { MovingTo } from "src/components/game/Game";
 import type { Message } from "src/redux/reducer/messageMatch/Types";
@@ -17,6 +16,12 @@ import { socket } from "src";
 import { Moving } from "src/redux/reducer/room/Types";
 import * as UserTypes from "src/redux/reducer/user/Types";
 import { GameResult } from "src/interfaces/gamecore/result/GameResult";
+import { Friend } from "src/redux/reducer/profile/Types";
+import { userActions } from "src/redux/reducer/user/UserReducer";
+import * as RoomTypes from "src/redux/reducer/room/Types";
+import { CSSProperties, useEffect, useState } from "react";
+import {DrawRequestNotify} from "src/share/game/board/Sidebar";
+import Cookies from "js-cookie";
 
 export type playerJoinedServer = {
     roomId: string;
@@ -40,6 +45,8 @@ export type OpponentUser = {
     playerCount: number;
 };
 
+
+
 export interface Room {
     id: string;
     title: string;
@@ -48,10 +55,11 @@ export interface Room {
 
 export const useSockets = (): void => {
     const dispatch = useAppDispatch();
-    const currentUser = useAppSelector((state:RootState) => state.userReducer.currentUser);
+    const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const username = useAppSelector((state: RootState) => state.userReducer.currentUser.username);
     const avatar = useAppSelector((state: RootState) => state.userReducer.currentUser.avatar);
     const opponentColor = useAppSelector((state: RootState) => state.opponentReducer.color);
+    const friends = useAppSelector((state: RootState) => state.userReducer.friends);
 
     const Socket = socket;
 
@@ -149,6 +157,22 @@ export const useSockets = (): void => {
             });
         });
 
+        socket.on("acceptedRequest", (friend: Friend) => {
+            toast.success(`${friend.recipient.username} đã chấp nhận lời mời kết bạn`);
+        });
+
+        socket.on("addRequest", (friend: Friend) => {
+            const newList = [...friends, friend];
+            dispatch(userActions.reqSetFriends({ friends: newList }));
+        });
+
+        socket.on("removeRequest", (friend: Friend) => {
+            const newList = friends.filter((f: Friend) => {
+                return f.recipient._id !== friend.recipient._id;
+            });
+            dispatch(userActions.reqSetFriends({ friends: newList }));
+        });
+
         //#region New Scoket
 
         // interface
@@ -170,12 +194,8 @@ export const useSockets = (): void => {
         }
 
         socket.on("rep-join-room", (req: rResult) => {
-            console.log("Created");
             const { detail, status } = req;
             if (status === 1) {
-                console.log(detail.player.filter((player) => player._id === userId));
-                console.log(detail.player);
-                console.log(userId);
                 dispatch(
                     roomAction.responseCreateRoom({
                         detail: {
@@ -196,6 +216,7 @@ export const useSockets = (): void => {
                                 detail.player.filter((player) => player._id !== userId)[0].color === 0
                                     ? "black"
                                     : "white",
+                            status: 1,
                         }),
                     );
                     dispatch(roomAction.resquestStarting());
@@ -230,34 +251,67 @@ export const useSockets = (): void => {
         });
 
         socket.on("res-draw", () => {
-            console.log("res-draw");
+
+            const detail = Cookies.get("room");
+
+            if(!detail) return;
+
+            toast(DrawRequestNotify({}, JSON.parse(detail).id), {
+                closeOnClick: false,
+                closeButton: false,
+                pauseOnHover: false,
+                position: "top-right",
+                draggable: true,
+            });
         });
 
         socket.on("req-draw-result", () => {
-            console.log("req-draw-result");
+            toast.info("Đối phương từ chối hoà cờ");
         });
 
         socket.on("game-end", (result) => {
-            // dispatch(roomAction.endGame({result: GameResult.DrawByArbiter}));
-            toast.info(`Game Draw ${2}`);
+            dispatch(roomAction.endGame({EndType: GameResult.DrawByArbiter}));
         });
 
         socket.on("reconnect-room", () => {
-            console.log("Opponent Reconected");
             toast.info("Opponent Reconected");
+            dispatch(opponentActions.setStatus({ status: 1 }));
             dispatch(roomAction.initializing());
-        })
+        });
 
         socket.on("opponent-disconnect", () => {
-            console.log("Opponent disconect");
             toast.info("Opponent disconect");
+            dispatch(opponentActions.setStatus({ status: 0 }));
             dispatch(roomAction.opponentDisconnected());
         });
 
-        socket.on("initializing-detail", (payload) => {
-            console.log(payload);
+        interface InitializePack {
+            detail: Room;
+            gameState: RoomTypes.Room["gameState"];
+            history: RoomTypes.Room["history"];
+        }
+
+        socket.on("initializing-detail", (payload: InitializePack) => {
             toast.info("init");
+
+            const opponent = payload.detail.player.filter((player) => player._id !== userId)[0];
+            dispatch(
+                opponentActions.setDetail({
+                    name: opponent.username,
+                    avatar: opponent.avatar,
+                    color:
+                        payload.detail.player.filter((player) => player._id !== userId)[0].color === 0
+                            ? "black"
+                            : "white",
+                    status: 1,
+                }),
+            );
+
             dispatch(roomAction.opponentReconneccted(payload));
+        });
+
+        socket.on("respone-continue-game", () => {
+            dispatch(roomAction.requestGameContinue());
         })
 
         //interface

@@ -24,6 +24,9 @@ import { useNavigate } from "react-router-dom";
 import { Color, EndGameType, Move, Tile } from "src/interfaces/gameplay/chess";
 
 import "src/components/game/Game.scss";
+import { roomAction } from "src/redux/reducer/room/RoomReducer";
+import { GameResult } from "src/interfaces/gamecore/result/GameResult";
+import { isDiffSet } from "@react-three/fiber/dist/declarations/src/core/utils";
 
 export type ThreeMouseEvent = {
     stopPropagation: () => void;
@@ -62,6 +65,8 @@ export const Game: FC = () => {
     const playerColor = useAppSelector((state: RootState) => state.roomReducer.gameState.playerColor);
     const board = useAppSelector((state: RootState) => state.roomReducer.board);
     const room = useAppSelector((state: RootState) => state.roomReducer.detail);
+    const whiteTimer = useAppSelector((state: RootState) => state.roomReducer.gameState.whiteTimer);
+    const blackTimer = useAppSelector((state: RootState) => state.roomReducer.gameState.blackTimer);
     const [showPromotionDialog, setShowPromotionDialog] = useState<boolean>(false);
     const [cameraDefault, setCameraDefault] = useState(new Vector3(0, 0, 0));
     const [selected, setSelected] = useState<number | null>(null);
@@ -69,9 +74,12 @@ export const Game: FC = () => {
     const [moves, setMoves] = useState<number[]>([]);
     const [endGame, setEndGame] = useState<EndGame | null>(null);
     const [lastSelected, setLastSelected] = useState<number | null>(null);
+    const [end, setEnd] = useState<number>(-1);
     const nav = useNavigate();
+    const dispatch = useAppDispatch();
 
     const roomState = useAppSelector((state: RootState) => state.roomReducer);
+    const endType = useAppSelector((state: RootState) => state.roomReducer.endGame);
 
     useEffect(() => {
         if (playerColor === 0) {
@@ -89,16 +97,59 @@ export const Game: FC = () => {
         return;
     }, [roomState]);
 
+    const checkWinner = (playerColor: number, result: GameResult) => {
+        const whiteWin = [GameResult.BlackTimeout, GameResult.BlackIsMated, GameResult.BlackIllegalMove];
+        const blackWin = [GameResult.WhiteTimeout, GameResult.WhiteIsMated, GameResult.WhiteIllegalMove];
+        const draw = [
+            GameResult.Stalemate,
+            GameResult.Repetition,
+            GameResult.FiftyMoveRule,
+            GameResult.InsufficientMaterial,
+            GameResult.DrawByArbiter,
+        ];
+        const nothing = [GameResult.NotStarted, GameResult.InProgress];
 
+        if (!endType || !playerColor) {
+            return null; // or handle invalid input appropriately
+        }
+
+        const isWhiteWin = whiteWin.includes(endType);
+        const isBlackWin = blackWin.includes(endType);
+
+        if (isWhiteWin) {
+            if (playerColor === 0) return 0;
+            return 1;
+        } else if (isBlackWin) {
+            if (playerColor === 1) return 0;
+            return 1;
+        } else if (draw.includes(result)) {
+            return 2;
+        } else {
+            return -1; // or handle unexpected result appropriately
+        }
+    };
+
+    useEffect(() => {
+        if (endType) {
+            const isWin = checkWinner(playerColor, endType);
+            if (isWin === 0) {
+                setEnd(1);
+            } else if (isWin === 1){
+                setEnd(2);
+            } else if (isWin === 2){
+                setEnd(3);
+            }
+        }
+    }, [endType]);
 
     return (
         <div className="container-chess">
             <Sidebar board={board} moves={moves} selected={selected} />
             {room?.id && <Chat />}
             <StatusBar />
-            <GameOverScreen endGame={endGame} />
+            <GameOverScreen endGame={endGame} endState={end} />
             <Loader />
-            <StatusUser />
+            <StatusUser whiteTimer={whiteTimer} blackTimer={blackTimer} />
             <PromoteDialog
                 showPromotionDialog={showPromotionDialog}
                 setShowPromotionDialog={setShowPromotionDialog}
@@ -123,6 +174,8 @@ export const Game: FC = () => {
                     setShowPromotionDialog={setShowPromotionDialog}
                     lastSelected={lastSelected}
                     setLastSelected={setLastSelected}
+                    blackTimer={blackTimer}
+                    whiteTimer={whiteTimer}
                 />
             </Canvas>
         </div>

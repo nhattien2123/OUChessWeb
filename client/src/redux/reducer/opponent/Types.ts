@@ -7,6 +7,7 @@ export type OpponentState = {
     name: string;
     avatar: string;
     color: Color | null;
+    status: number;
 };
 
 export type ActionSetPosition = PayloadAction<{
@@ -33,4 +34,9 @@ export type ActionSetDetail = PayloadAction<{
     name: OpponentState["name"];
     avatar: OpponentState["avatar"];
     color: OpponentState["color"];
+    status: OpponentState["status"];
 }>;
+
+export type ActionSetStatus = PayloadAction<{
+    status: OpponentState["status"];
+}>

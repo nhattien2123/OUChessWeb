@@ -51,7 +51,7 @@ export type MoveFunction<T extends Piece = Piece> = (props: {
     propagateDetectCheck: boolean
 }) => Move[]
 
-export type EndGameType = `checkmate` | `stalemate` | `threeford repetition` | `insufficient material`;
+export type EndGameType = `checkmate` | `stalemate` | `threeford repetition` | `insufficient material` | `draw`;
 
 // King Type
 export type King = Piece & {

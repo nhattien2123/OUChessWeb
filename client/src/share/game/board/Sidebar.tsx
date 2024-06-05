@@ -19,6 +19,79 @@ export type LeaveRoom = {
     roomId?: string | null;
 };
 
+export const DrawRequestNotify = (params: any, roomID: string) => {
+    const container: CSSProperties = {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    };
+
+    const text = {};
+
+    const accept = {
+        padding: "5px",
+        margin: "0 5px",
+        color: "green",
+    };
+
+    const acceptHover = {
+        padding: "5px",
+        margin: "0 5px",
+        color: "green",
+        borderRadius: "25px",
+        backgroundColor: "#a5a5a5",
+        cursor: "pointer",
+    };
+
+    const deny = {
+        padding: "5px",
+        borderRadius: "25px",
+        color: "red",
+    };
+
+    const denyHover = {
+        padding: "5px",
+        borderRadius: "25px",
+        color: "red",
+        backgroundColor: "#a5a5a5",
+        cursor: "pointer",
+    };
+
+    const [hover, setHover] = useState(0);
+
+    return (
+        <>
+            <div style={container}>
+                <div style={text}>Đối phương muốn xin hoà ?</div>
+                <div
+                    onMouseOver={() => setHover(1)}
+                    onMouseLeave={() => setHover(0)}
+                    onClick={() => {
+                        socket.emit("req-draw", { isDraw: true, roomID: roomID });
+                        const { closeToast } = params;
+                        closeToast();
+                    }}
+                    style={hover === 1 ? acceptHover : accept}
+                >
+                    <i className="fa-solid fa-check"></i>
+                </div>
+                <div
+                    onMouseOver={() => setHover(2)}
+                    onMouseLeave={() => setHover(0)}
+                    onClick={() => {
+                        socket.emit("req-draw", { isDraw: false, roomID: roomID });
+                        const { closeToast } = params;
+                        closeToast();
+                    }}
+                    style={hover === 2 ? denyHover : deny}
+                >
+                    <i className="fa-solid fa-xmark"></i>
+                </div>
+            </div>
+        </>
+    );
+};
+
 export const Sidebar: FC<{
     board?: Board;
     moves: number[];
@@ -44,87 +117,7 @@ export const Sidebar: FC<{
     };
 
     const handleRequestDraw = async () => {
-        toastId.current = toast(<DrawRequestNotify />, {
-            closeOnClick: false,
-            closeButton: false,
-            pauseOnHover: false,
-            position: "top-right",
-            draggable: true,
-        });
         socket.emit("res-draw", { roomID: detail?.id });
-    };
-
-    const DrawRequestNotify = (params: any) => {
-        const container: CSSProperties = {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-        };
-
-        const text = {};
-
-        const accept = {
-            padding: "5px",
-            margin: "0 5px",
-            color: "green",
-        };
-
-        const acceptHover = {
-            padding: "5px",
-            margin: "0 5px",
-            color: "green",
-            borderRadius: "25px",
-            backgroundColor: "#a5a5a5",
-            cursor: "pointer",
-        };
-
-        const deny = {
-            padding: "5px",
-            borderRadius: "25px",
-            color: "red",
-        };
-
-        const denyHover = {
-            padding: "5px",
-            borderRadius: "25px",
-            color: "red",
-            backgroundColor: "#a5a5a5",
-            cursor: "pointer",
-        };
-
-        const [hover, setHover] = useState(0);
-
-        return (
-            <>
-                <div style={container}>
-                    <div style={text}>Đối phương muốn xin hoà ?</div>
-                    <div
-                        onMouseOver={() => setHover(1)}
-                        onMouseLeave={() => setHover(0)}
-                        onClick={() => {
-                            socket.emit("req-draw", { isDraw: true, roomID: detail?.id });
-                            const { closeToast } = params;
-                            closeToast();
-                        }}
-                        style={hover === 1 ? acceptHover : accept}
-                    >
-                        <i className="fa-solid fa-check"></i>
-                    </div>
-                    <div
-                        onMouseOver={() => setHover(2)}
-                        onMouseLeave={() => setHover(0)}
-                        onClick={() => {
-                            socket.emit("req-draw", { isDraw: false, roomID: detail?.id });
-                            const { closeToast } = params;
-                            closeToast();
-                        }}
-                        style={hover === 2 ? denyHover : deny}
-                    >
-                        <i className="fa-solid fa-xmark"></i>
-                    </div>
-                </div>
-            </>
-        );
     };
 
     return (

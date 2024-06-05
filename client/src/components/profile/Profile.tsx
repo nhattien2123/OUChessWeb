@@ -49,11 +49,13 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
     }, [profile]);
 
     useEffect(() => {
-        if (option === "history") {
-            dispatch(profileActions.reqGetMatchesOfUser({ _id: profile._id }));
-        }
-        if (option === "comment") {
-            dispatch(profileActions.reqGetCommentInfoesUser({ username: profile._id, params: {} }));
+        if (profile._id !== null && profile._id !== "") {
+            if (option === "history") {
+                dispatch(profileActions.reqGetMatchesOfUser({ _id: profile._id }));
+            }
+            if (option === "comment") {
+                dispatch(profileActions.reqGetCommentInfoesUser({ username: profile._id, params: {} }));
+            }
         }
     }, [option, profile]);
 

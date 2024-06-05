@@ -6,6 +6,7 @@ import { useSockets } from "src/util/Socket";
 import { socket } from "src";
 import { useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
+import { useNavigate } from "react-router-dom";
 
 function App() {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
@@ -23,9 +24,9 @@ function App() {
 
             socket.connect();
 
-            if (detail) {
-                socket.emit("reconnect", JSON.parse(detail));
-            }
+            // if (detail) {
+            //     socket.emit("reconnect", JSON.parse(detail));
+            // }
         }
         return;
     }, [currentUser]);

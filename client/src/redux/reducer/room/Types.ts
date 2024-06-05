@@ -1,6 +1,7 @@
 import Board from "src/interfaces/gamecore/board/Board";
 import { PayloadAction } from "@reduxjs/toolkit";
 import * as UserType from "src/redux/reducer/user/Types";
+import { GameResult } from "src/interfaces/gamecore/result/GameResult";
 
 export interface Moving {
     startPiece: number;
@@ -35,14 +36,12 @@ export interface Room {
         promotionPiece: string;
         isAction: boolean;
     };
-    opponent: {
-        state: number,
-    }
     history: Moving[];
     type: number;
     lastTime: number;
     isProcessing: boolean;
-    board?: Board
+    board?: Board;
+    endGame?: GameResult
 }
 
 export type CreateRoomRequest = PayloadAction<{
@@ -78,7 +77,6 @@ export type LeaveRoomRequest = PayloadAction<{
 }>
 export type MovingRequest = PayloadAction<{
     rId: string;
-    timer: number;
     moving: Moving;
 }>;
 export type MovingResponse = PayloadAction<{
@@ -99,3 +97,7 @@ export type Reconnected = PayloadAction<{
     },
     history: Moving[],
 }>;
+export type GameEnd = PayloadAction<{
+    EndType: GameResult
+}>
+

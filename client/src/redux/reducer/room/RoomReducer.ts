@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import * as Types from "src/redux/reducer/room/Types";
 import Cookies from "js-cookie";
 import { socket } from "src";
+import Move, { MoveFlag } from "src/interfaces/gamecore/board/Move";
 
 const currentRoom = Cookies.get("room");
 const currentState = sessionStorage.getItem("state");
@@ -20,8 +21,8 @@ const baseRoom: Types.Room = {
         turn: 0,
         isStarted: false,
         playerColor: -1,
-        whiteTimer: 600000,
-        blackTimer: 600000,
+        whiteTimer: 600,
+        blackTimer: 600,
     },
     gameAction: {
         move: {
@@ -31,9 +32,6 @@ const baseRoom: Types.Room = {
         isPromotion: false,
         promotionPiece: "",
         isAction: false,
-    },
-    opponent: {
-        state: 0
     },
     history: [],
     type: 0,
@@ -55,9 +53,6 @@ const initialState: Types.Room =
                   isPromotion: false,
                   promotionPiece: "",
                   isAction: false,
-              },
-              opponent: {
-                state: 0,
               },
               history: JSON.parse(history),
               type: 0,
@@ -94,13 +89,13 @@ const roomSlice = createSlice({
             state.isProcessing = true;
         },
         responseLeaveRoom: (state) => {
-            sessionStorage.removeItem("room");
+            Cookies.remove("room");
             sessionStorage.removeItem("state");
             sessionStorage.removeItem("history");
             state.detail = null;
             socket.auth = {
                 ...socket.auth,
-                detail: null
+                detail: null,
             };
             state = baseRoom;
         },
@@ -113,7 +108,7 @@ const roomSlice = createSlice({
             state.lastTime = Date.now();
             socket.auth = {
                 ...socket.auth,
-                detail: state.detail
+                detail: state.detail,
             };
             socket.connect();
             sessionStorage.setItem("state", JSON.stringify(state.gameState));
@@ -121,11 +116,6 @@ const roomSlice = createSlice({
         },
         requestMoving: (state, action: Types.MovingRequest) => {
             state.gameAction.isAction = true;
-            if (state.gameState.turn === 0) {
-                state.gameState.whiteTimer = state.gameState.whiteTimer - action.payload.timer;
-            } else {
-                state.gameState.blackTimer = state.gameState.blackTimer - action.payload.timer;
-            }
         },
         responseMoving: (state, action: Types.MovingResponse) => {
             const { moving } = action.payload;
@@ -160,16 +150,42 @@ const roomSlice = createSlice({
         },
         opponentDisconnected: (state) => {
             state.gameState.isStarted = false;
-            state.opponent.state = 2;
         },
         opponentReconneccted: (state, action: Types.Reconnected) => {
+            const moves = [] as Move[];
+            for(let i = 0; i < action.payload.history.length; i++){
+                const move = action.payload.history[i];
+                moves[i] = new Move(move.start, move.target, move.flag ? move.flag : MoveFlag.NoFlag);
+            }
+
+            let initBoard = new Board();
+            initBoard = initBoard.LoadPositionByMove(moves);
+            state.board = initBoard;
             state.detail = action.payload.detail;
             state.gameState = action.payload.gameState;
+            state.gameState.playerColor = 1 - action.payload.gameState.playerColor;
+            state.gameState.isStarted = false;
             state.history = action.payload.history;
-            
         },
-        initializing: (state) => {
-            state.opponent.state = 0;
+        initializing: (state) => {},
+        requestGameContinue: (state) => {
+            state.gameState.isStarted = true;
+        },
+        tickTimer: (state) => {
+            if (!state.gameAction.isAction) {
+                if (state.gameState.turn === 0) {
+                    state.gameState.whiteTimer -= 1;
+                } else {
+                    state.gameState.blackTimer -= 1;
+                }
+            }
+        },
+        endGame: (state, action: Types.GameEnd) => {
+            const {EndType} = action.payload;
+            state.endGame = EndType;
+            state.gameState.isStarted = false;
+            state.detail = null;
+            Cookies.remove("room");
         },
         resClearMoving: (state) => {},
     },

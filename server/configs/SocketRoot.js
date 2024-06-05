@@ -1,18 +1,18 @@
 const crypto = require('crypto');
 
 var clients = [];
+let userConnected = [];
+
 const rootSocket = (io) => {
-    let userConnected = [];
     let rooms = new Array();
     const jwt = require('jsonwebtoken');
     let userCount = 0;
 
     io.use((socket, next) => {
         const token = socket.handshake.auth.token;
-        if (socket.handshake.query.token === "UNITY") {
+        if (socket.handshake.query.token === 'UNITY') {
             // next();
-        }
-        else if (token) {
+        } else if (token) {
             jwt.verify(token, process.env.JWT_SECRETKEY, (err, user) => {
                 if (err) {
                     return;
@@ -22,7 +22,7 @@ const rootSocket = (io) => {
                     userConnected[user._id] = {
                         detail: { ...socket.handshake.auth.userInfo },
                         socket: socket.id,
-                        type: socket.handshake.auth.type
+                        type: socket.handshake.auth.type,
                     };
                 }
             });
@@ -34,8 +34,18 @@ const rootSocket = (io) => {
     });
 
     io.on('connection', (socket) => {
-        // console.log("test");
         userCount += 1;
+        console.log('user: ', userConnected);
+        console.log('room: ', rooms);
+
+        for (let i = 0; i < rooms.length; i++) {
+            const room = rooms[i];
+            if(room.player.filter((p) => p._id === socket.userId).length > 0){
+                socket.join(room.id);
+                socket.broadcast.to(room.id).emit('reconnect-room');
+                break;
+            }
+        }
 
         socket.on('disconnect', () => {
             userCount -= 1;
@@ -54,7 +64,7 @@ const rootSocket = (io) => {
             for (var i = 0; i < clients.length; i++) {
                 var client = JSON.parse(clients[i]);
                 if (client.name === currentPlayer.name) {
-                    console.log("test");
+                    console.log('test');
                     clients.splice(i, 1);
                 }
             }
@@ -100,13 +110,11 @@ const rootSocket = (io) => {
                         color: detail.color,
                     });
 
-
                     socket.handshake.auth = {
                         ...socket.handshake.auth,
-                        detail: room
+                        detail: room,
                     };
                     io.emit('req-get-rooms', rooms);
-
                 } else if (detail.type === 'join') {
                     const room = rooms.filter((r) => r.id === detail.rID)[0];
                     if (room.player.length === 2) {
@@ -128,7 +136,7 @@ const rootSocket = (io) => {
 
                         socket.handshake.auth = {
                             ...socket.handshake.auth,
-                            detail: room
+                            detail: room,
                         };
 
                         io.emit('req-get-rooms', rooms);
@@ -151,9 +159,9 @@ const rootSocket = (io) => {
 
         socket.on('get-rooms', async () => {
             // console.log(rooms);
-            if (socket.handshake.query.token === "UNITY") {
+            if (socket.handshake.query.token === 'UNITY') {
             }
-            console.log("Success")
+            console.log('Success');
             socket.emit('rep-get-rooms', rooms);
         });
 
@@ -164,7 +172,7 @@ const rootSocket = (io) => {
             io.to(room).emit('req-leave-room', {
                 uId: request.uId,
             });
-            socket.leave(room.id);
+            socket.leave(room);
             rooms = rooms.filter((r) => r.id !== room);
         });
 
@@ -174,16 +182,16 @@ const rootSocket = (io) => {
         // - flag
         // - promo
         socket.on('send-move', async (request) => {
-            const { rId, moving, timer } = request;
+            const { rId, moving } = request;
 
             io.to(rId).emit('req-send-move', {
                 moving: moving,
-                timer: timer,
             });
         });
 
         socket.on('res-draw', async (request) => {
             const { roomID } = request;
+            console.log(roomID);
             socket.broadcast.to(roomID).emit('res-draw');
         });
 
@@ -197,21 +205,26 @@ const rootSocket = (io) => {
         });
 
         socket.on('reconnect', (detail) => {
-            console.log("reconnecting");
+            console.log('reconnecting');
             socket.join(detail.id);
             console.log(detail.id);
             socket.broadcast.to(detail.id).emit('reconnect-room');
         });
 
         socket.on('initializing-detail', (payload) => {
-            console.log("send initilzied");
+            console.log('send initilzied');
             const pack = {
                 detail: payload.detail,
                 gameState: payload.gameState,
-                history: payload.history
+                history: payload.history,
             };
-            socket.broadcast.to(payload.detail.id).emit("initializing-detail", pack);
-        })
+            socket.broadcast.to(payload.detail.id).emit('initializing-detail', pack);
+        });
+
+        socket.on('request-continue-game', (payload) => {
+            const { roomID } = payload;
+            io.to(roomID).emit('respone-continue-game');
+        });
 
         //#endregion new socket
 
@@ -226,36 +239,36 @@ const rootSocket = (io) => {
 
         socket.on('player connect', () => {
             console.log(currentPlayer.name + ' recv: player connect, and clients.length is ' + clients.length);
-            console.log("Now clients info : ", clients);
+            console.log('Now clients info : ', clients);
             for (var i = 0; i < clients.length; i++) {
                 var client = JSON.parse(clients[i]);
                 console.log('clients[', i, '] info : ', clients[i]);
                 var playerConnected = {
                     name: client.name,
                     playerPosition: client.playerPosition,
-                    playerRotation: client.playerRotation
+                    playerRotation: client.playerRotation,
                 };
 
                 var connectedHead = {
                     name: client.name,
                     headPosition: client.headPosition,
-                    headRotation: client.headRotation
+                    headRotation: client.headRotation,
                 };
 
                 var connectedRightHand = {
                     name: client.name,
                     rightHandPosition: client.rightHandPosition,
-                    rightHandRotation: client.rightHandRotation
+                    rightHandRotation: client.rightHandRotation,
                 };
 
                 var connectedLeftHand = {
                     name: client.name,
                     leftHandPosition: client.leftHandPosition,
-                    leftHandRotation: client.leftHandRotation
+                    leftHandRotation: client.leftHandRotation,
                 };
 
-                console.log("Player Connected: " + client.name);
-                console.log("Connected Left Hand: " + connectedLeftHand.name);
+                console.log('Player Connected: ' + client.name);
+                console.log('Connected Left Hand: ' + connectedLeftHand.name);
                 socket.emit('other player connected', JSON.stringify(playerConnected));
                 socket.emit('other player head', JSON.stringify(connectedHead));
                 socket.emit('other player right hand', JSON.stringify(connectedRightHand));
@@ -263,27 +276,31 @@ const rootSocket = (io) => {
 
                 console.log(currentPlayer.name + ' emit: other player connected: ' + JSON.stringify(playerConnected));
                 console.log(currentPlayer.name + ' emit: other player head: ' + JSON.stringify(connectedHead));
-                console.log(currentPlayer.name + ' emit: other player right hand: ' + JSON.stringify(connectedRightHand));
-                console.log(currentPlayer.name + ' emit: other player leftt hand: ' + JSON.stringify(connectedLeftHand));
+                console.log(
+                    currentPlayer.name + ' emit: other player right hand: ' + JSON.stringify(connectedRightHand),
+                );
+                console.log(
+                    currentPlayer.name + ' emit: other player leftt hand: ' + JSON.stringify(connectedLeftHand),
+                );
             }
         });
 
         socket.on('play', (data) => {
             currentPlayer = JSON.parse(data);
             console.log(currentPlayer.name + ' recv: play: ' + JSON.stringify(data));
-            console.log("old player info : ", currentPlayer);
-            console.log("data is : ", currentPlayer);
-            console.log("Data name is: " + currentPlayer.name);
-            currentPlayer.name = "desktop" + clients.length;
-            console.log("new player info : ", currentPlayer);
+            console.log('old player info : ', currentPlayer);
+            console.log('data is : ', currentPlayer);
+            console.log('Data name is: ' + currentPlayer.name);
+            currentPlayer.name = 'desktop' + clients.length;
+            console.log('new player info : ', currentPlayer);
             if (clients.length === 0) {
                 var playerPosition = {
-                    playerPosition: data.playerPosition
-                }
+                    playerPosition: data.playerPosition,
+                };
 
                 var playerRotation = {
-                    playerRotation: data.playerRotation
-                }
+                    playerRotation: data.playerRotation,
+                };
             }
             clients.push(JSON.stringify(currentPlayer));
             console.log(currentPlayer.name + ' emit: play: ' + JSON.stringify(currentPlayer));
@@ -304,7 +321,6 @@ const rootSocket = (io) => {
             currentPlayer.headRotation = JSON.parse(data).headRotation;
             socket.broadcast.emit('head turn', JSON.stringify(currentPlayer));
         });
-
 
         socket.on('player move', (data) => {
             // console.log(currentPlayer.name + ' recv: move: ' + JSON.stringify(data));
@@ -355,4 +371,7 @@ const rootSocket = (io) => {
     });
 };
 
-module.exports = rootSocket;
+module.exports = {
+    rootSocket,
+    userConnected
+};

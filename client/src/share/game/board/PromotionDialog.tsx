@@ -4,6 +4,8 @@ import { RootState } from "src/app/store";
 import Board from "src/interfaces/gamecore/board/Board";
 import Move, { MoveFlag } from "src/interfaces/gamecore/board/Move";
 import { PieceType } from "src/interfaces/gamecore/board/Piece";
+import { roomAction } from "src/redux/reducer/room/RoomReducer";
+import { Moving } from "src/redux/reducer/room/Types";
 
 // export type PromotePawn = {
 //     pieceType: PieceType;
@@ -45,7 +47,8 @@ const PromoteDialog: FC<{
     const turn = useAppSelector((state: RootState) => state.gameSettingsReducer.turn);
     const gameStarted = useAppSelector((state: RootState) => state.gameSettingsReducer.gameStarted);
     const movingTo = useAppSelector((state: RootState) => state.gameSettingsReducer.movingTo);
-    const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
+    // const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
+    const roomId = useAppSelector((state: RootState) => state.roomReducer.detail?.id);
     const dispatch = useAppDispatch();
 
     // const handleSelectPieceType = (pieceType: PieceType) => {
@@ -80,7 +83,14 @@ const PromoteDialog: FC<{
     const handleSelectPieceType = (promotionFlag: number) => {
         if (board) {
             if (selected !== null && targeted !== null) {
-                board.MakeMove(new Move(selected, targeted, promotionFlag), false);
+                dispatch(roomAction.requestMoving({
+                    rId: roomId ? roomId : "",
+                    moving: {
+                        start: selected,
+                        target: targeted,
+                        flag: promotionFlag
+                    } as Moving
+                }))
             }
             setShowPromotionDialog(false);
         }
