@@ -18,7 +18,7 @@ export const GameOverScreen: FC<{
     const opponentName = useAppSelector((state: RootState) => state.opponentReducer.name);
     const opponentColor = useAppSelector((state: RootState) => state.opponentReducer.color);
     const userColor = useAppSelector((state: RootState) => state.roomReducer.gameState.playerColor);
-    const result = useAppSelector((state: RootState) => state.roomReducer.result);
+    const endType = useAppSelector((state: RootState) => state.roomReducer.endGame);
     const nav = useNavigate();
 
     const handleLeftGame = () => {

@@ -21,8 +21,8 @@ const baseRoom: Types.Room = {
         turn: 0,
         isStarted: false,
         playerColor: -1,
-        whiteTimer: 600000,
-        blackTimer: 600000,
+        whiteTimer: 600,
+        blackTimer: 600,
     },
     gameAction: {
         move: {
@@ -89,7 +89,7 @@ const roomSlice = createSlice({
             state.isProcessing = true;
         },
         responseLeaveRoom: (state) => {
-            sessionStorage.removeItem("room");
+            Cookies.remove("room");
             sessionStorage.removeItem("state");
             sessionStorage.removeItem("history");
             state.detail = null;
@@ -164,8 +164,8 @@ const roomSlice = createSlice({
             state.detail = action.payload.detail;
             state.gameState = action.payload.gameState;
             state.gameState.playerColor = 1 - action.payload.gameState.playerColor;
+            state.gameState.isStarted = false;
             state.history = action.payload.history;
-            console.log(initBoard);
         },
         initializing: (state) => {},
         requestGameContinue: (state) => {
@@ -174,9 +174,9 @@ const roomSlice = createSlice({
         tickTimer: (state) => {
             if (!state.gameAction.isAction) {
                 if (state.gameState.turn === 0) {
-                    state.gameState.whiteTimer -= 1000;
+                    state.gameState.whiteTimer -= 1;
                 } else {
-                    state.gameState.blackTimer -= 1000;
+                    state.gameState.blackTimer -= 1;
                 }
             }
         },

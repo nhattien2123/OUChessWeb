@@ -1,5 +1,4 @@
 import Move from "src/interfaces/gamecore/board/Move";
-import { useEffect } from "react";
 import { toast } from "react-toastify";
 import type { MovingTo } from "src/components/game/Game";
 import type { Message } from "src/redux/reducer/messageMatch/Types";
@@ -20,6 +19,9 @@ import { GameResult } from "src/interfaces/gamecore/result/GameResult";
 import { Friend } from "src/redux/reducer/profile/Types";
 import { userActions } from "src/redux/reducer/user/UserReducer";
 import * as RoomTypes from "src/redux/reducer/room/Types";
+import { CSSProperties, useEffect, useState } from "react";
+import {DrawRequestNotify} from "src/share/game/board/Sidebar";
+import Cookies from "js-cookie";
 
 export type playerJoinedServer = {
     roomId: string;
@@ -42,6 +44,8 @@ export type OpponentUser = {
     color: Color;
     playerCount: number;
 };
+
+
 
 export interface Room {
     id: string;
@@ -247,16 +251,26 @@ export const useSockets = (): void => {
         });
 
         socket.on("res-draw", () => {
-            console.log("res-draw");
+
+            const detail = Cookies.get("room");
+
+            if(!detail) return;
+
+            toast(DrawRequestNotify({}, JSON.parse(detail).id), {
+                closeOnClick: false,
+                closeButton: false,
+                pauseOnHover: false,
+                position: "top-right",
+                draggable: true,
+            });
         });
 
         socket.on("req-draw-result", () => {
-            console.log("req-draw-result");
+            toast.info("Đối phương từ chối hoà cờ");
         });
 
         socket.on("game-end", (result) => {
-            // dispatch(roomAction.g({result: GameResult.DrawByArbiter}));
-            toast.info(`Game Draw ${2}`);
+            dispatch(roomAction.endGame({EndType: GameResult.DrawByArbiter}));
         });
 
         socket.on("reconnect-room", () => {

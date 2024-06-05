@@ -85,7 +85,6 @@ const PromoteDialog: FC<{
             if (selected !== null && targeted !== null) {
                 dispatch(roomAction.requestMoving({
                     rId: roomId ? roomId : "",
-                    timer: 0,
                     moving: {
                         start: selected,
                         target: targeted,

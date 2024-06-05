@@ -79,7 +79,7 @@ export const Game: FC = () => {
     const dispatch = useAppDispatch();
 
     const roomState = useAppSelector((state: RootState) => state.roomReducer);
-    const result = useAppSelector((state: RootState) => state.roomReducer.result);
+    const endType = useAppSelector((state: RootState) => state.roomReducer.endGame);
 
     useEffect(() => {
         if (playerColor === 0) {
@@ -109,12 +109,12 @@ export const Game: FC = () => {
         ];
         const nothing = [GameResult.NotStarted, GameResult.InProgress];
 
-        if (!result || !playerColor) {
+        if (!endType || !playerColor) {
             return null; // or handle invalid input appropriately
         }
 
-        const isWhiteWin = whiteWin.includes(result);
-        const isBlackWin = blackWin.includes(result);
+        const isWhiteWin = whiteWin.includes(endType);
+        const isBlackWin = blackWin.includes(endType);
 
         if (isWhiteWin) {
             if (playerColor === 0) return 0;
@@ -130,8 +130,8 @@ export const Game: FC = () => {
     };
 
     useEffect(() => {
-        if (result) {
-            const isWin = checkWinner(playerColor, result);
+        if (endType) {
+            const isWin = checkWinner(playerColor, endType);
             if (isWin === 0) {
                 setEnd(1);
             } else if (isWin === 1){
@@ -140,7 +140,7 @@ export const Game: FC = () => {
                 setEnd(3);
             }
         }
-    }, [result]);
+    }, [endType]);
 
     return (
         <div className="container-chess">

@@ -208,7 +208,7 @@ export const BoardComponent: FC<{
 
         if (gameResult) {
             if (gameResult !== GameResult.GameResult.InProgress) {
-                dispatch(roomAction.endGame({ result: gameResult }));
+                dispatch(roomAction.endGame({ EndType: gameResult }));
             }
         }
         return;

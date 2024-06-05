@@ -30,6 +30,7 @@ const Login: React.FC = () => {
         if (isLoggIn) {
             Cookies.set("token", token, {
                 path: "/",
+                expires: 30,
             });
             dispatch(userActions.reqGetCurrentUser({}));
             toast.success("Đăng nhập thành công");

@@ -22,8 +22,6 @@ export const StatusUser: FC<StatusUserParametar> = ({ whiteTimer, blackTimer }) 
     const color = useAppSelector((state: RootState) => state.roomReducer.gameState.playerColor);
     const turn = useAppSelector((state: RootState) => state.roomReducer.gameState.turn);
     const isStarted = useAppSelector((state: RootState) => state.roomReducer.gameState.isStarted);
-    const [whiteCounter, setWhiteCounter] = useState<number>(whiteTimer / 1000);
-    const [blackCounter, setBlackCounter] = useState<number>(blackTimer / 1000);
     const [disconnectCounter, setDisconectCounter] = useState<number>(90);
     const dispatch = useAppDispatch();
 
@@ -60,42 +58,33 @@ export const StatusUser: FC<StatusUserParametar> = ({ whiteTimer, blackTimer }) 
     useEffect(() => {
         if (isStarted) {
             const counter = setInterval(() => {
-                if (whiteCounter === 0) {
+                if (whiteTimer === 0) {
                     dispatch(roomAction.endGame({ EndType: GameResult.WhiteTimeout }));
                 }
-                if (blackCounter === 0) {
+                if (blackTimer === 0) {
                     dispatch(roomAction.endGame({ EndType: GameResult.BlackTimeout }));
                 }
 
-                if (turn === 0) {
-                    setWhiteCounter((prev) => prev - 1);
-                } else {
-                    setBlackCounter((prev) => prev - 1);
-                }
                 dispatch(roomAction.tickTimer());
             }, 1000);
 
-            if(whiteCounter === 0){
-                dispatch(roomAction.endGame({EndType: GameResult.WhiteTimeout}));
-            }else if (blackCounter === 0){
-                dispatch(roomAction.endGame({EndType: GameResult.BlackTimeout}));
-            }
-
             return () => clearInterval(counter);
         }
-    }, [turn, isStarted]);
+    }, [turn, isStarted, whiteTimer, blackTimer]);
 
     useEffect(() => {
         if (status === 0) {
+
+            if (disconnectCounter === 0) {
+                dispatch(
+                    roomAction.endGame({
+                        EndType: color === 0 ? GameResult.BlackTimeout : GameResult.WhiteTimeout,
+                    }),
+                );
+            }
             const counter = setInterval(() => {
                 if (disconnectCounter >= 0) {
-                    if (disconnectCounter === 0) {
-                        dispatch(
-                            roomAction.endGame({
-                                EndType: color === 0 ? GameResult.BlackTimeout : GameResult.WhiteTimeout,
-                            }),
-                        );
-                    }
+                    
 
                     setDisconectCounter((prev) => prev - 1);
                 }
@@ -105,7 +94,7 @@ export const StatusUser: FC<StatusUserParametar> = ({ whiteTimer, blackTimer }) 
         }else {
             setDisconectCounter(90);
         }
-    }, [status]);
+    }, [status, disconnectCounter]);
 
     return (
         <>
@@ -118,7 +107,7 @@ export const StatusUser: FC<StatusUserParametar> = ({ whiteTimer, blackTimer }) 
                         <div className="user-name">{username}</div>
                     </div>
                     <div className={`timer ${turn === color && "your-turn"}`}>
-                        {Clocker(color === 0 ? whiteCounter : blackCounter)}
+                        {Clocker(color === 0 ? whiteTimer : blackTimer)}
                     </div>
                 </div>
             </div>
@@ -141,7 +130,7 @@ export const StatusUser: FC<StatusUserParametar> = ({ whiteTimer, blackTimer }) 
                         <div className="opponent-name">{usernameOpponent}</div>
                     </div>
                     <div className={`timer ${turn !== color && "your-turn"}`}>
-                        {Clocker(color !== 0 ? whiteCounter : blackCounter)}
+                        {Clocker(color !== 0 ? whiteTimer : blackTimer)}
                     </div>
                 </div>
             </div>
