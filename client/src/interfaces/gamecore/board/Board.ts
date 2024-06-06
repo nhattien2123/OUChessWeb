@@ -158,6 +158,7 @@ class Board {
         let newCastlingRights = this.CurrentGameState.castlingRights;
         let newEnPassantFile = 0;
 
+        console.log(movedPiece, startSquare, targetSquare)
         this.MovePiece(movedPiece, startSquare, targetSquare);
 
         if (capturedPieceType !== PieceType.None) {
@@ -304,7 +305,7 @@ class Board {
         const movedFrom = move.StartSquare();
         const movedTo = move.TargetSquare();
         const moveFlag = move.MoveFlag();
-
+        console.log("unmove:", movedTo, movedFrom);
         const undoingEnPassant = moveFlag === MoveFlag.EnPassantCaptureFlag;
         const undoingPromotion = move.IsPromotion();
         const undoingCapture = this.CurrentGameState.capturedPieceType !== PieceType.None;
@@ -535,7 +536,7 @@ class Board {
         }
     };
 
-    CreateNewBoard = (source: Board) => {
+    static CreateNewBoard = (source: Board) => {
         const newBoard = new Board();
         newBoard.LoadPositionByFen(source.StartPositionInfo.fen);
 

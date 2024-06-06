@@ -64,6 +64,16 @@ const BotChess = () => {
         // return () => {
         //     worker.terminate();
         // };
+        if (turn === 1 || 1 === 1) {
+            let copyBoard = new Board();
+            copyBoard = Board.CreateNewBoard(board);
+            const searcher = new Searcher(copyBoard);
+            searcher.StartSearch(diff);
+            const { bestMove } = searcher;
+            if (bestMove) {
+                handleMoving(bestMove);
+            }
+        }
     }, [turn]);
 
     return (

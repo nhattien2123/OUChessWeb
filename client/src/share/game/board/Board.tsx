@@ -123,8 +123,8 @@ export const BoardComponent: FC<{
         e.stopPropagation();
         if (!board) return;
         const isPlayersTurn = playerColor === board.MoveColourIndex();
-        // if (!isStarted) return;
-        // if (!isPlayersTurn) return;
+        if (!isStarted) return;
+        if (!isPlayersTurn) return;
 
         if (squareIndex === null) return;
 
@@ -428,7 +428,7 @@ export const BoardComponent: FC<{
                             : false;
 
                     const handleClick = (e: ThreeMouseEvent) => {
-                        // if (!isStarted) return;
+                        if (!isStarted) return;
 
                         if (moving.start && moving.target) return;
 

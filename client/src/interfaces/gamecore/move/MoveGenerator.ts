@@ -153,9 +153,9 @@ class MoveGenerator {
             const targetSquare = popResult.i;
             kingMoves = popResult.b;
 
-            if(PieceFunc.PieceType(this.board.Square[this.friendlyKingSquare]) === PieceType.None){
-                continue;
-            }
+            // if(PieceFunc.PieceType(this.board.Square[this.friendlyKingSquare]) === PieceType.None){
+            //     continue;
+            // }
 
             moves[this.currMoveIndex++] = new Move(this.friendlyKingSquare, targetSquare);
         }

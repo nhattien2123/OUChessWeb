@@ -59,11 +59,11 @@ class MoveOrdering {
         inQSearch: boolean,
         ply: number,
     ) => {
-        const oppPieces =
-            board.EnemyDiagonalSliders |
-            board.EnemyOrthogonalSliders |
-            board.pieceBitBoards[PieceFunc.MakePiece(Piece.PieceType.Knight, board.OpponentColour())];
-        const pawnAttacks = board.IsWhiteToMove ? BitBoardUtility.WhitePawnAttacks : BitBoardUtility.BlackPawnAttacks;
+        // const oppPieces =
+        //     board.EnemyDiagonalSliders |
+        //     board.EnemyOrthogonalSliders |
+        //     board.pieceBitBoards[PieceFunc.MakePiece(Piece.PieceType.Knight, board.OpponentColour())];
+        // const pawnAttacks = board.IsWhiteToMove ? BitBoardUtility.WhitePawnAttacks : BitBoardUtility.BlackPawnAttacks;
 
         for (let i = 0; i < moves.length; i++) {
             const move = moves[i];
@@ -162,7 +162,6 @@ class MoveOrdering {
     };
 
     static QuickSort = (values: Move[], scores: number[], low: number, high: number) => {
-        console.log(scores, low, high);
         if (low < high) {
             const pivotIndex = MoveOrdering.Partition(values, scores, low, high);
             MoveOrdering.QuickSort(values, scores, low, pivotIndex - 1);
