@@ -4,6 +4,7 @@ import * as Types from "src/redux/reducer/room/Types";
 import Cookies from "js-cookie";
 import { socket } from "src";
 import Move, { MoveFlag } from "src/interfaces/gamecore/board/Move";
+import { GameResult } from "src/interfaces/gamecore/result/GameResult";
 
 const currentRoom = Cookies.get("room");
 const currentState = sessionStorage.getItem("state");
@@ -93,11 +94,15 @@ const roomSlice = createSlice({
             sessionStorage.removeItem("state");
             sessionStorage.removeItem("history");
             state.detail = null;
+            state.gameAction = baseRoom.gameAction;
+            state.gameState = baseRoom.gameState;
+            state.endGame = GameResult.NotStarted;
+            state.history = baseRoom.history;
+            state.board = baseRoom.board;
             socket.auth = {
                 ...socket.auth,
                 detail: null,
             };
-            state = baseRoom;
         },
         // game action
         resquestStarting: (state) => {
