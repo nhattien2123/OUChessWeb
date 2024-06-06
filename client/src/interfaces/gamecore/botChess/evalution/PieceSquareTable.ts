@@ -19,7 +19,6 @@ class PieceSquareTable {
     };
 
     static ReadTables = (piece: number, square: number): number => {
-        // console.log(`piece: ${piece} - square: ${square}`);
         return this.Tables[piece][square];
     };
 
@@ -104,7 +103,7 @@ class PieceSquareTable {
             PieceSquareTable.Tables[PieceFunc.MakePiece(Piece.PieceType.Bishop, Piece.PieceColor.Black)] =
                 this.GetFlippedTable(PieceSquareTable.Bishops);
             PieceSquareTable.Tables[PieceFunc.MakePiece(Piece.PieceType.Queen, Piece.PieceColor.Black)] =
-                this.GetFlippedTable(PieceSquareTable.Pawns);
+                this.GetFlippedTable(PieceSquareTable.Queens);
         }
     }
 }

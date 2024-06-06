@@ -194,19 +194,20 @@ class Searcher {
             const move = moves[i];
             const capturedPieceType = PieceFunc.PieceType(this.board.Square[move.TargetSquare()]);
             const isCapture = capturedPieceType !== Piece.PieceType.None;
-
-            if (PieceFunc.PieceType(this.board.Square[moves[i].StartSquare()]) === Piece.PieceType.None) {
-                continue;
-            }
+            
+            // if (PieceFunc.PieceType(this.board.Square[moves[i].StartSquare()]) === Piece.PieceType.None) {
+            //     continue;
+            // }
 
             this.board.MakeMove(moves[i], true);
+            console.log("Move: ", this.board.Square);
             let extension = 0;
 
             if (numExtenstion < maxExtentions) {
                 const movedPieceType = PieceFunc.PieceType(this.board.Square[move.TargetSquare()]);
                 const targetRank = BoardHelper.RankIndex(move.TargetSquare());
 
-                if (this.board.IsInCheck()) {
+                if (this.board.IsInCheck()) {   
                     extension = 1;
                 } else if (movedPieceType === Piece.PieceType.Pawn && (targetRank === 1 || targetRank === 6)) {
                     extension = 1;
@@ -244,6 +245,7 @@ class Searcher {
             }
 
             this.board.UnMakeMove(moves[i], true);
+            console.log("UnMove: ", this.board.Square);
 
             if (this.searchCancelled) {
                 return 0;
