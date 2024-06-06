@@ -74,7 +74,6 @@ export const StatusUser: FC<StatusUserParametar> = ({ whiteTimer, blackTimer }) 
 
     useEffect(() => {
         if (status === 0) {
-
             if (disconnectCounter === 0) {
                 dispatch(
                     roomAction.endGame({

@@ -74,9 +74,9 @@ const Sidebar = (props: Props) => {
         setIsDarkMode(!isDarkMode);
     };
 
-    useEffect(() => {
-        dispatch(userActions.reqGetCurrentUser({}));
-    }, []);
+    // useEffect(() => {
+    //     dispatch(userActions.reqGetCurrentUser({}));
+    // }, []);
 
     useEffect(() => {
         const req = friends.filter((f: Friend) => f.status === 1);

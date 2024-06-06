@@ -39,6 +39,12 @@ const opponentSlice = createSlice({
         setStatus: (state, action: Types.ActionSetStatus) => {
             const {status} = action.payload;
             state.status = status;
+        },
+        clearDetail: (state) => {
+            state.name = "";
+            state.avatar = "";
+            state.color = null;
+            state.status = -1;
         }
     },
 });

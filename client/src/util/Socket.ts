@@ -247,6 +247,7 @@ export const useSockets = (): void => {
             // Clear opponent state.
             // Clear session.
             dispatch(roomAction.responseLeaveRoom());
+            dispatch(opponentActions.clearDetail());
             toast.info("Player left");
         });
 
