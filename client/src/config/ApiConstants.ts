@@ -61,6 +61,12 @@ export const USER = {
             METHOD: "GET",
         };
     },
+    API_UPDATE_ELO: (username: string) => {
+        return {
+            URL: `/user/${username}/userapi-updateelo`,
+            METHOD: "PATCH"
+        }
+    }
 };
 
 export const HISTORY = {
@@ -90,6 +96,10 @@ export const MATCH = {
             URL: `/match/matchapi-getmatchbyid/${matchId}`,
             METHOD: "GET"
         }
+    },
+    API_SAVE_MATCH: {
+        URL: "/match/matchapi-savematch",
+        METHOD: "POST"
     }
 }
 

@@ -7,15 +7,20 @@ import { socket } from "src";
 import { useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { userActions } from "./redux/reducer/user/UserReducer";
 
 function App() {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const token = Cookies.get("token");
         const detail = Cookies.get("room");
 
         if (token && currentUser) {
+            console.log(currentUser);
+
             socket.auth = {
                 token: token,
                 userInfo: currentUser,
@@ -23,6 +28,8 @@ function App() {
             };
 
             socket.connect();
+
+            
 
             // if (detail) {
             //     socket.emit("reconnect", JSON.parse(detail));

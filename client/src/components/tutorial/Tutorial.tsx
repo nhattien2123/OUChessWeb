@@ -352,7 +352,7 @@ const Tutorial = (props: Props) => {
                             <div className="tutorial__board">
                                 <>
                                     <Canvas shadows camera={{ position: cameraDefault, fov: 70 }}>
-                                        <Environment preset="forest" background />
+                                        <Environment files="/dawn.hdr" />
                                         {quest !== null && (
                                             <>
                                                 <BoardModel />

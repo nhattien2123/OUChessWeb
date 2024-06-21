@@ -14,6 +14,7 @@ import { Router, redirect, useNavigate } from "react-router-dom";
 import Board from "src/interfaces/gamecore/board/Board";
 import { roomAction } from "src/redux/reducer/room/RoomReducer";
 import { Id, toast } from "react-toastify";
+import { userActions } from "src/redux/reducer/user/UserReducer";
 
 export type LeaveRoom = {
     roomId?: string | null;
@@ -103,21 +104,48 @@ export const Sidebar: FC<{
     const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
     const detail = useAppSelector((state: RootState) => state.roomReducer.detail);
     const curentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
+    const isStarted = useAppSelector((state: RootState) => state.roomReducer.gameState.isStarted);
     const dispatch = useAppDispatch();
     const nav = useNavigate();
     const toastId = useRef<Id | null>(null);
 
     const handleLeavingRoom = async () => {
-        dispatch(
-            roomAction.requestLeaveRoom({
-                rId: detail?.id || "",
-                uId: curentUser._id,
-            }),
-        );
+        if (!isStarted) {
+            if (curentUser._id !== detail?.owner) {
+                socket.emit("leave-room", {
+                    type: "player",
+                    rId: detail?.id,
+                });
+                return;
+            } else {
+                socket.emit("leave-room", {
+                    type: "owner",
+                    rId: detail.id,
+                });
+               
+                return;
+            }
+        } else {
+            dispatch(
+                roomAction.requestLeaveRoom({
+                    rId: detail?.id || "",
+                    uId: curentUser._id,
+                }),
+            );
+        }
     };
 
     const handleRequestDraw = async () => {
         socket.emit("res-draw", { roomID: detail?.id });
+    };
+
+    const handleRequestStart = async () => {
+        if (detail && detail?.player.length < 2) {
+            toast.info("Chưa có đối thủ");
+            return;
+        }
+
+        socket.emit("request-start-game", { roomID: detail?.id });
     };
 
     return (
@@ -131,7 +159,13 @@ export const Sidebar: FC<{
                         <HistoryPanel />
                         <div className="container-sidebar-button">
                             <button onClick={handleLeavingRoom}>Thoát</button>
-                            <button onClick={handleRequestDraw}>Hoà cờ</button>
+                            {isStarted ? (
+                                <button onClick={handleRequestDraw}>Hoà cờ</button>
+                            ) : detail?.owner === curentUser._id ? (
+                                <button onClick={handleRequestStart}>Bắt đầu</button>
+                            ) : (
+                                <></>
+                            )}
                         </div>
                     </>
                 )}

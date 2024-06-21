@@ -23,6 +23,7 @@ function* joinRoom(action: TypesAction.JoinRoomRequest) {
 
 function* leavingRoom(action: TypesAction.LeaveRoomRequest) {
     yield socket.emit("leave-room", {
+        type: "End",
         rId: action.payload.rId,
         uId: action.payload.uId,
     });
@@ -52,7 +53,7 @@ function* initializingRoom(action: TypesAction.Reconnected) {
 }
 
 function* continueGame(action: TypesAction.Reconnected) {
-    yield socket.emit("request-continue-game", { roomID: action.payload.detail.id });
+    yield socket.emit("request-continue-game", { roomID: action.payload.detail?.id });
 }
 
 export function* watchRoom() {

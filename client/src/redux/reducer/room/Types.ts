@@ -1,6 +1,7 @@
 import Board from "src/interfaces/gamecore/board/Board";
 import { PayloadAction } from "@reduxjs/toolkit";
 import * as UserType from "src/redux/reducer/user/Types";
+import * as RoomTypes from "src/redux/reducer/room/Types";
 import { GameResult } from "src/interfaces/gamecore/result/GameResult";
 
 export interface Moving {
@@ -17,7 +18,8 @@ export interface Room {
     detail: {
         id: string;
         title: string;
-        player: UserType.User[];
+        player: (UserType.User & { color: number })[];
+        owner: string;
     } | null;
     gameState: {
         turn: number;
@@ -50,11 +52,7 @@ export type CreateRoomRequest = PayloadAction<{
     color: number
 }>;
 export type CreatRoomResponse = PayloadAction<{
-    detail: {
-        id: string;
-        title: string;
-        player: UserType.User[];
-    };
+    detail: RoomTypes.Room["detail"];
     color: number;
 }>;
 export type JoinRoomRequest = PayloadAction<{
@@ -62,11 +60,7 @@ export type JoinRoomRequest = PayloadAction<{
     uId: string;
 }>;
 export type JoinRoomResponse = PayloadAction<{
-    detail: {
-        id: string;
-        title: string;
-        player: any[];
-    };
+    detail: RoomTypes.Room["detail"];
     color: number;
     board?: Board;
     history?: Moving[];
@@ -83,11 +77,7 @@ export type MovingResponse = PayloadAction<{
     moving: Moving;
 }>;
 export type Reconnected = PayloadAction<{
-    detail: {
-        id: string;
-        title: string;
-        player: UserType.User[];
-    },
+    detail: RoomTypes.Room["detail"],
     gameState: {
         turn: number;
         isStarted: boolean;
@@ -99,5 +89,13 @@ export type Reconnected = PayloadAction<{
 }>;
 export type GameEnd = PayloadAction<{
     EndType: GameResult
+}>
+export type RoomDetai = PayloadAction<{
+    detail: RoomTypes.Room["detail"];
+}>
+export type MatchDetail = PayloadAction<{
+    detail: RoomTypes.Room["detail"];
+    history: RoomTypes.Room["history"];
+    result: number;
 }>
 

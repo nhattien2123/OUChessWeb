@@ -1,6 +1,7 @@
-import { Match } from "src/redux/reducer/match/Types";
+import { Match, SaveMatch } from "src/redux/reducer/match/Types";
 import { ROOT_URL, CONTENT_TYPE, MATCH } from "src/config/ApiConstants";
 import * as Types from "src/services/match/Types";
+import Cookies from "js-cookie";
 
 export const fetchGetMatch = async (): Promise<Types.ResFetchGetMatch> => {
     const url = ROOT_URL + MATCH.API_GET_MATCH.URL;
@@ -47,4 +48,25 @@ export const fetchPutMatchById = async (matchId: string, match: Match): Promise<
         }
     });
     return await response.json();
+}
+
+export const fetchSaveMatch = async (detail: SaveMatch): Promise<any> => {
+    console.log("Match Service", detail);
+    const url = `${ROOT_URL}${MATCH.API_SAVE_MATCH.URL}`;
+    console.log(url);
+    try {
+        const response = await fetch(url, {
+            method: MATCH.API_SAVE_MATCH.METHOD,
+            body: JSON.stringify(detail),
+            headers: {
+                "Content-type": CONTENT_TYPE,
+                Authorization: "Bearer " + Cookies.get("token")
+            }
+        })
+        return await response.json();
+    } catch (error) {
+        console.log(error)
+        return null;
+    }
+
 }

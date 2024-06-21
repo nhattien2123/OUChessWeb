@@ -44,3 +44,8 @@ export type ActionReqSetFriends = PayloadAction<{
 }>;
 
 export type ActionClearUser = PayloadAction<{}>
+
+export type ActionReqPatchUpdateElo = PayloadAction<{
+    username: string;
+    elo: number;
+}>

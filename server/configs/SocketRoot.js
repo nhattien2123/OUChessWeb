@@ -40,7 +40,7 @@ const rootSocket = (io) => {
 
         for (let i = 0; i < rooms.length; i++) {
             const room = rooms[i];
-            if(room.player.filter((p) => p._id === socket.userId).length > 0){
+            if (room.player.filter((p) => p._id === socket.userId).length > 0) {
                 socket.join(room.id);
                 socket.broadcast.to(room.id).emit('reconnect-room');
                 break;
@@ -100,6 +100,7 @@ const rootSocket = (io) => {
                         id: rID,
                         title: detail.title,
                         player: player,
+                        owner: socket.userId,
                     };
 
                     rooms.push(room);
@@ -158,22 +159,59 @@ const rootSocket = (io) => {
         });
 
         socket.on('get-rooms', async () => {
-            // console.log(rooms);
             if (socket.handshake.query.token === 'UNITY') {
             }
-            console.log('Success');
             socket.emit('rep-get-rooms', rooms);
         });
 
         // on
         // - roomID
         socket.on('leave-room', async (request) => {
-            const room = request.rId;
-            io.to(room).emit('req-leave-room', {
-                uId: request.uId,
-            });
-            socket.leave(room);
-            rooms = rooms.filter((r) => r.id !== room);
+            const { type, rId } = request;
+            const room = rooms.filter((r) => r.id === rId)[0];
+
+            if (type === 'player') {
+                room.player = room.player.filter((r) => r._id !== socket.userId);
+
+                io.to(rId).emit('req-leave-room', {
+                    detail: room,
+                    type: 'player',
+                });
+
+                rooms[rooms.findIndex((r) => r.id === rId)] = room;
+                socket.leave(rId);
+            } else if (type === 'owner') {
+                io.to(rId).emit('req-leave-room', {
+                    detail: room,
+                    type: 'owner',
+                });
+
+                const socketRoom = io.sockets.adapter.rooms.get(rId);
+                socketRoom.forEach((socketID) => {
+                    const s = io.sockets.sockets.get(socketID);
+                    if (s) {
+                        s.leave(rId);
+                    }
+                });
+
+                rooms = rooms.filter((r) => r.id !== rId);
+            } else if (type === 'End') {
+                const { uId } = request;
+                io.to(rId).emit('req-leave-room', {
+                    detail: room,
+                    uId: uId,
+                    type: 'end',
+                });
+                const socketRoom = io.sockets.adapter.rooms.get(rId);
+                socketRoom.forEach((socketID) => {
+                    const s = io.sockets.sockets.get(socketID);
+                    if (s) {
+                        s.leave(rId);
+                    }
+                });
+                rooms = rooms.filter((r) => r.id !== rId);
+                return;
+            }
         });
 
         // on
@@ -221,9 +259,17 @@ const rootSocket = (io) => {
             socket.broadcast.to(payload.detail.id).emit('initializing-detail', pack);
         });
 
-        socket.on('request-continue-game', (payload) => {
+        socket.on('request-start-game', (payload) => {
             const { roomID } = payload;
-            io.to(roomID).emit('respone-continue-game');
+            io.to(roomID).emit('respone-start-game');
+        });
+
+        socket.on('request-kick-player', (payload) => {
+            const { roomID } = payload;
+            const room = rooms.filter((r) => r.id === roomID)[0];
+            room.player = room.player.filter((r) => r._id === room.owner);
+            rooms[rooms.findIndex((r) => r.id === roomID)] = room;
+            io.to(roomID).emit('response-kick-player', room);
         });
 
         //#endregion new socket
@@ -373,5 +419,5 @@ const rootSocket = (io) => {
 
 module.exports = {
     rootSocket,
-    userConnected
+    userConnected,
 };

@@ -140,7 +140,7 @@ const ProfileForm = (props: Props) => {
                         </div>
                         <div className="input-form-container">
                             <label className="label-form" htmlFor="phone">
-                                Phone
+                                Số điện thoại
                             </label>
                             <div className="input-field">
                                 <input type="text" id="phone" className="input-form" {...form.register("phone")} />

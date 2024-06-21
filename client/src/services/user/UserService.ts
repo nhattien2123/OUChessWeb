@@ -63,3 +63,16 @@ export const fetchPatchChangeAvatar = async (
     return await res.json();
 };
 
+export const fetchPatchUpdateElo = async (username: string, elo: number): Promise<Types.ResFetchPatchUpdateUser> => {
+    const url = `${ROOT_URL}${USER.API_UPDATE_USER(username).URL}`;
+    console.log(url);
+    const res = await fetch(url, {
+        method: USER.API_UPDATE_USER(username).METHOD,
+        body: JSON.stringify({ elo }),
+        headers: {
+            "Content-type": CONTENT_TYPE,
+            Authorization: `Bearer ${Cookies.get("token")}` || "",
+        },
+    });
+    return await res.json();
+};

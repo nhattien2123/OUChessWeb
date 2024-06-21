@@ -21,3 +21,7 @@ export type ResFetchPutMatchById = Response<{
     match: Match;
     errorMsg: CommonState["errorMsg"];
 }>
+
+export type ResFetchPatchSaveMatch = Response<{
+    errorMsg: CommonState["errorMsg"];
+}>;
