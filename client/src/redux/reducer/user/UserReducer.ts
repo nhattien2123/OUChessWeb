@@ -9,17 +9,17 @@ const initialState: Types.userState = {
         currentState !== ""
             ? JSON.parse(currentState)
             : {
-                _id: "",
-                username: "",
-                firstName: "",
-                lastName: "",
-                phone: "",
-                dateOfBirth: new Date(),
-                email: "",
-                elo: 0,
-                nation: "",
-                avatar: "",
-            },
+                  _id: "",
+                  username: "",
+                  firstName: "",
+                  lastName: "",
+                  phone: "",
+                  dateOfBirth: new Date(),
+                  email: "",
+                  elo: 0,
+                  nation: "",
+                  avatar: "",
+              },
     friends: [],
     password: "",
     isLoading: false,
@@ -66,7 +66,16 @@ const userSlice = createSlice({
         },
         clearUser: (state, action: Types.ActionClearUser) => {
             state.currentUser = initialState.currentUser;
-        }
+        },
+        resPatchUpdateElo: (state, action: Types.ActionReqPatchUpdateElo) => {
+            state.isLoading = true;
+        },
+        reqPatchUpdateElo: (state, action: Types.ActionResPatchUpdateUser) => {
+            state.isLoading = false;
+            const { elo } = action.payload.currentUser;
+            state.currentUser.elo = elo;
+            Cookies.set("user", JSON.stringify(action.payload.currentUser));
+        },
     },
 });
 

@@ -1,6 +1,7 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { User } from "src/redux/reducer/user/Types";
 import { Room } from "src/util/Socket";
+import * as RoomTypes from "src/redux/reducer/room/Types";
 
 export type Match = {
     _id?: string | null;
@@ -44,3 +45,17 @@ export type GetMatchesRequest = PayloadAction<{}>;
 export type GetMatchesResponse = PayloadAction<{
     rooms: Room[]
 }>
+
+export type MatchDetail = PayloadAction<{
+    detail: Room,
+    history: RoomTypes.Room["history"],
+    mode: number,
+    state: number
+}>
+export type SaveMatch = {
+    whiteId: string,
+    blackId: string,
+    moves: string[],
+    state: number,
+    mode: number,
+};

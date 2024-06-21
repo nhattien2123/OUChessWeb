@@ -18,6 +18,9 @@ const matchSchema = new mongoose.Schema({
     },
     mode: {
         type: String
+    },
+    moves: {
+        type: Array
     }
 }, { timestamps: true });
 

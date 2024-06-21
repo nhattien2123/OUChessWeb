@@ -25,6 +25,7 @@ import { Color, EndGameType, Move, Tile } from "src/interfaces/gameplay/chess";
 
 import "src/components/game/Game.scss";
 import { roomAction } from "src/redux/reducer/room/RoomReducer";
+import { userActions } from "src/redux/reducer/user/UserReducer";
 import { GameResult } from "src/interfaces/gamecore/result/GameResult";
 import { isDiffSet } from "@react-three/fiber/dist/declarations/src/core/utils";
 
@@ -67,6 +68,8 @@ export const Game: FC = () => {
     const room = useAppSelector((state: RootState) => state.roomReducer.detail);
     const whiteTimer = useAppSelector((state: RootState) => state.roomReducer.gameState.whiteTimer);
     const blackTimer = useAppSelector((state: RootState) => state.roomReducer.gameState.blackTimer);
+    const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
+    const history = useAppSelector((state: RootState) => state.roomReducer.history);
     const [showPromotionDialog, setShowPromotionDialog] = useState<boolean>(false);
     const [cameraDefault, setCameraDefault] = useState(new Vector3(0, 0, 0));
     const [selected, setSelected] = useState<number | null>(null);
@@ -108,13 +111,12 @@ export const Game: FC = () => {
             GameResult.DrawByArbiter,
         ];
         const nothing = [GameResult.NotStarted, GameResult.InProgress];
-
-        if (!endType || !playerColor) {
+        if (!result) {
             return null; // or handle invalid input appropriately
         }
 
-        const isWhiteWin = whiteWin.includes(endType);
-        const isBlackWin = blackWin.includes(endType);
+        const isWhiteWin = whiteWin.includes(result);
+        const isBlackWin = blackWin.includes(result);
 
         if (isWhiteWin) {
             if (playerColor === 0) return 0;
@@ -129,15 +131,98 @@ export const Game: FC = () => {
         }
     };
 
+    const calculateElo = (eloA: number, eloB: number, isWin: number, k: number) => {
+        if (isWin === -1) {
+            return eloA;
+        }
+
+        let S = 0;
+        if (isWin === 0) {
+            S = 1;
+        } else if (isWin === 1) {
+            S = 0;
+        } else if (isWin === 2) {
+            S = 0.5;
+        }
+
+        const m = (eloB - eloA) / 400;
+        const u = 1 + Math.pow(10, m);
+        const E = 1 / u;
+
+        console.log("elo expert",S - E);
+        const newElo = eloA + k * (S - E);
+        return newElo;
+    };
+
+    const isWhiteWin = (result: GameResult) => {
+        const whiteWin = [GameResult.BlackTimeout, GameResult.BlackIsMated, GameResult.BlackIllegalMove];
+        const blackWin = [GameResult.WhiteTimeout, GameResult.WhiteIsMated, GameResult.WhiteIllegalMove];
+        const draw = [
+            GameResult.Stalemate,
+            GameResult.Repetition,
+            GameResult.FiftyMoveRule,
+            GameResult.InsufficientMaterial,
+            GameResult.DrawByArbiter,
+        ];
+        const nothing = [GameResult.NotStarted, GameResult.InProgress];
+
+        const isWhiteWin = whiteWin.includes(result);
+        const isBlackWin = blackWin.includes(result);
+
+        if (isWhiteWin) {
+            return 1;
+        } else if (isBlackWin) {
+            return -1;
+        } else {
+            return 0;
+        }
+    };
+
     useEffect(() => {
         if (endType) {
             const isWin = checkWinner(playerColor, endType);
+            let isEnd = false;
+            const matchState = isWhiteWin(endType);
+            console.log("EndType: ", endType);
+            console.log("Winner: ", isWin);
             if (isWin === 0) {
+                // player win
+                isEnd = true;
                 setEnd(1);
-            } else if (isWin === 1){
+            } else if (isWin === 1) {
+                // opponent win
+                isEnd = true;
                 setEnd(2);
-            } else if (isWin === 2){
+            } else if (isWin === 2) {
+                // draw
+                isEnd = true;
                 setEnd(3);
+            } else {
+                isEnd = false;
+                setEnd(-1);
+            }
+
+            if (isEnd) {
+                const mElo = room?.player.filter((p) => p._id === currentUser._id)[0].elo;
+                const oElo = room?.player.filter((p) => p._id !== currentUser._id)[0].elo;
+
+                console.log("Elo:", mElo, oElo);
+                const newElo = calculateElo(Number(mElo), Number(oElo), isWin !== null ? isWin : -1, 10);
+                console.log("NewElo: ", newElo);
+                dispatch(userActions.resPatchUpdateElo({ username: currentUser.username, elo: newElo }));
+
+                if (isWin)
+                    console.log(room?.owner, currentUser._id);
+                    if (room?.owner === currentUser._id) {
+                        dispatch(
+                            matchActions.requestSaveMatch({
+                                detail: room,
+                                history: history,
+                                mode: 1,
+                                state: matchState,
+                            }),
+                        );
+                    }
             }
         }
     }, [endType]);

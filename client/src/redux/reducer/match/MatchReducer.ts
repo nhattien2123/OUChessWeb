@@ -54,6 +54,12 @@ const matchSlice = createSlice({
         responeGettingRoom: (state, action: Types.GetMatchesResponse) => {
             state.isLoading = false;
             state.rooms = action.payload.rooms;
+        },
+        requestSaveMatch: (state, action: Types.MatchDetail) => {
+            state.isLoading = true;
+        },
+        responseSaveMatch: (state) => {
+            state.isLoading = false;
         }
     }
 });

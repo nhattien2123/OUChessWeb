@@ -20,7 +20,7 @@ import { Friend } from "src/redux/reducer/profile/Types";
 import { userActions } from "src/redux/reducer/user/UserReducer";
 import * as RoomTypes from "src/redux/reducer/room/Types";
 import { CSSProperties, useEffect, useState } from "react";
-import {DrawRequestNotify} from "src/share/game/board/Sidebar";
+import { DrawRequestNotify } from "src/share/game/board/Sidebar";
 import Cookies from "js-cookie";
 
 export type playerJoinedServer = {
@@ -45,12 +45,11 @@ export type OpponentUser = {
     playerCount: number;
 };
 
-
-
 export interface Room {
     id: string;
     title: string;
     player: (UserTypes.User & { color: number })[];
+    owner: string;
 }
 
 export const useSockets = (): void => {
@@ -195,6 +194,7 @@ export const useSockets = (): void => {
 
         socket.on("rep-join-room", (req: rResult) => {
             const { detail, status } = req;
+            console.log(detail, status);
             if (status === 1) {
                 dispatch(
                     roomAction.responseCreateRoom({
@@ -202,6 +202,7 @@ export const useSockets = (): void => {
                             id: detail.id,
                             title: detail.title,
                             player: detail.player,
+                            owner: detail.owner,
                         },
                         color: detail.player.filter((player) => player._id === userId)[0].color,
                     }),
@@ -219,7 +220,6 @@ export const useSockets = (): void => {
                             status: 1,
                         }),
                     );
-                    dispatch(roomAction.resquestStarting());
                     const message: Message = {
                         author: `System`,
                         message: `${opponent.username} has joined room`,
@@ -240,22 +240,54 @@ export const useSockets = (): void => {
             }
         });
 
-        socket.on("req-leave-room", () => {
+        interface lResult {
+            detail?: Room;
+            uId?: string;
+            type: string;
+        }
+        socket.on("req-leave-room", (req: lResult) => {
+            const { type } = req;
+            if (type === "player") {
+                const { detail } = req;
+                if (detail) {
+                    dispatch(opponentActions.clearDetail());
+                    if (currentUser._id === detail?.owner) {
+                        dispatch(roomAction.requestSetRoomDetail({ detail: detail }));
+                    } else {
+                        Cookies.remove("room");
+                        dispatch(roomAction.requestSetRoomDetail({ detail: null }));
+                    }
+                }
+            } else if (type === "owner") {
+                dispatch(roomAction.responseLeaveRoom());
+                toast.info("Chủ phòng đã rời khỏi phòng chơi");
+            } else if (type === "end") {
+                const { detail, uId } = req;
+                if(uId && detail){
+                    const leavePlayer = detail.player.filter((p) => p._id === uId)[0];
+
+                    if(leavePlayer.color === 0){
+                        dispatch(roomAction.endGame({EndType: GameResult.WhiteTimeout}));
+                    }else if (leavePlayer.color === 1) {
+                        dispatch(roomAction.endGame({EndType: GameResult.BlackIsMated}));
+                    }
+                    
+                    toast.info("Game End");
+                }
+                return;
+            }
+
             // Player left
             // Clear room state.
             // Clear player state.
             // Clear opponent state.
             // Clear session.
-            dispatch(roomAction.responseLeaveRoom());
-            dispatch(opponentActions.clearDetail());
-            toast.info("Player left");
         });
 
         socket.on("res-draw", () => {
-
             const detail = Cookies.get("room");
 
-            if(!detail) return;
+            if (!detail) return;
 
             toast(DrawRequestNotify({}, JSON.parse(detail).id), {
                 closeOnClick: false,
@@ -271,7 +303,7 @@ export const useSockets = (): void => {
         });
 
         socket.on("game-end", (result) => {
-            dispatch(roomAction.endGame({EndType: GameResult.DrawByArbiter}));
+            dispatch(roomAction.endGame({ EndType: GameResult.DrawByArbiter }));
         });
 
         socket.on("reconnect-room", () => {
@@ -295,6 +327,8 @@ export const useSockets = (): void => {
         socket.on("initializing-detail", (payload: InitializePack) => {
             toast.info("init");
 
+            if (payload.detail === null) return;
+
             const opponent = payload.detail.player.filter((player) => player._id !== userId)[0];
             dispatch(
                 opponentActions.setDetail({
@@ -311,9 +345,19 @@ export const useSockets = (): void => {
             dispatch(roomAction.opponentReconneccted(payload));
         });
 
-        socket.on("respone-continue-game", () => {
+        socket.on("respone-start-game", () => {
             dispatch(roomAction.requestGameContinue());
-        })
+        });
+
+        socket.on("response-kick-player", (room: RoomTypes.Room["detail"]) => {
+            dispatch(opponentActions.clearDetail());
+            if (currentUser._id === room?.owner) {
+                dispatch(roomAction.requestSetRoomDetail({ detail: room }));
+            } else {
+                Cookies.remove("room");
+                dispatch(roomAction.requestSetRoomDetail({ detail: null }));
+            }
+        });
 
         //interface
         interface mResult {

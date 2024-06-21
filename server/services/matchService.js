@@ -51,6 +51,13 @@ const matchService = {
             console.log(error);
             return null;
         }
+    },
+    saveMatch: async (matchInfo) => {
+        try {
+            return await matchRepository.saveMatch(matchInfo);
+        } catch (error) {
+            return null;
+        }
     }
 };
 

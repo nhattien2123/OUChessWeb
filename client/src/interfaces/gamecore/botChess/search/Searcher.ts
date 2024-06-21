@@ -87,26 +87,25 @@ class Searcher {
     };
 
     RunIterativeDeepeningSearch = (depth: number) => {
-        for (let searchDepth = 1; searchDepth <= depth; searchDepth++) {
+        // for (let searchDepth = 1; searchDepth <= depth; searchDepth++) {
             this.hasSearchedAtLeastOneMove = false;
 
-            this.Search(searchDepth, 0, negativeInfinity, positiveInfinity, 0, new Move(0), false);
+            this.Search(depth, 0, negativeInfinity, positiveInfinity, 0, new Move(0), false);
 
             if (this.searchCancelled) {
                 if (this.hasSearchedAtLeastOneMove) {
                     this.bestMove = this.bestMoveThisIteration;
                     this.bestEval = this.bestEvalThisIteration;
                 }
-                break;
             } else {
-                this.CurrentDepth = searchDepth;
+                this.CurrentDepth = depth;
                 this.bestMove = this.bestMoveThisIteration;
                 this.bestEval = this.bestEvalThisIteration;
 
                 this.bestEvalThisIteration = Number.MIN_SAFE_INTEGER;
                 this.bestMoveThisIteration = Move.NullMove();
             }
-        }
+        // }
     };
 
     GetSearchResult = (): { move: Move; _eval: number } => {
@@ -194,13 +193,8 @@ class Searcher {
             const move = moves[i];
             const capturedPieceType = PieceFunc.PieceType(this.board.Square[move.TargetSquare()]);
             const isCapture = capturedPieceType !== Piece.PieceType.None;
-            
-            // if (PieceFunc.PieceType(this.board.Square[moves[i].StartSquare()]) === Piece.PieceType.None) {
-            //     continue;
-            // }
 
             this.board.MakeMove(moves[i], true);
-            console.log("Move: ", this.board.Square);
             let extension = 0;
 
             if (numExtenstion < maxExtentions) {
@@ -245,7 +239,6 @@ class Searcher {
             }
 
             this.board.UnMakeMove(moves[i], true);
-            console.log("UnMove: ", this.board.Square);
 
             if (this.searchCancelled) {
                 return 0;

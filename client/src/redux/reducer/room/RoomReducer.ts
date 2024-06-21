@@ -158,7 +158,7 @@ const roomSlice = createSlice({
         },
         opponentReconneccted: (state, action: Types.Reconnected) => {
             const moves = [] as Move[];
-            for(let i = 0; i < action.payload.history.length; i++){
+            for (let i = 0; i < action.payload.history.length; i++) {
                 const move = action.payload.history[i];
                 moves[i] = new Move(move.start, move.target, move.flag ? move.flag : MoveFlag.NoFlag);
             }
@@ -186,11 +186,17 @@ const roomSlice = createSlice({
             }
         },
         endGame: (state, action: Types.GameEnd) => {
-            const {EndType} = action.payload;
+            const { EndType } = action.payload;
             state.endGame = EndType;
             state.gameState.isStarted = false;
-            state.detail = null;
+            state.history = [];
+            state.board = loadBoardDefault();
+            // state.detail = null;
             Cookies.remove("room");
+        },
+        requestSetRoomDetail: (state, action: Types.RoomDetai) => {
+            const { detail } = action.payload;
+            state.detail = detail;
         },
         resClearMoving: (state) => {},
     },

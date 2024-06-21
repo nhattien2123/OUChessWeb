@@ -48,31 +48,17 @@ const BotChess = () => {
     }, [params]);
 
     useEffect(() => {
-        // const worker = new Worker("src/interfaces/gamecore/botChess/worker/ChessWorker.ts");
-
-        // worker.onmessage = (event) => {
-        //     console.log(event);
-        // };
-
-        // const newBoard = new Board();
-        // newBoard.LoadStartPostion();
-        // worker.postMessage({
-        //     board: 1,
-        //     depth: 3,
-        // });
-
-        // return () => {
-        //     worker.terminate();
-        // };
-        if (turn === 1 || 1 === 1) {
+        if (turn === 1) {
             let copyBoard = new Board();
             copyBoard = Board.CreateNewBoard(board);
             const searcher = new Searcher(copyBoard);
-            searcher.StartSearch(diff);
-            const { bestMove } = searcher;
-            if (bestMove) {
-                handleMoving(bestMove);
-            }
+            setTimeout(() => {
+                searcher.StartSearch(diff);
+                const bestMove = searcher.bestMove;
+                if (bestMove !== null) {
+                    handleMoving(bestMove);
+                }
+            }, 5000);
         }
     }, [turn]);
 

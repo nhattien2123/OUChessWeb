@@ -1,4 +1,4 @@
-const match = require("../models/Match");
+const match = require('../models/Match');
 
 const matchRepository = {
     getMatch: async (matchId) => {
@@ -57,10 +57,10 @@ const matchRepository = {
         const matches = await match
             .find({
                 $or: [{ whiteId: playerId }, { blackId: playerId }],
-                state: { $ne: null }
+                state: { $ne: null },
             })
-            .populate("whiteId")
-            .populate("blackId");
+            .populate('whiteId')
+            .populate('blackId');
 
         return matches;
     },
@@ -72,6 +72,15 @@ const matchRepository = {
             return Match;
         } catch (error) {
             console.log(error);
+            return null;
+        }
+    },
+    saveMatch: async (matchInfo) => {
+        try {
+            const _match = new match(matchInfo);
+            const savedMatch = await _match.save();
+            return savedMatch;
+        } catch (error) {
             return null;
         }
     },
