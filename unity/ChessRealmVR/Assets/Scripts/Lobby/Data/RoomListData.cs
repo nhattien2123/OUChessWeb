@@ -27,31 +27,31 @@ using System.Collections.Generic;
 //    public List<PlayerData> player;
 //}
 
-public class User
-{
-    public string _id { get; set; }
-    public string username { get; set; }
-    public string firstName { get; set; }
-    public string lastName { get; set; }
-    public string email { get; set; }
-    public long phone { get; set; }
-    public string nation { get; set; }
-    public string avatar { get; set; }
-    public int elo { get; set; }
-    public string role { get; set; }
-    public DateTime createdAt { get; set; }
-    public DateTime updatedAt { get; set; }
-    public int __v { get; set; }
-}
+//public class User
+//{
+//    public string _id { get; set; }
+//    public string username { get; set; }
+//    public string firstName { get; set; }
+//    public string lastName { get; set; }
+//    public string email { get; set; }
+//    public long phone { get; set; }
+//    public string nation { get; set; }
+//    public string avatar { get; set; }
+//    public int elo { get; set; }
+//    public string role { get; set; }
+//    public DateTime createdAt { get; set; }
+//    public DateTime updatedAt { get; set; }
+//    public int __v { get; set; }
+//}
 
-public class Room
-{
-    public string id { get; set; }
-    public string title { get; set; }
-    public List<User> player { get; set; }
-}
+//public class Room
+//{
+//    public string id { get; set; }
+//    public string title { get; set; }
+//    public List<User> player { get; set; }
+//}
 
-public class Rooms
-{
-    public List<Room> rooms { get; set; }
-}
+//public class Rooms
+//{
+//    public List<Room> rooms { get; set; }
+//}

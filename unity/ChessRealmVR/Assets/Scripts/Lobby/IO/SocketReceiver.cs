@@ -1,10 +1,12 @@
 ﻿using Players;
+using SocketIOClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using static LobbyManager;
 
 public class SocketReceiver : MonoBehaviour
 {
@@ -14,27 +16,19 @@ public class SocketReceiver : MonoBehaviour
     public delegate void DisconnectAction();
     public static event DisconnectAction OnDisconnected;
 
-    public delegate void RoomCreatedAction(Room room);
-    public static event RoomCreatedAction OnRoomCreated;
-
-    public delegate void RoomJoinedAction(Room room);
-    public static event RoomJoinedAction OnRoomJoined;
-
-    public delegate void LeftRoomAction();
-    public static event LeftRoomAction OnLeftRoom;
-
-    public delegate void GotRoomListAction(Rooms rooms);
+    public delegate void GotRoomListAction(ListRoomJSON rooms);
     public static event GotRoomListAction OnGotRoomList;
 
-    public delegate void GotPlayerListAction(Player players);
-    public static event GotPlayerListAction OnGotPlayerList;
+    public delegate void RoomCreatedAction(Room room);
+    public static event RoomCreatedAction OnRoomCreated;
+    
+    public void SocketGotRoomList(ListRoomJSON rooms)
+    {
+       if (OnGotRoomList != null) OnGotRoomList(rooms);
+    }
 
-    public delegate void RoomReadyAction();
-    public static event RoomReadyAction OnRoomReady;
-
-    public delegate void StartedGameAction();
-    public static event StartedGameAction OnStartedGame;
-
-    public delegate void ConnectionTimeoutAction();
-    public static event ConnectionTimeoutAction OnConnectionTimeout;
+    public void SocketRoomCreated(Room room)
+    {
+        if (OnRoomCreated != null) OnRoomCreated(room);
+    }
 }

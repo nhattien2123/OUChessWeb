@@ -10,9 +10,8 @@ const rootSocket = (io) => {
 
     io.use((socket, next) => {
         const token = socket.handshake.auth.token;
-        if (socket.handshake.query.token === 'UNITY') {
-            // next();
-        } else if (token) {
+        console.log("token: " + token)
+        if (token) {
             jwt.verify(token, process.env.JWT_SECRETKEY, (err, user) => {
                 if (err) {
                     return;
@@ -60,11 +59,9 @@ const rootSocket = (io) => {
 
             console.log(currentPlayer.name + ' recv: disconnect ' + currentPlayer.name);
             socket.broadcast.emit('other player disconnected', JSON.stringify(currentPlayer));
-            // console.log(currentPlayer.name + ' bcst: other player disconnected ' + JSON.stringify(currentPlayer));
             for (var i = 0; i < clients.length; i++) {
                 var client = JSON.parse(clients[i]);
                 if (client.name === currentPlayer.name) {
-                    console.log('test');
                     clients.splice(i, 1);
                 }
             }
@@ -88,6 +85,11 @@ const rootSocket = (io) => {
         // - player color: white/black
         socket.on('join-room', async (detail) => {
             try {
+                if (typeof detail === 'string') {
+                    detail = JSON.parse(detail);
+                }
+
+                console.log(detail);
                 if (detail.type === 'new') {
                     let rID = crypto.randomBytes(2).toString('hex');
                     while (rooms.filter((r) => r.id === rID).length > 0) {
@@ -117,6 +119,7 @@ const rootSocket = (io) => {
                     };
                     io.emit('req-get-rooms', rooms);
                 } else if (detail.type === 'join') {
+                    console.log(detail.type);
                     const room = rooms.filter((r) => r.id === detail.rID)[0];
                     if (room.player.length === 2) {
                         socket.emit('rep-join-room', {
@@ -159,8 +162,8 @@ const rootSocket = (io) => {
         });
 
         socket.on('get-rooms', async () => {
-            if (socket.handshake.query.token === 'UNITY') {
-            }
+            // console.log(rooms);
+            console.log('Success');
             socket.emit('rep-get-rooms', rooms);
         });
 

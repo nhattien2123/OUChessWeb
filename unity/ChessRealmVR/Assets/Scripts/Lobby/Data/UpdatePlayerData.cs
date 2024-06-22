@@ -5,6 +5,6 @@ using System.Collections;
 public class UpdatePlayerData
 {
     public string roomID;
-    public User player;
+    //public User player;
 }
 

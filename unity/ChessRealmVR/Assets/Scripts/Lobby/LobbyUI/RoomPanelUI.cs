@@ -1,136 +1,136 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+﻿//using UnityEngine;
+//using UnityEngine.UI;
+//using System.Collections;
 
-public class RoomPanelUI : SinglePanelUI
-{
+//public class RoomPanelUI : SinglePanelUI
+//{
 
-    public Text roomName;
-    public Transform playerList;
-    public Button leaveRoomButton;
+//    public Text roomName;
+//    public Transform playerList;
+//    public Button leaveRoomButton;
 
-    public PlayerListItem playerListItemPrefab;
+//    public PlayerListItem playerListItemPrefab;
 
-    public GameObject leaveRoomLoading;
-    public GameObject startGameCountDown;
-    public Text startGameCountDownText;
+//    public GameObject leaveRoomLoading;
+//    public GameObject startGameCountDown;
+//    public Text startGameCountDownText;
 
-    public int countdown;
+//    public int countdown;
 
-    void Start()
-    {
-        //roomName.text = SocketLobby.Room.roomName;
+//    void Start()
+//    {
+//        //roomName.text = SocketLobby.Room.roomName;
 
-        //leaveRoomButton.onClick.AddListener(() => {
-        //    leaveRoomButton.interactable = false;
+//        //leaveRoomButton.onClick.AddListener(() => {
+//        //    leaveRoomButton.interactable = false;
 
-        //    leaveRoomLoading.SetActive(true);
+//        //    leaveRoomLoading.SetActive(true);
 
-        //    SocketSender.Send("LeaveRoom", SocketLobby.Room.roomID);
-        //});
-    }
+//        //    SocketSender.Send("LeaveRoom", SocketLobby.Room.roomID);
+//        //});
+//    }
 
-    void OnEnable()
-    {
-        //SocketReceiver.OnLeftRoom += OnLeftRoom;
-        //SocketReceiver.OnGotPlayerList += OnGotPlayerList;
-        //SocketReceiver.OnRoomReady += OnRoomReady;
+//    void OnEnable()
+//    {
+//        //SocketReceiver.OnLeftRoom += OnLeftRoom;
+//        //SocketReceiver.OnGotPlayerList += OnGotPlayerList;
+//        //SocketReceiver.OnRoomReady += OnRoomReady;
 
-        //SocketSender.Send("GetPlayerList", SocketLobby.Room.roomID);
-    }
+//        //SocketSender.Send("GetPlayerList", SocketLobby.Room.roomID);
+//    }
 
-    void OnDisable()
-    {
-        //SocketReceiver.OnLeftRoom -= OnLeftRoom;
-        //SocketReceiver.OnGotPlayerList -= OnGotPlayerList;
-        //SocketReceiver.OnRoomReady -= OnRoomReady;
-    }
+//    void OnDisable()
+//    {
+//        //SocketReceiver.OnLeftRoom -= OnLeftRoom;
+//        //SocketReceiver.OnGotPlayerList -= OnGotPlayerList;
+//        //SocketReceiver.OnRoomReady -= OnRoomReady;
+//    }
 
-    void OnLeftRoom()
-    {
-        //SocketLobby.Instance.BackToLobby();
-    }
+//    void OnLeftRoom()
+//    {
+//        //SocketLobby.Instance.BackToLobby();
+//    }
 
-    void OnGotPlayerList(PlayerListData players)
-    {
-        //PlayerListItem[] playerListItems = playerList.GetComponentsInChildren<PlayerListItem>();
+//    void OnGotPlayerList(PlayerListData players)
+//    {
+//        //PlayerListItem[] playerListItems = playerList.GetComponentsInChildren<PlayerListItem>();
 
-        //if (playerListItems != null)
-        //{
-        //    for (int i = 0; i < playerListItems.Length; i++)
-        //    {
-        //        bool remain = false;
+//        //if (playerListItems != null)
+//        //{
+//        //    for (int i = 0; i < playerListItems.Length; i++)
+//        //    {
+//        //        bool remain = false;
 
-        //        for (int j = 0; j < players.players.Length; j++)
-        //        {
-        //            if (playerListItems[i].player.playerID == players.players[j].playerID)
-        //            {
-        //                remain = true;
-        //                break;
-        //            }
-        //        }
+//        //        for (int j = 0; j < players.players.Length; j++)
+//        //        {
+//        //            if (playerListItems[i].player.playerID == players.players[j].playerID)
+//        //            {
+//        //                remain = true;
+//        //                break;
+//        //            }
+//        //        }
 
-        //        if (!remain)
-        //        {
-        //            GameObject.Destroy(playerListItems[i].gameObject);
-        //        }
-        //    }
-        //}
+//        //        if (!remain)
+//        //        {
+//        //            GameObject.Destroy(playerListItems[i].gameObject);
+//        //        }
+//        //    }
+//        //}
 
-        //playerListItems = playerList.GetComponentsInChildren<PlayerListItem>();
+//        //playerListItems = playerList.GetComponentsInChildren<PlayerListItem>();
 
-        //for (int i = 0; i < players.players.Length; i++)
-        //{
-        //    PlayerListItem playerListItem = null;
+//        //for (int i = 0; i < players.players.Length; i++)
+//        //{
+//        //    PlayerListItem playerListItem = null;
 
-        //    if (playerListItems != null)
-        //    {
-        //        for (int j = 0; j < playerListItems.Length; j++)
-        //        {
-        //            if (playerListItems[j].player.playerID == players.players[i].playerID)
-        //            {
-        //                playerListItem = playerListItems[j];
-        //                break;
-        //            }
-        //        }
-        //    }
+//        //    if (playerListItems != null)
+//        //    {
+//        //        for (int j = 0; j < playerListItems.Length; j++)
+//        //        {
+//        //            if (playerListItems[j].player.playerID == players.players[i].playerID)
+//        //            {
+//        //                playerListItem = playerListItems[j];
+//        //                break;
+//        //            }
+//        //        }
+//        //    }
 
-        //    if (playerListItem == null)
-        //    {
-        //        playerListItem = Instantiate(playerListItemPrefab) as PlayerListItem;
-        //        playerListItem.transform.SetParent(playerList, false);
-        //        playerListItem.SetPlayer(players.players[i]);
-        //    }
-        //    else
-        //    {
-        //        if (players.players[i].playerID != SocketLobby.Instance.connectionID)
-        //        {
-        //            playerListItem.SetPlayer(players.players[i]);
-        //        }
-        //    }
-        //}
-    }
+//        //    if (playerListItem == null)
+//        //    {
+//        //        playerListItem = Instantiate(playerListItemPrefab) as PlayerListItem;
+//        //        playerListItem.transform.SetParent(playerList, false);
+//        //        playerListItem.SetPlayer(players.players[i]);
+//        //    }
+//        //    else
+//        //    {
+//        //        if (players.players[i].playerID != SocketLobby.Instance.connectionID)
+//        //        {
+//        //            playerListItem.SetPlayer(players.players[i]);
+//        //        }
+//        //    }
+//        //}
+//    }
 
-    void OnRoomReady()
-    {
-        startGameCountDownText.text = countdown.ToString();
+//    void OnRoomReady()
+//    {
+//        startGameCountDownText.text = countdown.ToString();
 
-        startGameCountDown.SetActive(true);
+//        startGameCountDown.SetActive(true);
 
-        StartCoroutine(CountDown());
-    }
+//        StartCoroutine(CountDown());
+//    }
 
-    IEnumerator CountDown()
-    {
-        for (int i = countdown - 1; i > 0; i--)
-        {
-            yield return new WaitForSeconds(1f);
-            startGameCountDownText.text = i.ToString();
-        }
+//    IEnumerator CountDown()
+//    {
+//        for (int i = countdown - 1; i > 0; i--)
+//        {
+//            yield return new WaitForSeconds(1f);
+//            startGameCountDownText.text = i.ToString();
+//        }
 
-        yield return new WaitForSeconds(1f);
+//        yield return new WaitForSeconds(1f);
 
-        //SocketSender.Send("StartGame", SocketLobby.Room.roomID);
-    }
+//        //SocketSender.Send("StartGame", SocketLobby.Room.roomID);
+//    }
 
-}
+//}

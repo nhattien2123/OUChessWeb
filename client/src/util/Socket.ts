@@ -194,7 +194,8 @@ export const useSockets = (): void => {
 
         socket.on("rep-join-room", (req: rResult) => {
             const { detail, status } = req;
-            console.log(detail, status);
+            console.log("detail: " + detail);
+            console.log("status: " + status);
             if (status === 1) {
                 dispatch(
                     roomAction.responseCreateRoom({

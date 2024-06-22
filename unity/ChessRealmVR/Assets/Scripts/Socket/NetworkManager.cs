@@ -13,7 +13,6 @@ using UnityEngine.UI;
 public class NetworkManager : MonoBehaviour
 {
     public static NetworkManager instance;
-    public SocketIOComponent socket;
     public GameObject player;
     public GameObject otherPlayer;
 
@@ -28,21 +27,21 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
-        socket.On("other player connected", OnOtherPlayerConnected);
+        SocketIOComponent.Instance.On("other player connected", OnOtherPlayerConnected);
         //socket.On("other player head", OnOtherPlayerHead);
         //socket.On("other player right hand", OnOtherPlayerRightHand);
         //socket.On("other player left hand", OnOtherPlayerLeftHand);
-        socket.On("other player disconnected", OnOtherPlayerDisconnected);
+        SocketIOComponent.Instance.On("other player disconnected", OnOtherPlayerDisconnected);
 
-        socket.On("play", OnPlay);
-        socket.On("head move", OnHeadMove);
-        socket.On("head turn", OnHeadTurn);
-        socket.On("player move", OnPlayerMove);
-        socket.On("player turn", OnPlayerTurn);
-        socket.On("right hand move", OnRightHandMove);
-        socket.On("right hand turn", OnRightHandTurn);
-        socket.On("left hand move", OnLeftHandMove);
-        socket.On("left hand turn", OnLeftHandTurn);
+        SocketIOComponent.Instance.On("play", OnPlay);
+        SocketIOComponent.Instance.On("head move", OnHeadMove);
+        SocketIOComponent.Instance.On("head turn", OnHeadTurn);
+        SocketIOComponent.Instance.On("player move", OnPlayerMove);
+        SocketIOComponent.Instance.On("player turn", OnPlayerTurn);
+        SocketIOComponent.Instance.On("right hand move", OnRightHandMove);
+        SocketIOComponent.Instance.On("right hand turn", OnRightHandTurn);
+        SocketIOComponent.Instance.On("left hand move", OnLeftHandMove);
+        SocketIOComponent.Instance.On("left hand turn", OnLeftHandTurn);
 
         StartCoroutine(ConnectToServer());
     }
@@ -57,7 +56,7 @@ public class NetworkManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
-        socket.Emit("player connect");
+        SocketIOComponent.Instance.Emit("player connect");
 
         yield return new WaitForSeconds(1f);
 
@@ -72,7 +71,7 @@ public class NetworkManager : MonoBehaviour
         string data = JsonUtility.ToJson(playerJSON);
 
         Debug.Log("playerJSON : " + data);
-        socket.Emit("play", data);
+        SocketIOComponent.Instance.Emit("play", data);
         Debug.Log("Emit : play");
 
         //canvas.gameObject.SetActive(false);
@@ -99,7 +98,7 @@ public class NetworkManager : MonoBehaviour
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
             string data = JsonUtility.ToJson(new PositionJSON(vec3));
-            socket.Emit("player move", data);
+            SocketIOComponent.Instance.Emit("player move", data);
         });
     }
 
@@ -108,7 +107,7 @@ public class NetworkManager : MonoBehaviour
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
             string data = JsonUtility.ToJson(new RotationJSON(quat));
-            socket.Emit("player turn", data);
+            SocketIOComponent.Instance.Emit("player turn", data);
         });
     }
 
@@ -117,7 +116,7 @@ public class NetworkManager : MonoBehaviour
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
             string data = JsonUtility.ToJson(new HeadPositionJSON(vec3));
-            socket.Emit("head move", data);
+            SocketIOComponent.Instance.Emit("head move", data);
         });
     }
 
@@ -126,7 +125,7 @@ public class NetworkManager : MonoBehaviour
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
             string data = JsonUtility.ToJson(new HeadRotationJSON(quat));
-            socket.Emit("head turn", data);
+            SocketIOComponent.Instance.Emit("head turn", data);
         });
     }
 
@@ -135,7 +134,7 @@ public class NetworkManager : MonoBehaviour
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
             string data = JsonUtility.ToJson(new RightHandPositionJSON(vec3));
-            socket.Emit("right hand move", data);
+            SocketIOComponent.Instance.Emit("right hand move", data);
         });
     }
 
@@ -144,7 +143,7 @@ public class NetworkManager : MonoBehaviour
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
             string data = JsonUtility.ToJson(new RightHandRotationJSON(quat));
-            socket.Emit("right hand turn", data);
+            SocketIOComponent.Instance.Emit("right hand turn", data);
         });
     }
 
@@ -153,7 +152,7 @@ public class NetworkManager : MonoBehaviour
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
             string data = JsonUtility.ToJson(new LeftHandPositionJSON(vec3));
-            socket.Emit("left hand move", data);
+            SocketIOComponent.Instance.Emit("left hand move", data);
         });
     }
 
@@ -162,7 +161,7 @@ public class NetworkManager : MonoBehaviour
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
             string data = JsonUtility.ToJson(new LeftHandRotationJSON(quat));
-            socket.Emit("left hand turn", data);
+            SocketIOComponent.Instance.Emit("left hand turn", data);
         });
     }
 
@@ -455,7 +454,7 @@ public class NetworkManager : MonoBehaviour
     {
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
-            socket.Disconnect();
+            SocketIOComponent.Instance.Disconnect();
         });
     }
     #region JSONMessageClasses

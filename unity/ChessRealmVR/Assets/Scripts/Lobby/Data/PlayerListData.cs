@@ -4,5 +4,5 @@ using System.Collections;
 [System.Serializable]
 public class PlayerListData
 {
-    public User[] players;
+    //public User[] players;
 }

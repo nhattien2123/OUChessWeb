@@ -5,12 +5,13 @@ public class ReqCreateRoom
 {
     public string type;
     public string title;
-    public string own;
+    public string id;
+    public int color;
 }
 
 public class ResRoomResult
 {
-    public Room detail; // object cho phép lưu trữ bất kỳ kiểu dữ liệu nào
+    //public Room detail; // object cho phép lưu trữ bất kỳ kiểu dữ liệu nào
     public int status;
     public int color;
 }

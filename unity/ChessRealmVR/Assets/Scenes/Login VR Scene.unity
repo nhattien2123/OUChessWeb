@@ -444,7 +444,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distance: 0.5
   verticalOffset: 0.5
-  positionSource: {fileID: 0}
+  positionSource: {fileID: 576545350}
 --- !u!114 &67854952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -717,6 +717,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 175459258}
   m_CullTransparentMesh: 1
+--- !u!1 &192987480
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 192987482}
+  - component: {fileID: 192987483}
+  m_Layer: 0
+  m_Name: APIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &192987482
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192987480}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.2843835, y: 0.8632641, z: 1.9686205}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &192987483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192987480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91df67374d65e204693bd097243ec0a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &259500517
 GameObject:
   m_ObjectHideFlags: 0
@@ -927,6 +971,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
+--- !u!4 &576545350 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5248953942372564437, guid: df731a19181ab26429e67198292b5162,
+    type: 3}
+  m_PrefabInstance: {fileID: 7249254538499432833}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &714663999
 GameObject:
   m_ObjectHideFlags: 0
@@ -1589,7 +1639,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distance: 0.5
   verticalOffset: 0.5
-  positionSource: {fileID: 0}
+  positionSource: {fileID: 576545350}
 --- !u!114 &1162177540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1894,10 +1944,7 @@ MonoBehaviour:
   _passwordInput: {fileID: 67854952}
   _loginButton: {fileID: 259500519}
   _registerButton: {fileID: 56362990}
-  _authHost: http://localhost
-  _authLoginRoute: /auth/authapi-signin
-  _authRegisterRoute: /auth/authapi-signup
-  _authPort: 8080
+  _authService: {fileID: 192987483}
 --- !u!4 &1353115076
 Transform:
   m_ObjectHideFlags: 0
@@ -3016,4 +3063,5 @@ SceneRoots:
   - {fileID: 926221530}
   - {fileID: 1353115076}
   - {fileID: 1005787840}
+  - {fileID: 192987482}
   - {fileID: 7249254538499432833}

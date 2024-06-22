@@ -2,13 +2,17 @@
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using static LobbyManager;
+using UnityEngine.SceneManagement;
+using Newtonsoft.Json.Linq;
+using System;
 
 public class LobbyListItem : MonoBehaviour
 {
 
-    public TextMeshProUGUI roomName;
-    public TextMeshPro roomPlayers;
-    public Button joinRoomButton;
+    [SerializeField] private TextMeshProUGUI roomName;
+    [SerializeField] private TextMeshProUGUI roomPlayers;
+    [SerializeField] private Button joinRoomButton;
 
     public Room room;
 
@@ -19,14 +23,17 @@ public class LobbyListItem : MonoBehaviour
         roomName.text = room.title;
         roomPlayers.text = room.player.Count + "/2";
 
-        //joinRoomButton.onClick.AddListener(() =>
-        //{
-        //    joinRoomButton.interactable = false;
-
-        //    transform.parent.parent.GetComponent<LobbyPanelUI>().joinRoomLoading.SetActive(true);
-
-        //    SocketSender.Send("JoinRoom", room.roomID);
-        //});
+        joinRoomButton.onClick.AddListener(() =>
+        {
+            var currentUserId = PlayerPrefs.GetString("current-user-id");
+            var payload = new JObject();
+            payload["type"] = "join";
+            payload["rID"] = room.id;
+            payload["id"] = currentUserId;
+            Debug.Log(payload["rID"]);
+            SocketIOComponent.Instance.Emit("join-room", payload.ToString());
+            SceneManager.LoadScene("Multiplayer VR Chess");
+        });
     }
 
 }

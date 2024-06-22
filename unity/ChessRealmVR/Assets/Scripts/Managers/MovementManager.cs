@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Chess.Core;
 using ChessLogic;
 using ChessPieces;
 using Players;
@@ -11,10 +12,14 @@ namespace Managers
 {
     public class MovementManager : MonoBehaviour
     {
+        public int startXY;
+        public int targetXY;
         // Managers
         public TileManager TileManager { get; set; }
         public GameManager GameManager { get; set; }
-        
+        public MultiplayerGameManager MultiplayerGameManager { get; set; }
+
+        public SocketIOComponent socket;
         //Movement and piece tracking properties
         public ChessPiece[,] ChessPieces { get; set; }
         public List<GameObject> WhitePieces { get; set; } 
@@ -51,6 +56,7 @@ namespace Managers
         
         public void PieceWasPickedUp(int x, int y)
         {
+            startXY = BoardHelper.IndexFromCoord(x, y);
             var pickedPieceCoord = new Vector2Int(x, y);
             var chessPiece = GetChessPiece(pickedPieceCoord);
             TileManager.UpdateTileMaterial(pickedPieceCoord, Shared.TileType.Selected);
@@ -85,6 +91,7 @@ namespace Managers
     
         public void PieceWasDropped(int currentX, int currentY, Tile newTile)
         {
+            targetXY = BoardHelper.IndexFromCoord(currentX, currentY);
             var chessPiece = ChessPieces[currentX, currentY];
 
             // Re-enable XRGrabInteractable on the current team's pieces
@@ -101,7 +108,27 @@ namespace Managers
                 TileManager.UpdateTileMaterialAfterMove(chessPiece);
                 return;
             }
-            
+
+            if (socket != null)
+            {
+                if (startXY != null && targetXY != null) {
+                    Moving moving = new Moving
+                    {
+                        start = startXY,
+                        target = targetXY,
+                    };
+
+                    MovingRequestJSON movingRequest = new MovingRequestJSON
+                    {
+                        rId = "10000",
+                        moving = moving
+                    };
+
+                    string data = JsonUtility.ToJson(movingRequest);
+
+                    socket.Emit("send-move", data);
+                }
+            }
             GameManager.AdvanceTurn(turn);
         }
 
@@ -199,7 +226,7 @@ namespace Managers
                             newPiece.type = chessPiece.type;
                             newPiece.IsMoved = true;
                             newPiece.MovementManager = chessPiece.MovementManager;
-                            newPiece.Moves = new List<Move>();
+                            newPiece.Moves = new List<ChessPieces.Move>();
                             
                             chessPiece = newPiece;
                         }
@@ -222,7 +249,7 @@ namespace Managers
                             newPiece.type = chessPiece.type;
                             newPiece.IsMoved = true;
                             newPiece.MovementManager = chessPiece.MovementManager;
-                            newPiece.Moves = new List<Move>();
+                            newPiece.Moves = new List<ChessPieces.Move>();
 
                             chessPiece = newPiece;
                         }
@@ -491,7 +518,7 @@ namespace Managers
                     : currentPieceTile.WhiteAttackingPieces);
 
                 // Remove special moves
-                var movesToBeRemoved = new List<Move>();
+                var movesToBeRemoved = new List<ChessPieces.Move>();
                 foreach (var move in fPiece.Moves)
                 {
                     var moveToTile = tiles[move.Coords.x, move.Coords.y];

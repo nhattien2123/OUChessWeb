@@ -5,6 +5,12 @@ using System.Collections.Generic;
 using ChessPieces;
 using System;
 using Unity.VisualScripting;
+using static LobbyManager;
+using System.Net.Sockets;
+using PimDeWitte.UnityMainThreadDispatcher;
+using UnityEngine.SceneManagement;
+using TMPro;
+using Newtonsoft.Json.Linq;
 
 public class LobbyPanelUI : MonoBehaviour
 {
@@ -12,7 +18,6 @@ public class LobbyPanelUI : MonoBehaviour
     public Transform roomList;
     //[SerializeField] private Button refreshButton;2
     //[SerializeField] private InputField roomNameInput;
-    //[SerializeField] private Button createRoomButton;
     //[SerializeField] private LobbyCreateUI lobbyCreateUI;
 
 
@@ -20,12 +25,20 @@ public class LobbyPanelUI : MonoBehaviour
     //[SerializeField] private GameObject joinRoomLoading;
     //[SerializeField] private GameObject fetchRoomListLoading;
 
-    public LobbyListItem lobbyListItemPrefab;
-    private LobbyListItem roomListItem;
-    private LobbyListItem[] roomListItems;
+    //public LobbyListItem lobbyListItemPrefab;
+    //private LobbyListItem roomListItem;
+    //private LobbyListItem[] roomListItems;
 
     //public string defaultRoomName = "RoomName";
+    [SerializeField] private Button createLobbyButton;
+    [SerializeField] private LobbyListItem lobbyListItemPrefab;
+    [SerializeField] private LobbyCreateUI lobbyCreateUI;
+    [SerializeField] private Button playBotButton;
+    [SerializeField] private Button logOutButton;
+    [SerializeField] private Button refreshButton;
 
+    [SerializeField] private Image avatarImage;
+    [SerializeField] private TextMeshProUGUI usernameTxt; 
     private void Awake()
     {
         //roomListTest = FindObjectOfType<>;
@@ -33,164 +46,164 @@ public class LobbyPanelUI : MonoBehaviour
 
     void Start()
     {
+        string token = PlayerPrefs.GetString("Token");
         //roomNameInput.text = defaultRoomName;
-        string accountJson = PlayerPrefs.GetString("AccountData");
-        Users account = JsonUtility.FromJson<Users>(accountJson);
-        roomListItems = roomList.GetComponentsInChildren<LobbyListItem>();
-        roomList = GameObject.Find("LobbyListContainer").transform;
-        lobbyListItemPrefab = GameObject.Find("LobbyListItem").GetComponent<LobbyListItem>();
-        roomListItem = Instantiate(lobbyListItemPrefab) as LobbyListItem;
-        roomListItem.transform.SetParent(roomList, false);
-        //createRoomButton.onClick.AddListener(() =>
-        //{
+
+        //createRoomButton.onClick.AddListener(() => {
         //    roomNameInput.interactable = false;
         //    createRoomButton.interactable = false;
 
         //    createRoomLoading.SetActive(true);
 
-        //    //SocketSender.Send("CreateRoom", roomNameInput.text == "" ? defaultRoomName : roomNameInput.text);
-        //    lobbyCreateUI.Show();
+        //    SocketSender.Send("CreateRoom", roomNameInput.text == "" ? defaultRoomName : roomNameInput.text);
         //});
+        createLobbyButton.onClick.AddListener(() => {
+            lobbyCreateUI.Show();
+        });
 
-        //refreshButton.onClick.AddListener(() =>
-        //{
+        refreshButton.onClick.AddListener(() =>
+        {
+            SocketIOComponent.Instance.Emit("get-rooms");
+        });
+
+        playBotButton.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene("Bot VR Chess");
+        });
+
+        logOutButton.onClick.AddListener(() =>
+        {
+            PlayerPrefs.DeleteAll();
+            SceneManager.LoadScene("Login VR Scene");
+        });
+
+        //refreshButton.onClick.AddListener(() => {
         //    refreshButton.interactable = false;
 
         //    fetchRoomListLoading.SetActive(true);
 
-        //    SocketManager.Instance.Emit("get-rooms");
+        //    SocketSender.Send("GetRoomList");
         //});
 
         //fetchRoomListLoading.SetActive(true);
-        //SocketManager.Instance.Emit("get-rooms");
+        StartCoroutine(APIClient.Instance.FetchCurrentUser(token, OnGetCurrentUserSuccess, OnGetCurrentUserFailture));
+        StartCoroutine(GetRoomList());
+    }
+    IEnumerator GetRoomList()
+    {
+        yield return new WaitForSeconds(0.5f);
+        SocketIOComponent.Instance.Emit("get-rooms");
+    }
+
+    private void OnGetCurrentUserSuccess(string response)
+    {
+        JObject resCurrentUser = JObject.Parse(response);
+        PlayerPrefs.SetString("current-user-id", resCurrentUser["data"]["currentUser"]["_id"].ToString());
+        string avatarUrl = resCurrentUser["data"]["currentUser"]["avatar"].ToString();
+        ImageLoader imageLoader = FindObjectOfType<ImageLoader>();
+        if (imageLoader != null)
+        {
+            imageLoader.LoadImageFromURL(avatarImage, avatarUrl);
+        }
+        string username = resCurrentUser["data"]["currentUser"]["username"].ToString();
+        if (username != null)
+        {
+            usernameTxt.text = username;
+        }
+    }
+
+    private void OnGetCurrentUserFailture(string error)
+    {
+        usernameTxt.text = "No name";
     }
 
     void OnEnable()
     {
-        //SocketManager.Instance.OnRoomCreated += OnRoomCreated;
-        //SocketManager.Instance.OnRoomJoined += OnRoomJoined;
-        SocketManager.Instance.OnRoomListReceived += OnGotRoomList;
+        SocketReceiver.OnRoomCreated += OnRoomCreated;
+        //SocketReceiver.OnRoomJoined += OnRoomJoined;
+        SocketReceiver.OnGotRoomList += OnGotRoomList;
     }
 
     void OnDisable()
     {
-        //SocketManager.Instance.OnRoomCreated -= OnRoomCreated;
-        //SocketManager.Instance.OnRoomJoined -= OnRoomJoined;
-        SocketManager.Instance.OnRoomListReceived -= OnGotRoomList;
+        SocketReceiver.OnRoomCreated -= OnRoomCreated;
+        //SocketReceiver.OnRoomJoined -= OnRoomJoined;
+        SocketReceiver.OnGotRoomList -= OnGotRoomList;
     }
 
-    void OnGotRoomList(Rooms rooms)
+    void OnGotRoomList(ListRoomJSON rooms)
     {
-        //foreach (Transform child in roomList)
-        //{
-        //    Destroy(child.gameObject);
-        //}
-
-        //var thread = System.Threading.Thread(CreateRoomListItems(rooms));
-        //thread.Start();
-        //
         CreateRoomListItems(rooms);
 
         //fetchRoomListLoading.SetActive(false);
         //refreshButton.interactable = true;
     }
 
-    //void OnRoomCreated(List<Room> room)
-    //{
-    //    LobbyGameManager.Instance.SetRoom(room);
+    void OnRoomCreated(Room room)
+    {
+        lobbyCreateUI.Show();
+    }
+
+    //void OnRoomJoined(RoomData room) {
+    //    SocketLobby.Instance.SetRoom(room);
     //}
 
-    //void OnRoomJoined(ResResultJoinRoom room)
-    //{
-    //    LobbyGameManager.Instance.SetRoom(room);
-    //}
-
-    public void CreateRoomListItems(Rooms rooms)
-    { 
-        Debug.Log("test");
-        Debug.Log(rooms.rooms[0].title);
-        Debug.Log(roomListItems);
-        Debug.Log("Tét12312");
-        //if (roomListItems != null)
-        //{
-        //    Debug.Log("Test1");
-        //    for (int i = 0; i < roomListItems.Length; i++)
-        //    {
-        //        bool remain = false;
-
-        //        for (int j = 0; j < rooms.rooms.Count; j++)
-        //        {
-        //            if (roomListItems[i].room.id == rooms.rooms[j].id)
-        //            {
-        //                remain = true;
-        //                break;
-        //            }
-        //        }
-
-        //        if (!remain)
-        //        {
-        //            GameObject.Destroy(roomListItems[i].gameObject);
-        //        }
-        //    }
-        //}
-
-        if (roomListItems != null)
+    void CreateRoomListItems(ListRoomJSON rooms)
+    {
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
-            for (int i = 0; i < roomListItems.Length; i++)
-            {
-                GameObject.Destroy(roomListItems[i].gameObject);
-            }
-        }
+            Debug.Log(rooms);
+            LobbyListItem[] lobbyListItems = roomList.GetComponentsInChildren<LobbyListItem>();
 
-        try
-        {
-            for (int i = 0; i < rooms.rooms.Count; i++)
+            if (lobbyListItems != null)
             {
-                Debug.Log("Test2");
-                //LobbyListItem roomListItem = null;
-
-                if (roomListItems != null)
+                for (int i = 0; i < lobbyListItems.Length; i++)
                 {
-                    for (int j = 0; j < roomListItems.Length; j++)
+                    bool remain = false;
+
+                    for (int j = 0; j < rooms.Count; j++)
                     {
-                        if (roomListItems[j].room.id == rooms.rooms[i].id)
+                        if (lobbyListItems[i].room.id == rooms[j].id)
                         {
-                            roomListItem = roomListItems[j];
+                            remain = true;
+                            break;
+                        }
+                    }
+
+                    if (!remain)
+                    {
+                        GameObject.Destroy(lobbyListItems[i].gameObject);
+                    }
+                }
+            }
+
+            lobbyListItems = roomList.GetComponentsInChildren<LobbyListItem>();
+
+            for (int i = 0; i < rooms.Count; i++)
+            {
+                LobbyListItem lobbyListItem = null;
+
+                if (lobbyListItems != null)
+                {
+                    for (int j = 0; j < lobbyListItems.Length; j++)
+                    {
+                        if (lobbyListItems[j].room.id == rooms[i].id)
+                        {
+                            lobbyListItem = lobbyListItems[j];
                             break;
                         }
                     }
                 }
-                //try
-                //{
-                //    if (roomListItem == null)
-                //    {
-                //        roomListItem = lobbyListItemPrefab;
-                //    }
-                //}
-                //catch (Exception e)
-                //{
-                //    Debug.Log(e.Message);
-                //}
-                //roomListItem.transform.SetParent(roomList, false);
 
-                roomListItem.SetRoom(rooms.rooms[i]);
+                if (lobbyListItem == null)
+                {
+                    lobbyListItem = Instantiate(lobbyListItemPrefab) as LobbyListItem;
+                    lobbyListItem.transform.SetParent(roomList, false);
+                    lobbyListItem.gameObject.SetActive(true);
+                }
+
+                lobbyListItem.SetRoom(rooms[i]);
             }
-
-            //catch (Exception e)
-            //{
-            //    Debug.Log(e.Message);
-            //}
-            //GameObject lobbyItem = Instantiate(lobbyListItemObj, roomListObj);
-            //Debug.Log(lobbyItem);
-            //foreach (Room room in rooms.rooms)
-            //{
-            //    lobbyItem.GetComponent<LobbyListItem>().SetRoom(room);
-            //}
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
+        });
     }
 }
-
