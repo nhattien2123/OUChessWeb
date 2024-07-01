@@ -32,7 +32,6 @@ public class NetworkManager : MonoBehaviour
         //socket.On("other player right hand", OnOtherPlayerRightHand);
         //socket.On("other player left hand", OnOtherPlayerLeftHand);
         SocketIOComponent.Instance.On("other player disconnected", OnOtherPlayerDisconnected);
-
         SocketIOComponent.Instance.On("play", OnPlay);
         SocketIOComponent.Instance.On("head move", OnHeadMove);
         SocketIOComponent.Instance.On("head turn", OnHeadTurn);

@@ -17,9 +17,7 @@ namespace Managers
         // Managers
         public TileManager TileManager { get; set; }
         public GameManager GameManager { get; set; }
-        public MultiplayerGameManager MultiplayerGameManager { get; set; }
 
-        public SocketIOComponent socket;
         //Movement and piece tracking properties
         public ChessPiece[,] ChessPieces { get; set; }
         public List<GameObject> WhitePieces { get; set; } 
@@ -58,6 +56,7 @@ namespace Managers
         {
             startXY = BoardHelper.IndexFromCoord(x, y);
             var pickedPieceCoord = new Vector2Int(x, y);
+            Debug.Log(pickedPieceCoord.x + " / " + pickedPieceCoord.y);
             var chessPiece = GetChessPiece(pickedPieceCoord);
             TileManager.UpdateTileMaterial(pickedPieceCoord, Shared.TileType.Selected);
 
@@ -109,26 +108,27 @@ namespace Managers
                 return;
             }
 
-            if (socket != null)
+            if (startXY != null && targetXY != null)
             {
-                if (startXY != null && targetXY != null) {
-                    Moving moving = new Moving
-                    {
-                        start = startXY,
-                        target = targetXY,
-                    };
+                var room = AppState.Instance.GetState<Room>("CurrentRoom");
+                Debug.Log("Current Room: " + room);
+                Moving moving = new Moving
+                {
+                    start = startXY,
+                    target = targetXY,
+                };
 
-                    MovingRequestJSON movingRequest = new MovingRequestJSON
-                    {
-                        rId = "10000",
-                        moving = moving
-                    };
+                MovingRequest movingRequest = new MovingRequest
+                {
+                    rId = room.id,
+                    moving = moving
+                };
 
-                    string data = JsonUtility.ToJson(movingRequest);
+                string data = JsonUtility.ToJson(movingRequest);
 
-                    socket.Emit("send-move", data);
-                }
+                SocketIOComponent.Instance.Emit("send-move", data);
             }
+
             GameManager.AdvanceTurn(turn);
         }
 
@@ -138,11 +138,11 @@ namespace Managers
 
             var chessPiece = movedChessPiece;
             var movedPieces = new MovedPieces();
-            var turn = 
-                new Turn(movedPieces, Shared.MoveType.Normal, 
-                    GameManager.IsWhiteTurn 
-                        ? Shared.TeamType.White 
-                        : Shared.TeamType.Black);
+            var turn =
+                   new Turn(movedPieces, Shared.MoveType.Normal,
+                       GameManager.IsWhiteTurn
+                           ? Shared.TeamType.White
+                           : Shared.TeamType.Black);
             
             var newPosition = newTile.Position;
             var currentPosition = new Vector2Int(chessPiece.currentX, chessPiece.currentY);

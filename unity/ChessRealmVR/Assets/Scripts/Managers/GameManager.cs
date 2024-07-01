@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using ChessLogic;
 using ChessPieces;
+using PimDeWitte.UnityMainThreadDispatcher;
 using Players;
+using SocketIOClient;
 using Unity.VisualScripting;
 using Unity.XR.CoreUtils;
 using UnityEngine;
@@ -17,6 +19,7 @@ namespace Managers
         // Mock Start Game
         public bool mockTeamSelection;
         public Shared.TeamType mockTeamType;
+        public Shared.ModeGame modeGame;
 
         // Properties
         public Chessboard chessboard;
@@ -39,6 +42,7 @@ namespace Managers
         private HumanPlayer HumanPlayer { get; set; }
         private AIPlayer AIPlayer { get; set; }
         private Player CurrentPlayer { get; set; }
+        private OtherPlayer OtherPlayer { get; set; }
 
         //--------------------------------------- Methods ----------------------------------------------------------
         private void Awake()
@@ -55,10 +59,20 @@ namespace Managers
             chessboard.TileManager = tileManager;
             movementManager.GameManager = this;
             GameStatus = Shared.GameStatus.NotStarted;
-
-            if (mockTeamSelection)
+            if (modeGame == Shared.ModeGame.BotAI)
             {
-                SelectTeam(mockTeamType, transform.position, transform.rotation, Shared.ChessboardConfig.Normal);
+                if (mockTeamSelection)
+                {
+                    SelectTeam(mockTeamType, transform.position, transform.rotation, Shared.ChessboardConfig.Normal);
+                }
+            }
+            else if (modeGame == Shared.ModeGame.Multiplayer)
+            {
+                SocketIOComponent.Instance.On("req-send-move", OnRequestSendMove);
+                ResJoinRoom data = AppState.Instance.GetState<ResJoinRoom>("CurrentRoom");
+                if (data.color == 0)
+                    SelectTeam(Shared.TeamType.White, transform.position, transform.rotation, Shared.ChessboardConfig.Normal);
+                else SelectTeam(Shared.TeamType.Black, transform.position, transform.rotation, Shared.ChessboardConfig.Normal);
             }
         }
 
@@ -80,18 +94,25 @@ namespace Managers
                     CurrentPlayer.Team);
                 GameStatus = EvaluateGameStatus(CurrentPlayer.Team);
 
-                if (CurrentPlayer == AIPlayer)
+                if (modeGame == Shared.ModeGame.BotAI)
                 {
-                    try
+                    if (CurrentPlayer == AIPlayer)
                     {
-                        UnmarkAIMove(History[^2]);
+                        try
+                        {
+                            UnmarkAIMove(History[^2]);
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+
+                        StartCoroutine(AITurn());
                     }
-                    catch
-                    {
-                        // ignored
-                    }
-                    
-                    StartCoroutine(AITurn());
+                }
+                else if (modeGame == Shared.ModeGame.Multiplayer)
+                {
+
                 }
             }
 
@@ -108,56 +129,113 @@ namespace Managers
             
             GameStatus = Shared.GameStatus.Continue;
 
-            CurrentPlayer = HumanPlayer;
-            if (HumanPlayer.Team == Shared.TeamType.White)
+            if (modeGame == Shared.ModeGame.BotAI)
             {
-                HumanPlayer.Pieces = movementManager.WhitePieces.Select(piece => piece.GetComponent<ChessPiece>())
-                    .ToList();
-                AIPlayer.Pieces = movementManager.BlackPieces.Select(piece => piece.GetComponent<ChessPiece>())
-                    .ToList();
-                HumanPlayer.EnablePieces();
-                
-                movementManager.GenerateAllMoves(null, CurrentPlayer, movementManager.ChessPieces, tileManager.Tiles, HumanPlayer.Pieces,
-                    AIPlayer.Pieces);
-                movementManager.EliminateInvalidMoves(movementManager.ChessPieces, tileManager.Tiles,
-                    CurrentPlayer.Team);
+                CurrentPlayer = HumanPlayer;
+                if (HumanPlayer.Team == Shared.TeamType.White)
+                {
+                    HumanPlayer.Pieces = movementManager.WhitePieces.Select(piece => piece.GetComponent<ChessPiece>())
+                        .ToList();
+                    AIPlayer.Pieces = movementManager.BlackPieces.Select(piece => piece.GetComponent<ChessPiece>())
+                        .ToList();
+                    HumanPlayer.EnablePieces();
+
+                    movementManager.GenerateAllMoves(null, CurrentPlayer, movementManager.ChessPieces, tileManager.Tiles, HumanPlayer.Pieces,
+                        AIPlayer.Pieces);
+                    movementManager.EliminateInvalidMoves(movementManager.ChessPieces, tileManager.Tiles,
+                        CurrentPlayer.Team);
+                }
+                else
+                {
+                    HumanPlayer.Pieces = movementManager.BlackPieces.Select(piece => piece.GetComponent<ChessPiece>())
+                        .ToList();
+                    AIPlayer.Pieces = movementManager.WhitePieces.Select(piece => piece.GetComponent<ChessPiece>())
+                        .ToList();
+                    HumanPlayer.DisablePieces();
+                    HumanPlayer.HasMoved = true;
+                }
+
+                AIPlayer.DisablePieces();
+                CurrentPlayer.IsMyTurn = true;
+
+                HumanPlayer.InitPieces();
+                AIPlayer.InitPieces();
             }
             else
             {
-                HumanPlayer.Pieces = movementManager.BlackPieces.Select(piece => piece.GetComponent<ChessPiece>())
-                    .ToList();
-                AIPlayer.Pieces = movementManager.WhitePieces.Select(piece => piece.GetComponent<ChessPiece>())
-                    .ToList();
-                HumanPlayer.DisablePieces();
-                HumanPlayer.HasMoved = true;
+                CurrentPlayer = HumanPlayer;
+                if (HumanPlayer.Team == Shared.TeamType.White)
+                {
+                    HumanPlayer.Pieces = movementManager.WhitePieces.Select(piece => piece.GetComponent<ChessPiece>())
+                        .ToList();
+                    OtherPlayer.Pieces = movementManager.BlackPieces.Select(piece => piece.GetComponent<ChessPiece>())
+                        .ToList();
+                    HumanPlayer.EnablePieces();
+
+                    movementManager.GenerateAllMoves(null, CurrentPlayer, movementManager.ChessPieces, tileManager.Tiles, HumanPlayer.Pieces,
+                        OtherPlayer.Pieces);
+                    movementManager.EliminateInvalidMoves(movementManager.ChessPieces, tileManager.Tiles,
+                        CurrentPlayer.Team);
+                }
+                else
+                {
+                    HumanPlayer.Pieces = movementManager.BlackPieces.Select(piece => piece.GetComponent<ChessPiece>())
+                        .ToList();
+                    OtherPlayer.Pieces = movementManager.WhitePieces.Select(piece => piece.GetComponent<ChessPiece>())
+                        .ToList();
+                    HumanPlayer.DisablePieces();
+                    HumanPlayer.HasMoved = true;
+                }
+
+                OtherPlayer.DisablePieces();
+                CurrentPlayer.IsMyTurn = true;
+
+                HumanPlayer.InitPieces();
+                OtherPlayer.InitPieces();
             }
-    
-            AIPlayer.DisablePieces();
-            CurrentPlayer.IsMyTurn = true;
-            
-            HumanPlayer.InitPieces();
-            AIPlayer.InitPieces();
         }
 
         public void SelectTeam(Shared.TeamType selectedTeam, Vector3 selectorPosition, Quaternion selectorRotation,
             Shared.ChessboardConfig chessboardConfig)
         {
-            HumanPlayer.Team = selectedTeam;
-            AIPlayer.Team = 
-                HumanPlayer.Team == Shared.TeamType.White 
-                    ? Shared.TeamType.Black 
-                    : Shared.TeamType.White;
+            if (modeGame == Shared.ModeGame.BotAI) {
+                HumanPlayer.Team = selectedTeam;
+                AIPlayer.Team =
+                    HumanPlayer.Team == Shared.TeamType.White
+                        ? Shared.TeamType.Black
+                        : Shared.TeamType.White;
 
-            StartGame(chessboardConfig);
-            var rotation = selectedTeam is Shared.TeamType.White
-                ? Quaternion.Euler(0, 41, 0)
-                : Quaternion.Euler(0, 0, 0);
-            if (selectedTeam is Shared.TeamType.White)
-                SetPlayer(teamSelectors[0].gameObject.transform.position);
-            else SetPlayer(teamSelectors[1].gameObject.transform.position);
+                StartGame(chessboardConfig);
+                var rotation = selectedTeam is Shared.TeamType.White
+                    ? Quaternion.Euler(0, 41, 0)
+                    : Quaternion.Euler(0, 0, 0);
+                if (selectedTeam is Shared.TeamType.White)
+                    SetPlayer(teamSelectors[0].gameObject.transform.position);
+                else SetPlayer(teamSelectors[1].gameObject.transform.position);
 
-            foreach (var teamSelector in teamSelectors)
-                Destroy(teamSelector);
+                foreach (var teamSelector in teamSelectors)
+                    Destroy(teamSelector);
+            }
+            else
+            {
+                HumanPlayer.Team = selectedTeam;
+                OtherPlayer.Team =
+                    HumanPlayer.Team == Shared.TeamType.White
+                        ? Shared.TeamType.Black
+                        : Shared.TeamType.White;
+
+                StartGame(chessboardConfig);
+                var rotation = selectedTeam is Shared.TeamType.White
+                    ? Quaternion.Euler(0, 41, 0)
+                    : Quaternion.Euler(0, 0, 0);
+
+                if (selectedTeam is Shared.TeamType.White)
+                    SetPlayer(teamSelectors[0].gameObject.transform.position);
+                else SetPlayer(teamSelectors[1].gameObject.transform.position);
+
+                foreach (var teamSelector in teamSelectors)
+                    Destroy(teamSelector);
+            }
         }
 
         public void AdvanceTurn(Turn currentTurn)
@@ -172,26 +250,52 @@ namespace Managers
         
         private Shared.GameStatus EvaluateGameStatus(Shared.TeamType evaluatedTeam)
         {
-            var currentKing = (King)(evaluatedTeam == Shared.TeamType.White ? movementManager.WhiteKing : movementManager.BlackKing);
-
-            switch (currentKing.isChecked)
+            if (modeGame == Shared.ModeGame.BotAI)
             {
-                case true when !movementManager.TeamHasPossibleMoves:
-                    return evaluatedTeam == HumanPlayer.Team ? Shared.GameStatus.Defeat : Shared.GameStatus.Victory;
-                case false when !movementManager.TeamHasPossibleMoves:
+                var currentKing = (King)(evaluatedTeam == Shared.TeamType.White ? movementManager.WhiteKing : movementManager.BlackKing);
+
+                switch (currentKing.isChecked)
+                {
+                    case true when !movementManager.TeamHasPossibleMoves:
+                        return evaluatedTeam == HumanPlayer.Team ? Shared.GameStatus.Defeat : Shared.GameStatus.Victory;
+                    case false when !movementManager.TeamHasPossibleMoves:
+                        return Shared.GameStatus.Draw;
+                }
+
+                var drawConfigurations = new List<List<ChessPiece>>();
+                /*drawConfigurations.Add(new List<ChessPiece> {new King()});
+                drawConfigurations.Add(new List<ChessPiece> {new King(), new Bishop()});
+                drawConfigurations.Add(new List<ChessPiece> {new King(), new Knight()});*/
+
+                if (drawConfigurations.Contains(AIPlayer.Pieces)
+                    && drawConfigurations.Contains(HumanPlayer.Pieces))
                     return Shared.GameStatus.Draw;
+
+                return Shared.GameStatus.Continue;
             }
+            else
+            {
+                var currentKing = (King)(evaluatedTeam == Shared.TeamType.White ? movementManager.WhiteKing : movementManager.BlackKing);
 
-            var drawConfigurations = new List<List<ChessPiece>>();
-            /*drawConfigurations.Add(new List<ChessPiece> {new King()});
-            drawConfigurations.Add(new List<ChessPiece> {new King(), new Bishop()});
-            drawConfigurations.Add(new List<ChessPiece> {new King(), new Knight()});*/
+                switch (currentKing.isChecked)
+                {
+                    case true when !movementManager.TeamHasPossibleMoves:
+                        return evaluatedTeam == HumanPlayer.Team ? Shared.GameStatus.Defeat : Shared.GameStatus.Victory;
+                    case false when !movementManager.TeamHasPossibleMoves:
+                        return Shared.GameStatus.Draw;
+                }
 
-            if (drawConfigurations.Contains(AIPlayer.Pieces)
-                && drawConfigurations.Contains(HumanPlayer.Pieces))
-                return Shared.GameStatus.Draw;
+                var drawConfigurations = new List<List<ChessPiece>>();
+                /*drawConfigurations.Add(new List<ChessPiece> {new King()});
+                drawConfigurations.Add(new List<ChessPiece> {new King(), new Bishop()});
+                drawConfigurations.Add(new List<ChessPiece> {new King(), new Knight()});*/
 
-            return Shared.GameStatus.Continue;
+                if (drawConfigurations.Contains(OtherPlayer.Pieces)
+                    && drawConfigurations.Contains(HumanPlayer.Pieces))
+                    return Shared.GameStatus.Draw;
+
+                return Shared.GameStatus.Continue;
+            }
         }
         
         private IEnumerator AITurn()
@@ -455,6 +559,28 @@ namespace Managers
         {
             foreach (var tile in tilesToDestroy)
                 Destroy(tile.gameObject);
+        }
+
+        public void OnRequestSendMove(SocketIOResponse socketIOResponse)
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Debug.Log(socketIOResponse);
+                MovingRequest data = socketIOResponse.GetValue<MovingRequest>();
+                Debug.Log(data);
+                Vector2Int startV2 = Chess.Core.BoardHelper.Vector2FromIndex(data.moving.start);
+                Vector2Int targetV2 = Chess.Core.BoardHelper.Vector2FromIndex(data.moving.target);
+                Debug.Log(startV2.x + " / " + startV2.y);
+                ChessPiece chessPieceToMove = movementManager.GetChessPiece(startV2);
+                var moveToMake = new Move();
+                moveToMake.Coords = targetV2;
+                var moveToTile = tileManager.Tiles[moveToMake.Coords.x, moveToMake.Coords.y];
+                //Debug.Log(movementManager.GetChessPiece(new Vector2Int());
+
+                moveToTile.DetermineTileTypeFromMove(moveToMake);
+                var turn = movementManager.MakeMove(movementManager.ChessPieces, chessPieceToMove, moveToTile, false);
+                moveToTile.ResetTileType();
+            });
         }
     }
 }

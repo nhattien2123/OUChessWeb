@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using ChessLogic;
 using ChessPieces;
+using Newtonsoft.Json.Linq;
 using PimDeWitte.UnityMainThreadDispatcher;
 using Players;
+using SocketIOClient;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using Unity.XR.CoreUtils;
@@ -42,9 +44,6 @@ namespace Managers
         private OtherPlayer OtherPlayer { get; set; }
         private Player CurrentPlayer { get; set; }
 
-        // Network
-        public SocketIOComponent socket;
-
         //--------------------------------------- Methods ----------------------------------------------------------
         private void Awake()
         {
@@ -58,14 +57,15 @@ namespace Managers
             movementManager.TileManager = tileManager;
             chessboard.MovementManager = movementManager;
             chessboard.TileManager = tileManager;
-            movementManager.MultiplayerGameManager = this;
+            //movementManager.MultiplayerGameManager = this;
             GameStatus = Shared.GameStatus.NotStarted;
-
-            if (mockTeamSelection)
-            {
-                SelectTeam(mockTeamType, transform.position, transform.rotation, Shared.ChessboardConfig.Normal);
-            }
+            //SocketIOComponent.Instance.On("req-send-move", OnRequestSendMove);
+            //ResJoinRoom data = AppState.Instance.GetState<ResJoinRoom>("CurrentRoom");
+            //if (data.color == 0)
+            //    SelectTeam(Shared.TeamType.White, transform.position, transform.rotation, Shared.ChessboardConfig.Normal);
+            //else SelectTeam(Shared.TeamType.Black, transform.position, transform.rotation, Shared.ChessboardConfig.Normal);
         }
+
 
         private void Update()
         {
@@ -206,17 +206,17 @@ namespace Managers
             // Create and return MoveData from the turn
             var lastMove = turn.PiecesMovedInThisTurn.Pieces[^1];
             return new Move
-            { 
+            {
 
             };
         }
 
         //private IEnumerable OtherPlayerTurn()
         //{
-        //    UnityMainThreadDispatcher.Instance().Enqueue(() =>
-        //    {
-        //        socket.Emit("test");
-        //    });
+            //UnityMainThreadDispatcher.Instance().Enqueue(() } =>
+            //{
+            //    socket.Emit("test");
+            //});
         //}
 
         //private IEnumerator AITurn()

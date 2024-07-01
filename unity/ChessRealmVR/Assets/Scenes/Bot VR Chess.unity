@@ -7386,7 +7386,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startXY: 0
   targetXY: 0
-  socket: {fileID: 0}
   promotionHandler: {fileID: 0}
 --- !u!1 &246603641
 GameObject:
@@ -18279,7 +18278,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 314a9583e386130408db51f792a60be0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  socket: {fileID: 0}
   player: {fileID: 2844770201533935969, guid: 19b203da2c5776a4cafea38aeb239346, type: 3}
   otherPlayer: {fileID: 2940232671051882380, guid: 6aab5dbf87a476f43bf6aaa161671c5f,
     type: 3}
@@ -20745,6 +20743,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mockTeamSelection: 1
   mockTeamType: 0
+  modeGame: 1
   chessboard: {fileID: 442431942}
   movementManager: {fileID: 233582955}
   tileManager: {fileID: 1845374850}

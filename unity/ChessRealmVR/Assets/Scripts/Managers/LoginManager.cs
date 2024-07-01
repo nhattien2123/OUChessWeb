@@ -16,7 +16,7 @@ public class LoginManager : MonoBehaviour
     [SerializeField] private TMP_InputField _nameInput;
     [SerializeField] private TMP_InputField _passwordInput;
     [SerializeField] private Button _loginButton;
-    [SerializeField] private Button _registerButton;
+    //[SerializeField] private Button _registerButton;
 
     [Header("Parameters")]
     [SerializeField] private APIClient _authService;
@@ -78,6 +78,6 @@ public class LoginManager : MonoBehaviour
     private void SetButtonsEnabled(bool flag)
     {
         _loginButton.interactable = flag;
-        _registerButton.interactable = flag;
+        //_registerButton.interactable = flag;
     }
 }

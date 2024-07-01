@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Chess.Core
 {
@@ -50,6 +51,13 @@ namespace Chess.Core
 		public static int IndexFromCoord(Coord coord)
 		{
 			return IndexFromCoord(coord.fileIndex, coord.rankIndex);
+		}
+
+		public static Vector2Int Vector2FromIndex(int squareIndex)
+		{
+			var fileIndex = squareIndex - ((squareIndex / 8) * 8);
+            var rankIndex = squareIndex % 8 == 0 ? squareIndex / 8 - 1 : squareIndex / 8;
+			return new Vector2Int(fileIndex, rankIndex);
 		}
 
 		public static Coord CoordFromIndex(int squareIndex)
