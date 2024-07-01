@@ -32,9 +32,7 @@ public class LobbyListItem : MonoBehaviour
             payload["id"] = currentUserId;
             Debug.Log(payload["rID"]);
             SocketIOComponent.Instance.Emit("join-room", payload.ToString());
-            SceneManager.LoadScene("Multiplayer VR Chess");
         });
     }
-
 }
 

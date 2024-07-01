@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static NetworkManager;
 using static SocketReceiver;
 
@@ -39,6 +40,7 @@ public class LobbyManager : MonoBehaviour
     private void OnSocketConnected(object sender, EventArgs e)
     {
         SocketIOComponent.Instance.On("rep-get-rooms", OnRoomListReceived);
+        SocketIOComponent.Instance.On("rep-join-room", OnResJoinRoom);
     }
 
     public void OnRoomListReceived(SocketIOResponse socketIOResponse)
@@ -51,36 +53,20 @@ public class LobbyManager : MonoBehaviour
         });
     }
 
+    public void OnResJoinRoom(SocketIOResponse socketIOResponse)
+    {
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            Debug.Log(socketIOResponse);
+            ResJoinRoom data = socketIOResponse.GetValue<ResJoinRoom>();
+            AppState.Instance.SetState<ResJoinRoom>("CurrentRoom", data);
+            SceneManager.LoadScene("Multiplayer VR Chess");
+        });
+    }
+
     // Update is called once per frame
     void Update()
     {
         
-    }
-
-    [Serializable]
-    public class ListRoomJSON : List<Room> { }
-
-    public class Room
-    {
-        public string id { get; set; }
-        public string title { get; set; }
-        public List<Player> player { get; set; }
-    }
-
-    public class Player
-    {
-        public string _id { get; set; }
-        public string username { get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }
-        public DateTime dateOfBirth { get; set; }
-        public string email { get; set; }
-        public long phone { get; set; }
-        public string nation { get; set; }
-        public string avatar { get; set; }
-        public int elo { get; set; }
-        public string role { get; set; }
-        public DateTime updatedAt { get; set; }
-        public int color { get; set; }
     }
 }

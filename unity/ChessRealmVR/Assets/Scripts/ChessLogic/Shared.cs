@@ -14,6 +14,12 @@ namespace ChessLogic
         public const string WhiteEliminationTilesName = "White EliminationTiles";
         public const string BlackEliminationTilesName = "Black EliminationTiles";
 
+        public enum ModeGame
+        {
+            Multiplayer,
+            BotAI
+        }
+
         public enum TileType
         {
             Default,

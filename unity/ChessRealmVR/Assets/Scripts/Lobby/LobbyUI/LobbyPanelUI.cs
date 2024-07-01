@@ -77,13 +77,11 @@ public class LobbyPanelUI : MonoBehaviour
             SceneManager.LoadScene("Login VR Scene");
         });
 
-        //refreshButton.onClick.AddListener(() => {
-        //    refreshButton.interactable = false;
-
-        //    fetchRoomListLoading.SetActive(true);
-
-        //    SocketSender.Send("GetRoomList");
-        //});
+        refreshButton.onClick.AddListener(() =>
+        {
+            refreshButton.interactable = false;
+            SocketIOComponent.Instance.Emit("GetRoomList");
+        });
 
         //fetchRoomListLoading.SetActive(true);
         StartCoroutine(APIClient.Instance.FetchCurrentUser(token, OnGetCurrentUserSuccess, OnGetCurrentUserFailture));

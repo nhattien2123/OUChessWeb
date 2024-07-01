@@ -21,7 +21,10 @@ public class SocketReceiver : MonoBehaviour
 
     public delegate void RoomCreatedAction(Room room);
     public static event RoomCreatedAction OnRoomCreated;
-    
+
+    public delegate void ResJoinRoomAction(ResJoinRoom room);
+    public static event ResJoinRoomAction OnResJoinRoom;
+
     public void SocketGotRoomList(ListRoomJSON rooms)
     {
        if (OnGotRoomList != null) OnGotRoomList(rooms);
@@ -30,5 +33,10 @@ public class SocketReceiver : MonoBehaviour
     public void SocketRoomCreated(Room room)
     {
         if (OnRoomCreated != null) OnRoomCreated(room);
+    }
+
+    public void SocketResJoinRoom(ResJoinRoom resJoinRoom)
+    {
+        if (OnResJoinRoom != null) OnResJoinRoom(resJoinRoom); 
     }
 }

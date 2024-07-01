@@ -77,9 +77,9 @@ namespace Chess.Game
 		// Internal stuff
 		GameResult.Result gameResult;
 
-		Player whitePlayer;
-		Player blackPlayer;
-		Player playerToMove;
+        Player whitePlayer;
+        Player blackPlayer;
+        Player playerToMove;
 		BoardUI boardUI;
 		AudioSource audioSource;
 
