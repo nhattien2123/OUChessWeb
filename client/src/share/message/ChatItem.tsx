@@ -52,6 +52,7 @@ const ChatItem: React.FC<Props> = ({ chat: chat, kw: kw }) => {
     }, [user]);
 
     const selectChatHandler = () => {
+        console.log(user);
         dispatch(
             messageAction.setSelectedChat({
                 selectedChat: chat.key,
@@ -61,7 +62,7 @@ const ChatItem: React.FC<Props> = ({ chat: chat, kw: kw }) => {
         nav(`/messages/${chat.key}`);
     };
 
-    if (user.username && kw !== "" && !user.username.includes(kw)) {
+    if (user && user.username && kw !== "" && !user.username.includes(kw)) {
         return <></>;
     }
 

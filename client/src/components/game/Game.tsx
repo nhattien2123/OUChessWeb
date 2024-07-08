@@ -18,10 +18,10 @@ import { gameSettingActions } from "src/redux/reducer/gameSettings/GameSettingsR
 import { RootState } from "src/app/store";
 import { Chat } from "src/share/game/board/Chat";
 import { StatusUser } from "src/share/game/board/StatusUser";
-import { Vector3 } from "three";
+import { Color, Vector3 } from "three";
 import { matchActions } from "src/redux/reducer/match/MatchReducer";
 import { useNavigate } from "react-router-dom";
-import { Color, EndGameType, Move, Tile } from "src/interfaces/gameplay/chess";
+import { EndGameType, Move, Tile } from "src/interfaces/gameplay/chess";
 
 import "src/components/game/Game.scss";
 import { roomAction } from "src/redux/reducer/room/RoomReducer";
@@ -78,6 +78,7 @@ export const Game: FC = () => {
     const [endGame, setEndGame] = useState<EndGame | null>(null);
     const [lastSelected, setLastSelected] = useState<number | null>(null);
     const [end, setEnd] = useState<number>(-1);
+    const [matchState, setMatchState] = useState<number>(-1);
     const nav = useNavigate();
     const dispatch = useAppDispatch();
 
@@ -183,6 +184,7 @@ export const Game: FC = () => {
             const isWin = checkWinner(playerColor, endType);
             let isEnd = false;
             const matchState = isWhiteWin(endType);
+            setMatchState(matchState);
             console.log("EndType: ", endType);
             console.log("Winner: ", isWin);
             if (isWin === 0) {
@@ -232,7 +234,7 @@ export const Game: FC = () => {
             <Sidebar board={board} moves={moves} selected={selected} />
             {room?.id && <Chat />}
             <StatusBar />
-            <GameOverScreen endGame={endGame} endState={end} />
+            <GameOverScreen endGame={endGame} endState={end} matchState={matchState} />
             <Loader />
             <StatusUser whiteTimer={whiteTimer} blackTimer={blackTimer} />
             <PromoteDialog

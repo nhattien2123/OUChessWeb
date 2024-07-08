@@ -5,6 +5,9 @@ import { useSpring, animated } from "@react-spring/three";
 import type { AnimationControls, TargetAndTransition, VariantLabels, Transition } from "framer-motion";
 import { motion } from "framer-motion-3d";
 import { IsSlidingPiece } from "src/share/gamecore/board/Piece";
+import * as Sound from "src/util/Sound";
+import { RootState } from "src/app/store";
+import { useAppSelector } from "src/app/hooks";
 
 export const PieceMaterial: FC<
     JSX.IntrinsicElements[`meshPhysicalMaterial`] & {
@@ -53,6 +56,9 @@ export const MeshWrapper: FC<ModelProps> = ({
 }) => {
     const ref = useRef(null);
     const meshRef = useRef(null);
+    const playerColor = useAppSelector((state: RootState) => state.roomReducer.gameState.playerColor);
+    const turn = useAppSelector((state: RootState) => state.roomReducer.gameState.turn);
+
     return (
         <group ref={ref} {...props} dispose={null} castShadow>
             <motion.mesh
@@ -81,6 +87,11 @@ export const MeshWrapper: FC<ModelProps> = ({
                 }
                 onAnimationComplete={() => {
                     if (movingTo) {
+                        if (turn === playerColor || turn === 0) {
+                            Sound.allyMove();
+                        } else {
+                            Sound.opponentMove();
+                        }
                         finishMovingPiece();
                     }
                 }}
@@ -98,7 +109,7 @@ export const MeshWrapper: FC<ModelProps> = ({
 
 export const FRAMER_MULTIPLIER = 2;
 export const getDistance = (px?: number): number => {
-    return (px ? px * FRAMER_MULTIPLIER : 0);
+    return px ? px * FRAMER_MULTIPLIER : 0;
 };
 
 export const transitions: {

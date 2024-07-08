@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { RootState } from "src/app/store";
 import { authActions } from "src/redux/reducer/auth/AuthReducer";
 import { userActions } from "src/redux/reducer/user/UserReducer";
-
+import notify from "src/assets/sound/notify.mp3";
 import "src/components/login/Login.scss";
 
 const Login: React.FC = () => {
@@ -25,6 +25,14 @@ const Login: React.FC = () => {
     const loginHandler = (data: { username: string; password: string }) => {
         dispatch(authActions.reqGetDataLogin(data));
     };
+
+    useEffect(() => {
+        const token = Cookies.get("token");
+        if(token){
+            dispatch(userActions.reqGetCurrentUser({}));
+            nav("/");
+        }
+    }, [])
 
     useEffect(() => {
         if (isLoggIn) {

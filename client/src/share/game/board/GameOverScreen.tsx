@@ -11,7 +11,8 @@ import { useNavigate } from "react-router-dom";
 export const GameOverScreen: FC<{
     endGame: EndGame | null;
     endState: number;
-}> = ({ endGame, endState }) => {
+    matchState:number;
+}> = ({ endGame, endState, matchState }) => {
     const roomId = useAppSelector((state: RootState) => state.playerReducer.roomId);
     const curentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const opponentAvatar = useAppSelector((state: RootState) => state.opponentReducer.avatar);
@@ -43,8 +44,9 @@ export const GameOverScreen: FC<{
                             <div className="player__name">{userColor === 0 ? curentUser.username : opponentName}</div>
                         </div>
                         <div className="result__match">
-                            <div className="result__text">END</div>
-                            <div className="result__score">{endState === 1 ? "1 - 0" : endState === 2 ? "0 - 1" : "0 - 0"}</div>
+                            <div className="result__text">VÁN ĐẤU KẾT THÚC</div>
+                            <div className="result__text">{endState === 1 ? "Chiến thắng" : endState === 2 ? "Thua cuộc" : "Hoà"}</div>
+                            <div className="result__score">{matchState === 1 ? "1 - 0" : endState === -1 ? "0 - 1" : "0 - 0"}</div>
                         </div>
                         <div className="player__box black__player">
                             <div className="player__color">ĐEN</div>
