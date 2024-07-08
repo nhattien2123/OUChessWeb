@@ -123,7 +123,7 @@ const Messenger = (props: Props) => {
                         <>
                             <div className="chat-header">
                                 <div className="header-container">
-                                    {selectedUser?.avatar !== "" && (
+                                    {selectedUser && selectedUser?.avatar !== "" && (
                                         <img className="header-image" src={selectedUser?.avatar} alt="avatar"></img>
                                     )}
                                     <div className="active">

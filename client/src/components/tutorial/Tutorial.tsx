@@ -28,6 +28,7 @@ const lessons = [
         lessonID: "1",
         title: "Cách di chuyển quân Tốt",
         bg: "",
+        description: "Bài hướng dẫn về cách di chuyển cơ bản của quân Tốt",
         script: [
             {
                 type: "line",
@@ -57,6 +58,7 @@ const lessons = [
         lessonID: "2",
         title: "Cách di chuyển quân mã",
         bg: "",
+        description: "Bài hướng dẫn về cách di chuyển cơ bản của quân Mã",
         script: [
             {
                 type: "line",
@@ -89,6 +91,7 @@ const lessons = [
         lessonID: "3",
         title: "Cách di chuyển quân tượng",
         bg: "",
+        description: "Bài hướng dẫn về cách di chuyển cơ bản của quân Tượng",
         script: [
             {
                 type: "line",
@@ -117,6 +120,7 @@ const lessons = [
         lessonID: "4",
         title: "Cách di chuyển quân xe",
         bg: "",
+        description: "Bài hướng dẫn về cách di chuyển cơ bản của quân Xe",
         script: [
             {
                 type: "line",
@@ -145,6 +149,7 @@ const lessons = [
         lessonID: "5",
         title: "Cách di chuyển quân hậu",
         bg: "",
+        description: "Bài hướng dẫn về cách di chuyển cơ bản của quân Hậu",
         script: [
             {
                 type: "line",
@@ -173,6 +178,7 @@ const lessons = [
     {
         lessonID: "6",
         title: "Cách di chuyển quân vua",
+        description: "Bài hướng dẫn về cách di chuyển cơ bản của quân Vua",
         bg: "",
         script: [
             {
@@ -327,9 +333,7 @@ const Tutorial = (props: Props) => {
                                                 </div>
                                                 <div className="lesson__item__title">{l.title}</div>
                                                 <div className="lesson__item__description">
-                                                    The King can move just one square at a time in any direction. It
-                                                    should be defended at all times by the other pieces as once
-                                                    checkmated the game is lost.
+                                                    {l.description}
                                                 </div>
                                             </div>
                                         </>

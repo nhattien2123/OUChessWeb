@@ -1,16 +1,19 @@
 import gsap from "gsap";
 import { PerspectiveCamera, useHelper } from "@react-three/drei";
-import { Mesh, SpotLightHelper, SpotLight, Object3D} from "three";
+import  {TextureLoader, Mesh, SpotLightHelper, SpotLight, Object3D} from "three";
 import React, { FC, useEffect, useRef } from "react";
 import { WhiteKingModel } from "src/models/whitePieces/WhiteKing";
 import { WhiteBishopModel } from "src/models/whitePieces/WhiteBishop";
 import { WhiteKnightModel } from "src/models/whitePieces/WhiteKnight";
-
+import { useLoader } from "@react-three/fiber";
+import logo from 'src/assets/images/chess-realm-logo-2.png';
 const LoginScene: FC = () => {
     const klRef = useRef<Mesh>(null);
     const krRef = useRef<Mesh>(null);
     const lightRef = useRef<SpotLight>(null)
     const target1 = new Object3D();
+    const texture = useLoader(TextureLoader, logo);
+
     target1.position.set(-100, 150, 0);
     useHelper(lightRef as React.MutableRefObject<Object3D>, SpotLightHelper)
     const tl = gsap.timeline({
@@ -91,7 +94,7 @@ const LoginScene: FC = () => {
                 />
                 <mesh position={[50, 150, -50]}>
                     <boxGeometry args={[550, 300, 10]} />
-                    <meshPhongMaterial />
+                    <meshPhongMaterial attach='material' map={texture} />
                 </mesh>
                 <group>
                     <mesh scale={0.5} position={[-200, 0, 0]}>

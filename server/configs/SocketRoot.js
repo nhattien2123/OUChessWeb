@@ -49,7 +49,14 @@ const rootSocket = (io) => {
         socket.on('disconnect', () => {
             userCount -= 1;
             if (socket.handshake.auth.detail) {
-                socket.broadcast.to(socket.handshake.auth.detail.id).emit('opponent-disconnect');
+                const room = rooms.filter((r) => r.id === rId)[0];
+                if(room.isStart){
+
+                }
+                else {
+                    socket.broadcast.to(socket.handshake.auth.detail.id).emit('opponent-disconnect');
+                }
+
             }
 
             if (socket.userId) {
@@ -173,6 +180,8 @@ const rootSocket = (io) => {
             const { type, rId } = request;
             const room = rooms.filter((r) => r.id === rId)[0];
 
+            if(!room) return;
+
             if (type === 'player') {
                 room.player = room.player.filter((r) => r._id !== socket.userId);
 
@@ -264,6 +273,8 @@ const rootSocket = (io) => {
 
         socket.on('request-start-game', (payload) => {
             const { roomID } = payload;
+            const room = rooms.filter((r) => r.id === rId)[0];
+            room.isStart = true;
             io.to(roomID).emit('respone-start-game');
         });
 

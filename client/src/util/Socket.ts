@@ -21,6 +21,7 @@ import { userActions } from "src/redux/reducer/user/UserReducer";
 import * as RoomTypes from "src/redux/reducer/room/Types";
 import { CSSProperties, useEffect, useState } from "react";
 import { DrawRequestNotify } from "src/share/game/board/Sidebar";
+import * as Sound from "src/util/Sound";
 import Cookies from "js-cookie";
 
 export type playerJoinedServer = {
@@ -194,8 +195,6 @@ export const useSockets = (): void => {
 
         socket.on("rep-join-room", (req: rResult) => {
             const { detail, status } = req;
-            console.log("detail: " + detail);
-            console.log("status: " + status);
             if (status === 1) {
                 dispatch(
                     roomAction.responseCreateRoom({
@@ -232,6 +231,8 @@ export const useSockets = (): void => {
                         }),
                     );
                 }
+
+                Sound.joinRoom();
             } else if (status === 2) {
                 toast.info("The room is full");
             } else if (status === 3) {
@@ -348,6 +349,7 @@ export const useSockets = (): void => {
 
         socket.on("respone-start-game", () => {
             dispatch(roomAction.requestGameContinue());
+            Sound.startGame();
         });
 
         socket.on("response-kick-player", (room: RoomTypes.Room["detail"]) => {
