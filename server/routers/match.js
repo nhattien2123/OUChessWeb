@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const matchController = require('../controllers/MatchController');
-const middlewareController = require('../controllers/MiddlewareController');
+const middlewareController = require('../controllers/middlewareController');
 const apiConstants = require('../configs/ApiConstant');
 
 const matchRepository = require('../repositories/matchRepository');
