@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
     },
     elo: {
         type: Number,
-        default: 0
+        default: 500
     },
     role: {
         type: String,
