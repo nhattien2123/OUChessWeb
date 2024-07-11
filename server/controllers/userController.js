@@ -1,5 +1,5 @@
 const userService = require('../services/userService');
-const httpHandler = require('../helpers/HttpHandler');
+const httpHandler = require('../helpers/httpHandler');
 const bcrypt = require('bcrypt');
 const { commentInfoService, commentInfoSocket } = require('../services/commentInfoService');
 const matchService = require('../services/matchService');
