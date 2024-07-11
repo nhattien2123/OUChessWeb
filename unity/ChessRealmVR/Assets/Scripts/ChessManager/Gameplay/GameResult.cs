@@ -8,17 +8,22 @@
 		public enum Result
 		{
 			None,
-			Playing,
-			WhiteIsMated,
-			BlackIsMated,
-			Stalemate,
-			Repetition,
-			FiftyMoveRule,
-			InsufficientMaterial,
-			DrawByArbiter,
-			WhiteTimeout,
-			BlackTimeout
-		}
+            NotStarted,
+            InProgress,
+            WhiteIsMated,
+            BlackIsMated,
+            Stalemate,
+            Repetition,
+            FiftyMoveRule,
+            InsufficientMaterial,
+            DrawByArbiter,
+            WhiteTimeout,
+            BlackTimeout,
+            WhiteIllegalMove,
+            BlackIllegalMove,
+            GameResult,
+			Playing
+        }
 
 		public static Result GetGameState(Board board)
 		{

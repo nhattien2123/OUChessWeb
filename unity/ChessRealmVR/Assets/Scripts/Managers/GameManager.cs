@@ -49,6 +49,7 @@ namespace Managers
         {
             HumanPlayer = new HumanPlayer();
             AIPlayer = new AIPlayer();
+            OtherPlayer = new OtherPlayer();
             CurrentPlayer = null;
             
             History = new List<Turn>();
@@ -59,6 +60,7 @@ namespace Managers
             chessboard.TileManager = tileManager;
             movementManager.GameManager = this;
             GameStatus = Shared.GameStatus.NotStarted;
+            Debug.Log("test: " + transform.position);
             if (modeGame == Shared.ModeGame.BotAI)
             {
                 if (mockTeamSelection)
@@ -343,7 +345,7 @@ namespace Managers
             }
 
             var moveToTile = tileManager.Tiles[moveToMake.Coords.x, moveToMake.Coords.y];
-            
+
             moveToTile.DetermineTileTypeFromMove(moveToMake);
             var turn = movementManager.MakeMove(movementManager.ChessPieces, chessPieceToMove, moveToTile, false);
             moveToTile.ResetTileType();
@@ -565,21 +567,34 @@ namespace Managers
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                Debug.Log(socketIOResponse);
                 MovingRequest data = socketIOResponse.GetValue<MovingRequest>();
-                Debug.Log(data);
                 Vector2Int startV2 = Chess.Core.BoardHelper.Vector2FromIndex(data.moving.start);
                 Vector2Int targetV2 = Chess.Core.BoardHelper.Vector2FromIndex(data.moving.target);
                 Debug.Log(startV2.x + " / " + startV2.y);
                 ChessPiece chessPieceToMove = movementManager.GetChessPiece(startV2);
+
                 var moveToMake = new Move();
+
+                foreach (var piece in OtherPlayer.Pieces)
+                {
+                    foreach (var move in piece.Moves)
+                    {
+                        if (piece.name == chessPieceToMove.name && piece.currentX == chessPieceToMove.currentX && piece.currentY == chessPieceToMove.currentY)
+                        {
+                            moveToMake = move;
+                            break;
+                        }
+                    }
+                }
+
                 moveToMake.Coords = targetV2;
                 var moveToTile = tileManager.Tiles[moveToMake.Coords.x, moveToMake.Coords.y];
-                //Debug.Log(movementManager.GetChessPiece(new Vector2Int());
 
                 moveToTile.DetermineTileTypeFromMove(moveToMake);
                 var turn = movementManager.MakeMove(movementManager.ChessPieces, chessPieceToMove, moveToTile, false);
                 moveToTile.ResetTileType();
+
+                CurrentPlayer.HasMoved = true;
             });
         }
     }

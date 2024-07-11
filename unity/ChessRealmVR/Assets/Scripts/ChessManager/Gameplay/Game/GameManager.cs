@@ -8,6 +8,7 @@ using Chess.Players;
 using UnityEngine.InputSystem;
 using ChessLogic;
 using Managers;
+using Players;
 
 namespace Chess.Game
 {
@@ -77,9 +78,9 @@ namespace Chess.Game
 		// Internal stuff
 		GameResult.Result gameResult;
 
-        Player whitePlayer;
-        Player blackPlayer;
-        Player playerToMove;
+        Chess.Players.Player whitePlayer;
+        Chess.Players.Player blackPlayer;
+        Chess.Players.Player playerToMove;
 		BoardUI boardUI;
 		AudioSource audioSource;
 
@@ -168,7 +169,7 @@ namespace Chess.Game
 		{
 			PlayMoveSound(move);
 
-			bool animateMove = playerToMove is AIPlayer;
+			bool animateMove = playerToMove is Chess.Players.AIPlayer;
 			board.MakeMove(move);
 			searchBoard.MakeMove(move);
 
@@ -329,7 +330,7 @@ namespace Chess.Game
 			GameOver();
 		}
 
-		void CreatePlayer(ref Player player, PlayerType playerType)
+		void CreatePlayer(ref Chess.Players.Player player, PlayerType playerType)
 		{
 			if (player != null)
 			{
@@ -338,11 +339,11 @@ namespace Chess.Game
 
 			if (playerType == PlayerType.Human)
 			{
-				player = new HumanPlayer(board);
+				player = new Chess.Players.HumanPlayer(board);
 			}
 			else
 			{
-				player = new AIPlayer(searchBoard, aiSettings);
+				player = new Chess.Players.AIPlayer(searchBoard, aiSettings);
 			}
 			player.onMoveChosen += OnMoveChosen;
 		}

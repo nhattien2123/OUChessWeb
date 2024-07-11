@@ -1,12 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
-using ChessPieces;
-using System;
-using Unity.VisualScripting;
-using static LobbyManager;
-using System.Net.Sockets;
 using PimDeWitte.UnityMainThreadDispatcher;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -46,7 +40,7 @@ public class LobbyPanelUI : MonoBehaviour
 
     void Start()
     {
-        string token = PlayerPrefs.GetString("Token");
+        string token = AppState.Instance.GetState<string>("Token");
         //roomNameInput.text = defaultRoomName;
 
         //createRoomButton.onClick.AddListener(() => {
@@ -80,7 +74,7 @@ public class LobbyPanelUI : MonoBehaviour
         refreshButton.onClick.AddListener(() =>
         {
             refreshButton.interactable = false;
-            SocketIOComponent.Instance.Emit("GetRoomList");
+            SocketIOComponent.Instance.Emit("get-rooms");
         });
 
         //fetchRoomListLoading.SetActive(true);
@@ -141,10 +135,6 @@ public class LobbyPanelUI : MonoBehaviour
     {
         lobbyCreateUI.Show();
     }
-
-    //void OnRoomJoined(RoomData room) {
-    //    SocketLobby.Instance.SetRoom(room);
-    //}
 
     void CreateRoomListItems(ListRoomJSON rooms)
     {

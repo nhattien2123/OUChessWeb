@@ -61,9 +61,8 @@ public class LoginManager : MonoBehaviour
     private void OnLoginSuccess(string response)
     {
         BaseResponse<Token> resUserLogin = JsonUtility.FromJson<BaseResponse<Token>>(response);
-        PlayerPrefs.SetString("Token", resUserLogin.data.token);
-        PlayerPrefs.SetString("RefreshToken", resUserLogin.data.refreshToken);
-        PlayerPrefs.Save();
+        AppState.Instance.SetState<string>("Token", resUserLogin.data.token);
+        AppState.Instance.SetState<string>("RefreshToken", resUserLogin.data.refreshToken);
 
         SetButtonsEnabled(true);
         SceneManager.LoadScene("Lobby VR Scene");

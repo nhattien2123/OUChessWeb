@@ -1194,7 +1194,7 @@ GameObject:
   - component: {fileID: 1093949035}
   - component: {fileID: 1093949034}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Header Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1676,7 +1676,6 @@ MonoBehaviour:
   _nameInput: {fileID: 1162177540}
   _passwordInput: {fileID: 67854952}
   _loginButton: {fileID: 259500519}
-  _registerButton: {fileID: 0}
   _authService: {fileID: 192987483}
 --- !u!4 &1353115076
 Transform:
