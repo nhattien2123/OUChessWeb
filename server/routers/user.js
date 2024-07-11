@@ -15,7 +15,4 @@ router.get(apiConstants.API_GET_LIST_USER, userController.getListUser);
 router.get(apiConstants.API_GET_USER_BY_ID, userController.getUserByID);
 router.get(apiConstants.API_GET_USER_PROFILE, userController.getProfile);
 
-
-
-
 module.exports = router;

@@ -1,6 +1,6 @@
-const matchService = require('../services/MatchService');
+const matchService = require('../services/matchService');
 const httpHandler = require('../helpers/HttpHandler');
-const matchRepository = require('../repositories/MatchRepository');
+const matchRepository = require('../repositories/matchRepository');
 
 const matchController = {
     getMatch: async (req, res) => {
