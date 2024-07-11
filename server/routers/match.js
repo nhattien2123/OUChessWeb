@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const matchController = require('../controllers/MatchController');
+const matchController = require('../controllers/matchController');
 const middlewareController = require('../controllers/middlewareController');
 const apiConstants = require('../configs/ApiConstant');
 
