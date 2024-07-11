@@ -1,7 +1,7 @@
-export const ROOT_URL =
-    process.env.REACT_APP_NODEJS_HOST !== undefined && process.env.REACT_APP_NODEJS_PORT !== undefined
-        ? process.env.REACT_APP_NODEJS_HOST + ":" + process.env.REACT_APP_NODEJS_PORT
-        : "";
+export const ROOT_URL = process.env.REACT_APP_NODEJS_DOMAIN !== undefined ? process.env.REACT_APP_NODEJS_DOMAIN : "";
+    // process.env.REACT_APP_NODEJS_HOST !== undefined && process.env.REACT_APP_NODEJS_PORT !== undefined
+    //     ? process.env.REACT_APP_NODEJS_HOST + ":" + process.env.REACT_APP_NODEJS_PORT
+    //     : "";
 export const CONTENT_TYPE = "application/json; charset=UTF-8";
 
 export const COMMON = {

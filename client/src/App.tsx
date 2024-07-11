@@ -9,6 +9,7 @@ import { RootState } from "src/app/store";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { userActions } from "./redux/reducer/user/UserReducer";
+import { ROOT_URL } from "./config/ApiConstants";
 
 function App() {
     const currentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
@@ -17,6 +18,7 @@ function App() {
     useEffect(() => {
         const token = Cookies.get("token");
         console.log("Connect to socket");
+        console.log(ROOT_URL);
 
         if (token && currentUser) {
 
