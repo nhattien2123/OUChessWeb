@@ -18,7 +18,7 @@ app.use(upload.single('file'));
 
 //Database: MongoDB
 db.connectoDb();
-const friend = require('./models/Friend');
+const friend = require('./models/friend');
 //Routers
 app.use(require('./routers'));
 

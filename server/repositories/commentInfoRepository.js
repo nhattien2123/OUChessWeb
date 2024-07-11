@@ -1,4 +1,4 @@
-const commentInfo = require("../models/CommentInfo");
+const commentInfo = require("../models/commentInfo");
 
 const commentInfoRepository = {
     getComments: async (params) => {

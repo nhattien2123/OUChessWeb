@@ -1,4 +1,4 @@
-const match = require('../models/Match');
+const match = require('../models/match');
 
 const matchRepository = {
     getMatch: async (matchId) => {
