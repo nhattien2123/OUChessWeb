@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const dotenv = require('dotenv').config({path: "../../.env"});
+const dotenv = require('dotenv').config({path: "/home/OUChessWeb/server/.env"});
 const { createServer } = require('http');
 const { Server, Socket } = require('socket.io');
 const db = require('./configs/MongoDB');
