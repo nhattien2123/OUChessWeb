@@ -11,7 +11,9 @@ const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 8082;
 
-app.use(cors({}));
+app.use(cors({
+    origin: "*",
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use(upload.single('file'));
@@ -25,7 +27,7 @@ app.use(require('./routers'));
 //Socket
 const io = new Server(httpServer, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: "*",
     },
     pingInterval: 10000,
     pingTimeout: 5000,
