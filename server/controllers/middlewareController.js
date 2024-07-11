@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const httpHandler = require("../helpers/HttpHandler");
+const httpHandler = require("../helpers/httpHandler");
 
 const middlewareController = {
     verifyToken: async (req, res, next) => {
