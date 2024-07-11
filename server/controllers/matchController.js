@@ -1,5 +1,5 @@
 const matchService = require('../services/matchService');
-const httpHandler = require('../helpers/HttpHandler');
+const httpHandler = require('../helpers/httpHandler');
 const matchRepository = require('../repositories/matchRepository');
 
 const matchController = {

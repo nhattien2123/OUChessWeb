@@ -1,9 +1,9 @@
 const userService = require('../services/userService');
-const httpHandler = require('../helpers/HttpHandler');
+const httpHandler = require('../helpers/httpHandler');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const jwtHandler = require('../helpers/Jwt');
+const jwtHandler = require('../helpers/jwt');
 const mailHandler = require('../helpers/Nodemailer');
 const user = require('../models/user');
 const { error } = require('console');
