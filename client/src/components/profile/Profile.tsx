@@ -210,8 +210,8 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
                                             <>
                                                 <div
                                                     className={
-                                                        (m.whiteId?._id === currentUser._id && m.state === 1) ||
-                                                        (m.blackId?._id === currentUser._id && m.state === -1)
+                                                        (m.whiteId?._id === profile._id && m.state === 1) ||
+                                                        (m.blackId?._id === profile._id && m.state === -1)
                                                             ? "match-item win"
                                                             : "match-item lose" + (m.state === 0 ? " draw" : "")
                                                     }

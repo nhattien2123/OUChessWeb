@@ -1,5 +1,5 @@
 import type { CSSProperties, FC } from "react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { useHistoryState } from "src/components/game/Game";
 import { AiFillCloseCircle } from "react-icons/ai";
@@ -20,7 +20,8 @@ export type LeaveRoom = {
     roomId?: string | null;
 };
 
-export const DrawRequestNotify = (params: any, roomID: string) => {
+export const DrawRequestNotify = (params: any) => {
+    const {roomID} = params;
     const container: CSSProperties = {
         display: "flex",
         justifyContent: "center",
@@ -68,6 +69,7 @@ export const DrawRequestNotify = (params: any, roomID: string) => {
                     onMouseOver={() => setHover(1)}
                     onMouseLeave={() => setHover(0)}
                     onClick={() => {
+                        console.log(roomID);
                         socket.emit("req-draw", { isDraw: true, roomID: roomID });
                         const { closeToast } = params;
                         closeToast();
@@ -105,6 +107,7 @@ export const Sidebar: FC<{
     const detail = useAppSelector((state: RootState) => state.roomReducer.detail);
     const curentUser = useAppSelector((state: RootState) => state.userReducer.currentUser);
     const isStarted = useAppSelector((state: RootState) => state.roomReducer.gameState.isStarted);
+    const isDraw = useAppSelector((state: RootState) => state.roomReducer.isDraw);
     const dispatch = useAppDispatch();
     const nav = useNavigate();
     const toastId = useRef<Id | null>(null);
@@ -147,6 +150,14 @@ export const Sidebar: FC<{
 
         socket.emit("request-start-game", { roomID: detail?.id });
     };
+
+    useEffect(() => {
+        if(isDraw){
+            if(detail?.id){
+                toast(({closeToast}) => <DrawRequestNotify closeToast={closeToast} roomID={detail?.id}></DrawRequestNotify>)
+            }
+        }
+    }, [isDraw])
 
     return (
         <>

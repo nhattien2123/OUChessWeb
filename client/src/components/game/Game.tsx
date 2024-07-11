@@ -101,6 +101,10 @@ export const Game: FC = () => {
         return;
     }, [roomState]);
 
+    useEffect(() => {
+        console.log("Game: ", history);
+    }, [history])
+
     const checkWinner = (playerColor: number, result: GameResult) => {
         const whiteWin = [GameResult.BlackTimeout, GameResult.BlackIsMated, GameResult.BlackIllegalMove];
         const blackWin = [GameResult.WhiteTimeout, GameResult.WhiteIsMated, GameResult.WhiteIllegalMove];
@@ -150,8 +154,7 @@ export const Game: FC = () => {
         const u = 1 + Math.pow(10, m);
         const E = 1 / u;
 
-        console.log("elo expert",S - E);
-        const newElo = eloA + k * (S - E);
+        const newElo = eloA + Math.round(k * (S - E));
         return newElo;
     };
 
@@ -208,23 +211,20 @@ export const Game: FC = () => {
                 const mElo = room?.player.filter((p) => p._id === currentUser._id)[0].elo;
                 const oElo = room?.player.filter((p) => p._id !== currentUser._id)[0].elo;
 
-                console.log("Elo:", mElo, oElo);
                 const newElo = calculateElo(Number(mElo), Number(oElo), isWin !== null ? isWin : -1, 10);
-                console.log("NewElo: ", newElo);
                 dispatch(userActions.resPatchUpdateElo({ username: currentUser.username, elo: newElo }));
-
-                if (isWin)
-                    console.log(room?.owner, currentUser._id);
-                    if (room?.owner === currentUser._id) {
-                        dispatch(
-                            matchActions.requestSaveMatch({
-                                detail: room,
-                                history: history,
-                                mode: 1,
-                                state: matchState,
-                            }),
-                        );
-                    }
+                console.log(history);
+                if (room?.owner === currentUser._id) {
+                    console.log(history);
+                    dispatch(
+                        matchActions.requestSaveMatch({
+                            detail: room,
+                            history: history,
+                            mode: 1,
+                            state: matchState,
+                        }),
+                    );
+                }    
             }
         }
     }, [endType]);

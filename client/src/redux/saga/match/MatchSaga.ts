@@ -149,11 +149,12 @@ function* getRoom() {
 
 function* saveMatch(action: TypesAction.MatchDetail) {
     try {
-        console.log("Match Saga", action);
+        console.log(action.payload);
         const { detail, history, state, mode } = action.payload;
         const whiteId = detail?.player.filter((p) => p.color === 0)[0]._id;
         const blackId = detail?.player.filter((p) => p.color === 1)[0]._id;
         const moves = [] as string[];
+
         for (let i = 0; i < history.length; i++) {
             if (history[i].moveString && history[i].moveString !== "") moves[i] = history[i].moveString || "";
         }

@@ -43,7 +43,8 @@ export interface Room {
     lastTime: number;
     isProcessing: boolean;
     board?: Board;
-    endGame?: GameResult
+    endGame?: GameResult;
+    isDraw: boolean;
 }
 
 export type CreateRoomRequest = PayloadAction<{

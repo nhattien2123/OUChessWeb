@@ -16,10 +16,12 @@ const Home = (props: Props) => {
     const dispatch = useAppDispatch();
     const nav = useNavigate();
     useEffect(() => {
-        if (currentUser) {
+        if (currentUser._id) {
             Cookies.set("user", JSON.stringify(currentUser), {
                 expires: 30
             });
+        }else{
+            dispatch(userActions.reqGetCurrentUser({}));
         }
     }, [currentUser]);
 
