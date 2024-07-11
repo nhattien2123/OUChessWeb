@@ -1,8 +1,8 @@
-const authRepository = require('../repositories/UserRepository');
+const authRepository = require('../repositories/userRepository');
 const bcrypt = require('bcrypt');
-const user = require('../models/User');
+const user = require('../models/user');
 const cloudinaryConfig = require('../configs/CloundinaryConfig');
-const userReposity = require('../repositories/UserRepository');
+const userReposity = require('../repositories/userRepository');
 
 const userService = {
     getUser: async (param) => {

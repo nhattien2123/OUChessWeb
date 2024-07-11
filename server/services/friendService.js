@@ -1,7 +1,7 @@
 const db = require("mongoose");
-const friend = require("../models/Friend");
-const friendRepository = require("../repositories/FriendRepository");
-const userService = require("./UserService");
+const friend = require("../models/friend");
+const friendRepository = require("../repositories/friendRepository");
+const userService = require("./userService");
 
 const friendService = {
     addFriend: async (requester, recipient, status) => {

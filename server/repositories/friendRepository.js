@@ -1,4 +1,4 @@
-const friend = require("../models/Friend");
+const friend = require("../models/friend");
 
 const friendRepository = {
     addFriend: async (friend) => {

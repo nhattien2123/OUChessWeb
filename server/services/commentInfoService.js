@@ -1,5 +1,5 @@
-const commentInfo = require("../models/CommentInfo");
-const commentInfoRepository = require("../repositories/CommentInfoRepository");
+const commentInfo = require("../models/commentInfo");
+const commentInfoRepository = require("../repositories/commentInfoRepository");
 
 const commentInfoService = {
     getComments: async (params) => {
