@@ -76,7 +76,7 @@ const rootSocket = (io) => {
             socket.emit('error_msg', { error });
         });
 
-        require('../services/FriendService').friendSocket(socket, io, userConnected);
+        require('../services/friendService').friendSocket(socket, io, userConnected);
 
         //#region new socket
         // on
