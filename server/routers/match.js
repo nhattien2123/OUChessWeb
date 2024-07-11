@@ -3,7 +3,7 @@ const matchController = require('../controllers/MatchController');
 const middlewareController = require('../controllers/MiddlewareController');
 const apiConstants = require('../configs/ApiConstant');
 
-const matchRepository = require('../repositories/MatchRepository');
+const matchRepository = require('../repositories/matchRepository');
 
 router.get(apiConstants.API_GET_MATCH, matchController.getMatches);
 router.post(apiConstants.API_SAVE_MATCH, matchController.saveMatch);
