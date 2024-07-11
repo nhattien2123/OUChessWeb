@@ -54,7 +54,9 @@ const rootSocket = (io) => {
             userCount -= 1;
             console.log(socket.handshake.auth.detail);
             if (socket.handshake.auth.detail) {
-                socket.broadcast.to(socket.handshake.auth.detail.id).emit('opponent-disconnect');
+                if(socket.handshake.auth.detail.id){
+                    socket.broadcast.to(socket.handshake.auth.detail.id).emit('opponent-disconnect');
+                }
             }
 
             if (socket.userId) {
@@ -244,11 +246,19 @@ const rootSocket = (io) => {
 
         socket.on('req-draw', async (request) => {
             const { isDraw, roomID } = request;
-            console.log(isDraw, roomID);
             if (isDraw) {
                 io.to(roomID).emit('game-end');
+                const socketRoom = io.sockets.adapter.rooms.get(roomID);
+                socketRoom.forEach((socketID) => {
+                    const s = io.sockets.sockets.get(socketID);
+                    if (s) {
+                        s.leave(roomID);
+                    }
+                });
+                rooms = rooms.filter((r) => r.id !== roomID);
             } else {
                 socket.broadcast.to(roomID).emit('req-draw-result');
+               
             }
         });
 
