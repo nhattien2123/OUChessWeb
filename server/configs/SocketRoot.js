@@ -420,15 +420,15 @@ const rootSocket = (io) => {
             socket.broadcast.emit('left hand turn', JSON.stringify(currentPlayer));
         });
 
-        require('../services/GameService').cameraMove(socket, io);
-        require('../services/GameService').disconnect(socket, io);
-        require('../services/GameService').leaveRoom(socket, io);
-        require('../services/GameService').fetchPlayers(socket, io);
-        require('../services/GameService').joinRoom(socket, io);
-        require('../services/GameService').makeMove(socket, io);
-        require('../services/GameService').resetGame(socket, io);
-        require('../services/GameService').sendMessage(socket, io);
-        require('../services/GameService').promotePawn(socket, io);
+        require('../services/gameService').cameraMove(socket, io);
+        require('../services/gameService').disconnect(socket, io);
+        require('../services/gameService').leaveRoom(socket, io);
+        require('../services/gameService').fetchPlayers(socket, io);
+        require('../services/gameService').joinRoom(socket, io);
+        require('../services/gameService').makeMove(socket, io);
+        require('../services/gameService').resetGame(socket, io);
+        require('../services/gameService').sendMessage(socket, io);
+        require('../services/gameService').promotePawn(socket, io);
         //#endregion old socket
     });
 };
