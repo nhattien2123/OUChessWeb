@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const userController = require("../controllers/userController");
-const middlewareController = require("../controllers/MiddlewareController");
+const middlewareController = require("../controllers/middlewareController");
 const apiConstants = require("../configs/ApiConstant");
 const cloudinaryConfig = require("../configs/CloundinaryConfig");
 const upload = require("../configs/MulterConfig");
