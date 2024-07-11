@@ -16,10 +16,9 @@ function App() {
 
     useEffect(() => {
         const token = Cookies.get("token");
-        const detail = Cookies.get("room");
+        console.log("Connect to socket");
 
         if (token && currentUser) {
-            console.log(currentUser);
 
             socket.auth = {
                 token: token,
@@ -28,12 +27,6 @@ function App() {
             };
 
             socket.connect();
-
-            
-
-            // if (detail) {
-            //     socket.emit("reconnect", JSON.parse(detail));
-            // }
         }
         return;
     }, [currentUser]);

@@ -287,35 +287,25 @@ export const useSockets = (): void => {
         });
 
         socket.on("res-draw", () => {
-            const detail = Cookies.get("room");
-
-            if (!detail) return;
-
-            toast(DrawRequestNotify({}, JSON.parse(detail).id), {
-                closeOnClick: false,
-                closeButton: false,
-                pauseOnHover: false,
-                position: "top-right",
-                draggable: true,
-            });
+            dispatch(roomAction.requestDraw({isDraw: true}));
         });
 
         socket.on("req-draw-result", () => {
+            dispatch(roomAction.requestDraw({isDraw: false}));
             toast.info("Đối phương từ chối hoà cờ");
         });
 
         socket.on("game-end", (result) => {
+            console.log("OK");
             dispatch(roomAction.endGame({ EndType: GameResult.DrawByArbiter }));
         });
 
         socket.on("reconnect-room", () => {
-            toast.info("Opponent Reconected");
             dispatch(opponentActions.setStatus({ status: 1 }));
             dispatch(roomAction.initializing());
         });
 
         socket.on("opponent-disconnect", () => {
-            toast.info("Opponent disconect");
             dispatch(opponentActions.setStatus({ status: 0 }));
             dispatch(roomAction.opponentDisconnected());
         });
@@ -327,8 +317,6 @@ export const useSockets = (): void => {
         }
 
         socket.on("initializing-detail", (payload: InitializePack) => {
-            toast.info("init");
-
             if (payload.detail === null) return;
 
             const opponent = payload.detail.player.filter((player) => player._id !== userId)[0];
@@ -348,8 +336,13 @@ export const useSockets = (): void => {
         });
 
         socket.on("respone-start-game", () => {
-            dispatch(roomAction.requestGameContinue());
+            dispatch(roomAction.resquestStarting());
             Sound.startGame();
+        });
+
+        socket.on("response-continue-game", () => {
+            console.log("Continue game");
+            dispatch(roomAction.requestGameContinue());
         });
 
         socket.on("response-kick-player", (room: RoomTypes.Room["detail"]) => {

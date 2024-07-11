@@ -41,6 +41,10 @@ const rootSocket = (io) => {
             const room = rooms[i];
             if (room.player.filter((p) => p._id === socket.userId).length > 0) {
                 socket.join(room.id);
+                socket.handshake.auth = {
+                    ...socket.handshake.auth,
+                    detail: room
+                };
                 socket.broadcast.to(room.id).emit('reconnect-room');
                 break;
             }
@@ -48,15 +52,9 @@ const rootSocket = (io) => {
 
         socket.on('disconnect', () => {
             userCount -= 1;
+            console.log(socket.handshake.auth.detail);
             if (socket.handshake.auth.detail) {
-                const room = rooms.filter((r) => r.id === rId)[0];
-                if(room.isStart){
-
-                }
-                else {
-                    socket.broadcast.to(socket.handshake.auth.detail.id).emit('opponent-disconnect');
-                }
-
+                socket.broadcast.to(socket.handshake.auth.detail.id).emit('opponent-disconnect');
             }
 
             if (socket.userId) {
@@ -241,16 +239,16 @@ const rootSocket = (io) => {
 
         socket.on('res-draw', async (request) => {
             const { roomID } = request;
-            console.log(roomID);
             socket.broadcast.to(roomID).emit('res-draw');
         });
 
         socket.on('req-draw', async (request) => {
             const { isDraw, roomID } = request;
+            console.log(isDraw, roomID);
             if (isDraw) {
                 io.to(roomID).emit('game-end');
             } else {
-                socket.broadcast.to(roomID).emit('req-draw');
+                socket.broadcast.to(roomID).emit('req-draw-result');
             }
         });
 
@@ -268,14 +266,18 @@ const rootSocket = (io) => {
                 gameState: payload.gameState,
                 history: payload.history,
             };
+            console.log(payload.detail);
             socket.broadcast.to(payload.detail.id).emit('initializing-detail', pack);
         });
 
         socket.on('request-start-game', (payload) => {
             const { roomID } = payload;
-            const room = rooms.filter((r) => r.id === rId)[0];
-            room.isStart = true;
             io.to(roomID).emit('respone-start-game');
+        });
+
+        socket.on('request-continue-game', (payload) => {
+            const {roomID} = payload;
+            io.to(roomID).emit('response-continue-game');
         });
 
         socket.on('request-kick-player', (payload) => {

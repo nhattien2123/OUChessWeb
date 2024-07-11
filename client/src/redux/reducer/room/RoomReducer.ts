@@ -1,10 +1,11 @@
 import Board from "src/interfaces/gamecore/board/Board";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import * as Types from "src/redux/reducer/room/Types";
 import Cookies from "js-cookie";
 import { socket } from "src";
 import Move, { MoveFlag } from "src/interfaces/gamecore/board/Move";
 import { GameResult } from "src/interfaces/gamecore/result/GameResult";
+import { Session } from "inspector";
 
 const currentRoom = Cookies.get("room");
 const currentState = sessionStorage.getItem("state");
@@ -39,6 +40,7 @@ const baseRoom: Types.Room = {
     lastTime: 0,
     isProcessing: false,
     board: loadBoardDefault(),
+    isDraw: false
 };
 
 const initialState: Types.Room =
@@ -60,6 +62,7 @@ const initialState: Types.Room =
               lastTime: 0,
               isProcessing: false,
               board: new Board(),
+              isDraw: false
           }
         : baseRoom;
 
@@ -116,6 +119,7 @@ const roomSlice = createSlice({
                 detail: state.detail,
             };
             socket.connect();
+            Cookies.set("room", JSON.stringify(state.detail));
             sessionStorage.setItem("state", JSON.stringify(state.gameState));
             sessionStorage.setItem("history", JSON.stringify(state.history));
         },
@@ -144,7 +148,8 @@ const roomSlice = createSlice({
                 isAction: false,
             };
 
-            state.history.push(moving);
+            state.history = [...state.history, moving];
+            console.log(state.history);
             state.lastTime = Date.now();
             state.gameState.turn = 1 - state.gameState.turn;
             Cookies.set("room", JSON.stringify(state.detail), {
@@ -169,8 +174,17 @@ const roomSlice = createSlice({
             state.detail = action.payload.detail;
             state.gameState = action.payload.gameState;
             state.gameState.playerColor = 1 - action.payload.gameState.playerColor;
-            state.gameState.isStarted = false;
+            state.gameState.isStarted = true;
             state.history = action.payload.history;
+
+            socket.auth = {
+                ...socket.auth,
+                detail: action.payload.detail,
+            };
+
+            Cookies.set("room", JSON.stringify(action.payload.detail));
+            sessionStorage.setItem("state", JSON.stringify(action.payload.gameState));
+            sessionStorage.setItem("history", JSON.stringify(action.payload.history));
         },
         initializing: (state) => {},
         requestGameContinue: (state) => {
@@ -189,14 +203,17 @@ const roomSlice = createSlice({
             const { EndType } = action.payload;
             state.endGame = EndType;
             state.gameState.isStarted = false;
-            state.history = [];
             state.board = loadBoardDefault();
             // state.detail = null;
             Cookies.remove("room");
+            sessionStorage.removeItem("history");
         },
         requestSetRoomDetail: (state, action: Types.RoomDetai) => {
             const { detail } = action.payload;
             state.detail = detail;
+        },
+        requestDraw: (state, action: PayloadAction<{isDraw: boolean}>) => {
+            state.isDraw = action.payload.isDraw;
         },
         resClearMoving: (state) => {},
     },
