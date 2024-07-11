@@ -1,11 +1,11 @@
-const userService = require('../services/UserService');
+const userService = require('../services/userService');
 const httpHandler = require('../helpers/HttpHandler');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const jwtHandler = require('../helpers/Jwt');
 const mailHandler = require('../helpers/Nodemailer');
-const user = require('../models/User');
+const user = require('../models/user');
 const { error } = require('console');
 const { userConnected } = require('../configs/SocketRoot');
 // const commentInfoService = require("../services/commentInfoService");

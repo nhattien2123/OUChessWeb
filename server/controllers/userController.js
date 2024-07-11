@@ -1,8 +1,8 @@
-const userService = require('../services/UserService');
+const userService = require('../services/userService');
 const httpHandler = require('../helpers/HttpHandler');
 const bcrypt = require('bcrypt');
-const { commentInfoService, commentInfoSocket } = require('../services/CommentInfoService');
-const matchService = require('../services/MatchService');
+const { commentInfoService, commentInfoSocket } = require('../services/commentInfoService');
+const matchService = require('../services/matchService');
 
 const userController = {
     getCurrentUser: async (req, res) => {
