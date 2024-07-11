@@ -1,4 +1,4 @@
-const httpHandler = require("../helpers/HttpHandler");
+const httpHandler = require("../helpers/httpHandler");
 
 const cloudinary = require("cloudinary").v2;
 

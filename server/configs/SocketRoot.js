@@ -72,7 +72,7 @@ const rootSocket = (io) => {
             }
         });
 
-        require('../services/CommentInfoService').commentInfoSocket(socket, io, (error) => {
+        require('../services/commentInfoService').commentInfoSocket(socket, io, (error) => {
             socket.emit('error_msg', { error });
         });
 
