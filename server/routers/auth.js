@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const authController = require("../controllers/AuthController");
+const authController = require("../controllers/authController");
 const apiConstants = require("../configs/ApiConstant");
 
 router.post(apiConstants.API_SIGN_IN, authController.signIn);
