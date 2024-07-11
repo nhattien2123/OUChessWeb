@@ -11,6 +11,7 @@ using UnityEngine;
 using System.Net.Sockets;
 using WebSocketSharp;
 using Unity.VisualScripting.Antlr3.Runtime;
+using UnityEditor.PackageManager;
 
 public class SocketIOComponent : MonoBehaviour
 {
@@ -51,15 +52,16 @@ public class SocketIOComponent : MonoBehaviour
 
     private void InitializeSocket()
     {
-        var token = PlayerPrefs.GetString("Token");
+        var token = AppState.Instance.GetState<string>("Token");
         StartCoroutine(APIClient.Instance.FetchCurrentUser(token, OnConnectedSocketWithCurrentUserSuccess, OnConnectedCurrentUserFailture));
     }
 
     private void OnConnectedSocketWithCurrentUserSuccess(string response)
     {
         var uri = new Uri(_authHost);
-        var token = PlayerPrefs.GetString("Token");
+        var token = AppState.Instance.GetState<string>("Token");
         JObject resCurrentUser = JObject.Parse(response);
+        Debug.Log(response);
         UserInfo userInfo = new UserInfo
         {
             _id = resCurrentUser["data"]["currentUser"]["_id"].ToString(),
@@ -87,11 +89,7 @@ public class SocketIOComponent : MonoBehaviour
         });
         socket.JsonSerializer = new NewtonsoftJsonSerializer();
 
-        socket.OnConnected += (sender, e) =>
-        {
-            Debug.Log("Connected");
-            OnConnectedEvent?.Invoke(this, EventArgs.Empty);
-        };
+        socket.OnConnected += OnConnected;
 
         socket.Connect();
     }
@@ -101,18 +99,48 @@ public class SocketIOComponent : MonoBehaviour
         Debug.LogError("Failed to fetch current user: " + error);
     }
 
+    private void OnConnected(object sender, EventArgs e)
+    {
+        RoomManager.OnCreateRoom += (request) =>
+        {
+            SocketIOComponent.Instance.Emit("join-room", new { type = "new", title = request.title, id = request.own, color = request.color });
+        };
+
+        RoomManager.OnJoinRoom += (request) =>
+        {
+            SocketIOComponent.Instance.Emit("join-room", new { type = "join", rID = request.rId, id = request.uId });
+        };
+
+        RoomManager.OnLeaveRoom += (request) =>
+        {
+            SocketIOComponent.Instance.Emit("leave-room", new { type = "End", rId = request.rId, uId = request.uId });
+        };
+
+        RoomManager.OnMoving += (request) =>
+        {
+            SocketIOComponent.Instance.Emit("send-move", new { rId = request.rId, moving = request.moving });
+        };
+
+        RoomManager.OnReconnected += (request) =>
+        {
+            SocketIOComponent.Instance.Emit("initializing-detail", new { detail = request.detail, gameState = request.gameState, history = request.history });
+        };
+
+        SocketEventHandlers.RegisterEventHandlers();
+    }
+
     public void Emit(string eventName)
     {
         //Debug.Log(socket);
         socket.Emit(eventName);
     }
 
-    public void EmitRoom(string roomId, string eventName, object parameter)
+    public void Emit(string eventName, object parameter)
     {
-        
+        socket.Emit(eventName, parameter);
     }
 
-    public void Emit(string eventName, object parameter)
+    public void Emit(string eventName, JObject parameter)
     {
         socket.Emit(eventName, parameter);
     }

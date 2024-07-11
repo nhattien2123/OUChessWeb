@@ -19,11 +19,16 @@ public class AppState : MonoBehaviour
 
     private Dictionary<string, object> state = new Dictionary<string, object>();
 
-    public T GetState<T>(string key)
+    public T GetState<T>(string key, bool isClear = false)
     {
         if (state.ContainsKey(key))
         {
-            return (T)state[key];
+            T value = (T)state[key];
+            if (isClear)
+            {
+                state.Remove(key);
+            }
+            return value;
         }
         return default(T);
     }

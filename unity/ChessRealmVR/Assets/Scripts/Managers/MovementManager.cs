@@ -7,13 +7,16 @@ using ChessPieces;
 using Players;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using static ChessLogic.Shared;
 
 namespace Managers
 {
     public class MovementManager : MonoBehaviour
     {
+        public Shared.ModeGame modeGame;
         public int startXY;
         public int targetXY;
+        public int moveFlag;
         // Managers
         public TileManager TileManager { get; set; }
         public GameManager GameManager { get; set; }
@@ -55,6 +58,8 @@ namespace Managers
         public void PieceWasPickedUp(int x, int y)
         {
             startXY = BoardHelper.IndexFromCoord(x, y);
+            AppState.Instance.SetState<int>("StartPieceInCasePromotion", startXY); ;
+
             var pickedPieceCoord = new Vector2Int(x, y);
             Debug.Log(pickedPieceCoord.x + " / " + pickedPieceCoord.y);
             var chessPiece = GetChessPiece(pickedPieceCoord);
@@ -90,7 +95,6 @@ namespace Managers
     
         public void PieceWasDropped(int currentX, int currentY, Tile newTile)
         {
-            targetXY = BoardHelper.IndexFromCoord(currentX, currentY);
             var chessPiece = ChessPieces[currentX, currentY];
 
             // Re-enable XRGrabInteractable on the current team's pieces
@@ -111,17 +115,18 @@ namespace Managers
             if (startXY != null && targetXY != null)
             {
                 var room = AppState.Instance.GetState<Room>("CurrentRoom");
-                Debug.Log("Current Room: " + room);
+                
                 Moving moving = new Moving
                 {
                     start = startXY,
                     target = targetXY,
+                    flag = newTile.MoveType,
                 };
 
                 MovingRequest movingRequest = new MovingRequest
                 {
                     rId = room.id,
-                    moving = moving
+                    moving = moving,
                 };
 
                 string data = JsonUtility.ToJson(movingRequest);
@@ -167,6 +172,7 @@ namespace Managers
                         turn.MoveType = Shared.MoveType.EnPassant;
                         movedPieces.AddNewPieceAndPosition(enemyPiece, MovedPieces.EliminationPosition);
                         EliminatePiece(board, enemyPiece, isSimulation);
+                        moveFlag = 0b0001;
                         break;
                     case Shared.MoveType.ShortCastle:
                         var sRookToBeCastledPosition = new Vector2Int(newTile.Position.x, newTile.Position.y - 1);
@@ -185,6 +191,7 @@ namespace Managers
                             sRookToBeCastled.transform.position =
                                 TileManager.GetTileCenter(sRookToBeCastled.currentX, sRookToBeCastled.currentY);
                         sRookToBeCastled.SavePosition();
+                        moveFlag = 0b0010;
                         break;
                     case Shared.MoveType.LongCastle:
                         var lRookToBeCastledPosition = new Vector2Int(newTile.Position.x, newTile.Position.y + 2);
@@ -203,6 +210,7 @@ namespace Managers
                             lRookToBeCastled.transform.position =
                                 TileManager.GetTileCenter(lRookToBeCastled.currentX, lRookToBeCastled.currentY);
                         lRookToBeCastled.SavePosition();
+                        moveFlag = 0b0010;
                         break;
                     case Shared.MoveType.AttackPromotion:
                         var promotionEnemyPiece = board[newPosition.x, newPosition.y];
@@ -272,6 +280,42 @@ namespace Managers
             chessPiece.SavePosition();
             
             chessPiece.IsMoved = true;
+
+            if (modeGame == Shared.ModeGame.Multiplayer) {
+                if (chessPiece.Moves.First(move => move.Coords == newTile.Position).Type != Shared.MoveType.Promotion)
+                {
+                    targetXY = BoardHelper.IndexFromCoord(chessPiece.currentX, chessPiece.currentY);
+                    var room = AppState.Instance.GetState<Room>("CurrentRoom");
+                    Moving moving;
+                    if (moveFlag != 0)
+                    {
+                        moving = new Moving
+                        {
+                            start = startXY,
+                            target = targetXY,
+                            flag = moveFlag,
+                        };
+                    }
+                    else
+                    {
+                        moving = new Moving
+                        {
+                            start = startXY,
+                            target = targetXY,
+                        };
+                    }
+
+                    MovingRequest movingRequest = new MovingRequest
+                    {
+                        rId = room.id,
+                        moving = moving,
+                    };
+
+                    moveFlag = 0;
+                    string data = JsonUtility.ToJson(movingRequest);
+                    SocketIOComponent.Instance.Emit("send-move", data);
+                }
+            }
 
             return turn;
         }

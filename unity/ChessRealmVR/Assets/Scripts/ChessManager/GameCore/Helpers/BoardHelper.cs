@@ -55,9 +55,10 @@ namespace Chess.Core
 
 		public static Vector2Int Vector2FromIndex(int squareIndex)
 		{
-			var fileIndex = squareIndex - ((squareIndex / 8) * 8);
-            var rankIndex = squareIndex % 8 == 0 ? squareIndex / 8 - 1 : squareIndex / 8;
-			return new Vector2Int(fileIndex, rankIndex);
+			var fileIndex = squareIndex % 8 == 0 ? squareIndex / 8 - 1 : squareIndex / 8;
+            var rankIndex = squareIndex - ((squareIndex / 8) * 8);
+
+            return new Vector2Int(fileIndex, rankIndex);
 		}
 
 		public static Coord CoordFromIndex(int squareIndex)

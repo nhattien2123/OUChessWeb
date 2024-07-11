@@ -22,6 +22,7 @@ namespace ChessLogic
         public bool IsAvailableTile { get; set; }
         public bool IsAttackTile { get; set; }
         public bool IsSpecialTile { get; set; }
+        public int MoveType { get; set; }
     
         public Tile(int x, int y)
         {

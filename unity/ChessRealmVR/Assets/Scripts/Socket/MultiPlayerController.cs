@@ -17,7 +17,6 @@ public class MultiPlayerController : MonoBehaviour
     public float SlowSpeed = 1.5f;
     public bool isLocalPlayer = false;
 
-    // リアルタイム通信向けのパラメーター
     Transform oldHead = null;
     Transform oldRightHand = null;
     Transform oldLeftHand = null;
@@ -71,7 +70,6 @@ public class MultiPlayerController : MonoBehaviour
 
     void Update()
     {
-        // キャラクターが自分であること
         if (!isLocalPlayer)
         {
             return;
